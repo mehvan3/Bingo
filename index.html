@@ -2,101 +2,253 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Bingo</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
 
 body{
-  font-family:Arial,sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
   min-height:100vh;
-  background:linear-gradient(135deg,#09090f,#15152a);
-  color:white;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  background:
+    radial-gradient(circle at top,#252044 0,#11111b 42%,#08080d 100%);
+  color:#fff;
   padding:20px;
 }
 
 .app{
   width:100%;
-  max-width:480px;
+  max-width:520px;
+  margin:auto;
+  padding:15px 0 40px;
+}
+
+.header{
   text-align:center;
+  margin:20px 0 25px;
 }
 
 .logo{
   font-size:48px;
   font-weight:900;
-  margin-bottom:8px;
-  letter-spacing:2px;
+  letter-spacing:5px;
+  background:linear-gradient(135deg,#fff,#9d8cff);
+  -webkit-background-clip:text;
+  color:transparent;
 }
 
 .subtitle{
-  color:#999;
-  margin-bottom:30px;
+  color:#88889a;
+  margin-top:6px;
+  font-size:14px;
 }
 
 .card{
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.1);
-  border-radius:24px;
-  padding:24px;
-  backdrop-filter:blur(20px);
-  box-shadow:0 20px 60px rgba(0,0,0,.4);
+  background:rgba(255,255,255,.055);
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:25px;
+  padding:22px;
+  box-shadow:0 25px 70px rgba(0,0,0,.4);
+  backdrop-filter:blur(18px);
 }
 
 input{
   width:100%;
-  padding:16px;
-  margin-bottom:14px;
-  border-radius:14px;
-  border:1px solid #333;
-  background:#101018;
+  padding:17px;
+  margin-bottom:12px;
+  border:1px solid #30303e;
+  border-radius:15px;
+  background:#11111a;
   color:white;
   font-size:16px;
   outline:none;
 }
 
 input:focus{
-  border-color:#7c5cff;
+  border-color:#806cff;
+  box-shadow:0 0 0 3px rgba(128,108,255,.12);
 }
 
 button{
   width:100%;
-  padding:16px;
   border:0;
-  border-radius:14px;
+  border-radius:15px;
+  padding:16px;
   font-size:16px;
-  font-weight:bold;
+  font-weight:800;
   cursor:pointer;
-  margin-top:8px;
+  transition:.2s;
+}
+
+button:active{
+  transform:scale(.97);
 }
 
 .create{
+  color:white;
+  background:linear-gradient(135deg,#765cff,#a855f7);
+  box-shadow:0 10px 25px rgba(118,92,255,.25);
+}
+
+.join{
+  margin-top:10px;
+  color:white;
+  background:#242431;
+  border:1px solid #373747;
+}
+
+.divider{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:20px 0;
+  color:#666676;
+  font-size:12px;
+}
+
+.divider:before,
+.divider:after{
+  content:"";
+  height:1px;
+  flex:1;
+  background:#30303c;
+}
+
+/* GAME */
+
+#game{
+  display:none;
+}
+
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+}
+
+.room{
+  background:#181822;
+  border:1px solid #30303c;
+  padding:10px 14px;
+  border-radius:12px;
+  font-size:13px;
+  color:#aaaabb;
+}
+
+.room b{
+  color:white;
+}
+
+.players{
+  color:#88889a;
+  font-size:13px;
+}
+
+.caller{
+  text-align:center;
+  background:linear-gradient(135deg,#171724,#222038);
+  border:1px solid #35334b;
+  border-radius:22px;
+  padding:20px;
+  margin-bottom:18px;
+}
+
+.caller-title{
+  color:#89899b;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:2px;
+}
+
+.number{
+  font-size:58px;
+  font-weight:900;
+  margin:8px 0;
+  color:#fff;
+}
+
+.call{
   background:linear-gradient(135deg,#7c5cff,#a855f7);
   color:white;
 }
 
-.join{
-  background:#252535;
+.bingo-title{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:7px;
+  margin-bottom:7px;
+}
+
+.bingo-title div{
+  padding:9px 0;
+  border-radius:10px;
+  background:#211e36;
+  color:#a99cff;
+  font-weight:900;
+}
+
+.board{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:7px;
+}
+
+.cell{
+  aspect-ratio:1;
+  border-radius:13px;
+  border:1px solid #30303d;
+  background:#15151f;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:18px;
+  font-weight:800;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.cell:hover{
+  background:#222230;
+}
+
+.cell.marked{
+  background:linear-gradient(135deg,#765cff,#a855f7);
+  border-color:#8d7bff;
+  box-shadow:0 5px 15px rgba(118,92,255,.3);
+}
+
+.cell.free{
+  background:#252338;
+  color:#9d91ff;
+  font-size:12px;
+}
+
+.message{
+  text-align:center;
+  margin-top:18px;
+  min-height:25px;
+  color:#aaaabb;
+  font-size:14px;
+}
+
+.newgame{
+  margin-top:12px;
+  background:#242431;
   color:white;
-}
-
-button:active{
-  transform:scale(.98);
-}
-
-.divider{
-  margin:22px 0;
-  color:#666;
-  font-size:13px;
+  border:1px solid #373747;
 }
 
 .footer{
+  text-align:center;
+  color:#555565;
+  font-size:11px;
   margin-top:25px;
-  color:#555;
-  font-size:12px;
 }
 </style>
 </head>
@@ -105,73 +257,465 @@ button:active{
 
 <div class="app">
 
-  <div class="logo">BINGO</div>
-  <div class="subtitle">Play Bingo online with friends</div>
+  <!-- HOME -->
+  <section id="home">
 
-  <div class="card">
+    <div class="header">
+      <div class="logo">BINGO</div>
+      <div class="subtitle">Play Bingo online with friends</div>
+    </div>
 
-    <input
-      id="playerName"
-      type="text"
-      placeholder="Enter your name"
-      maxlength="20"
-    >
+    <div class="card">
 
-    <button class="create" onclick="createRoom()">
-      🎮 Create Room
+      <input
+        id="name"
+        type="text"
+        placeholder="Enter your name"
+        maxlength="20"
+      >
+
+      <button class="create" onclick="createRoom()">
+        🎮 Create Room
+      </button>
+
+      <div class="divider">OR</div>
+
+      <input
+        id="room"
+        type="text"
+        placeholder="Enter room code"
+        maxlength="6"
+        inputmode="numeric"
+      >
+
+      <button class="join" onclick="joinRoom()">
+        🔑 Join Room
+      </button>
+
+    </div>
+
+    <div class="footer">Bingo • Modern Edition</div>
+
+  </section>
+
+
+  <!-- GAME -->
+  <section id="game">
+
+    <div class="header">
+      <div class="logo">BINGO</div>
+      <div class="subtitle">Game Room</div>
+    </div>
+
+    <div class="topbar">
+      <div class="room">
+        ROOM:
+        <b id="roomDisplay">------</b>
+      </div>
+
+      <div class="players">
+        👤 <span id="playerDisplay">1</span>
+      </div>
+    </div>
+
+    <div class="caller">
+
+      <div class="caller-title">
+        Last Number
+      </div>
+
+      <div class="number" id="number">
+        —
+      </div>
+
+      <button class="call" onclick="callNumber()">
+        🔢 Call Number
+      </button>
+
+    </div>
+
+    <div class="bingo-title">
+      <div>B</div>
+      <div>I</div>
+      <div>N</div>
+      <div>G</div>
+      <div>O</div>
+    </div>
+
+    <div class="board" id="board"></div>
+
+    <div class="message" id="message">
+      Call a number to start.
+    </div>
+
+    <button class="newgame" onclick="newGame()">
+      🔄 New Game
     </button>
 
-    <div class="divider">OR</div>
-
-    <input
-      id="roomCode"
-      type="text"
-      placeholder="Enter room code"
-      maxlength="6"
-    >
-
-    <button class="join" onclick="joinRoom()">
-      🔑 Join Room
-    </button>
-
-  </div>
-
-  <div class="footer">
-    © 2026 Bingo
-  </div>
+  </section>
 
 </div>
 
-<script>
-function createRoom(){
-  const name=document.getElementById("playerName").value.trim();
 
-  if(!name){
-    alert("Please enter your name");
+<script>
+let numbers = [];
+let calledNumbers = [];
+let roomCode = "";
+let playerName = "";
+
+
+/* CREATE ROOM */
+
+function createRoom(){
+
+  playerName =
+    document.getElementById("name").value.trim();
+
+  if(!playerName){
+    alert("Please enter your name.");
     return;
   }
 
-  const code=Math.floor(100000+Math.random()*900000);
+  roomCode =
+    Math.floor(100000 + Math.random() * 900000)
+    .toString();
 
-  alert("Room created!\\nRoom Code: "+code);
+  startGame();
 }
+
+
+/* JOIN ROOM */
 
 function joinRoom(){
-  const name=document.getElementById("playerName").value.trim();
-  const code=document.getElementById("roomCode").value.trim();
 
-  if(!name){
-    alert("Please enter your name");
+  playerName =
+    document.getElementById("name").value.trim();
+
+  const code =
+    document.getElementById("room").value.trim();
+
+  if(!playerName){
+    alert("Please enter your name.");
     return;
   }
 
-  if(code.length!==6){
-    alert("Please enter a 6-digit room code");
+  if(!/^[0-9]{6}$/.test(code)){
+    alert("Enter a valid 6-digit room code.");
     return;
   }
 
-  alert("Joining room "+code+"...");
+  roomCode = code;
+
+  startGame();
 }
+
+
+/* START GAME */
+
+function startGame(){
+
+  document.getElementById("home").style.display="none";
+  document.getElementById("game").style.display="block";
+
+  document.getElementById("roomDisplay").textContent =
+    roomCode;
+
+  document.getElementById("playerDisplay").textContent =
+    playerName;
+
+  createCard();
+}
+
+
+/* CREATE BINGO CARD */
+
+function createCard(){
+
+  const ranges = [
+    [1,15],
+    [16,30],
+    [31,45],
+    [46,60],
+    [61,75]
+  ];
+
+  let card = [];
+
+  for(let column=0; column<5; column++){
+
+    let nums=[];
+
+    for(
+      let n=ranges[column][0];
+      n<=ranges[column][1];
+      n++
+    ){
+      nums.push(n);
+    }
+
+    nums.sort(()=>Math.random()-0.5);
+
+    for(let row=0; row<5; row++){
+
+      if(column===2 && row===2){
+        card.push("FREE");
+      }else{
+        card.push(nums[row]);
+      }
+
+    }
+  }
+
+  /*
+    Convert column order to row order
+  */
+
+  let board=[];
+  
+  for(let row=0; row<5; row++){
+
+    for(let col=0; col<5; col++){
+
+      board.push(card[col*5+row]);
+
+    }
+  }
+
+  numbers=board;
+
+  renderBoard();
+}
+
+
+/* DRAW BOARD */
+
+function renderBoard(){
+
+  const board =
+    document.getElementById("board");
+
+  board.innerHTML="";
+
+  numbers.forEach((num,index)=>{
+
+    const cell =
+      document.createElement("div");
+
+    cell.className="cell";
+
+    cell.textContent=num;
+
+    if(num==="FREE"){
+      cell.classList.add("free");
+      cell.classList.add("marked");
+    }
+
+    cell.onclick=()=>{
+      markCell(cell,index);
+    };
+
+    board.appendChild(cell);
+
+  });
+}
+
+
+/* MARK NUMBER */
+
+function markCell(cell,index){
+
+  if(numbers[index]==="FREE"){
+    return;
+  }
+
+  const number =
+    Number(numbers[index]);
+
+  if(!calledNumbers.includes(number)){
+    return;
+  }
+
+  cell.classList.toggle("marked");
+
+  checkBingo();
+}
+
+
+/* CALL NUMBER */
+
+function callNumber(){
+
+  const available=[];
+
+  for(let i=1;i<=75;i++){
+
+    if(!calledNumbers.includes(i)){
+      available.push(i);
+    }
+
+  }
+
+  if(available.length===0){
+    document.getElementById("message").textContent =
+      "All numbers have been called.";
+    return;
+  }
+
+  const random =
+    available[
+      Math.floor(Math.random()*available.length)
+    ];
+
+  calledNumbers.push(random);
+
+  document.getElementById("number").textContent =
+    random;
+
+  document.getElementById("message").textContent =
+    "Number " + random + " was called.";
+
+  autoMark(random);
+
+}
+
+
+/* AUTO MARK */
+
+function autoMark(number){
+
+  const cells =
+    document.querySelectorAll(".cell");
+
+  numbers.forEach((num,index)=>{
+
+    if(num===number){
+      cells[index].classList.add("marked");
+    }
+
+  });
+
+  checkBingo();
+}
+
+
+/* CHECK BINGO */
+
+function checkBingo(){
+
+  const cells =
+    document.querySelectorAll(".cell");
+
+  let marked=[];
+
+  for(let i=0;i<25;i++){
+    marked[i]=
+      cells[i].classList.contains("marked");
+  }
+
+
+  /* ROWS */
+
+  for(let row=0;row<5;row++){
+
+    let win=true;
+
+    for(let col=0;col<5;col++){
+
+      if(!marked[row*5+col]){
+        win=false;
+      }
+
+    }
+
+    if(win){
+      bingoWin();
+      return;
+    }
+
+  }
+
+
+  /* COLUMNS */
+
+  for(let col=0;col<5;col++){
+
+    let win=true;
+
+    for(let row=0;row<5;row++){
+
+      if(!marked[row*5+col]){
+        win=false;
+      }
+
+    }
+
+    if(win){
+      bingoWin();
+      return;
+    }
+
+  }
+
+
+  /* DIAGONAL */
+
+  let diagonal1=true;
+
+  for(let i=0;i<5;i++){
+
+    if(!marked[i*5+i]){
+      diagonal1=false;
+    }
+
+  }
+
+  if(diagonal1){
+    bingoWin();
+    return;
+  }
+
+
+  /* OTHER DIAGONAL */
+
+  let diagonal2=true;
+
+  for(let i=0;i<5;i++){
+
+    if(!marked[i*5+(4-i)]){
+      diagonal2=false;
+    }
+
+  }
+
+  if(diagonal2){
+    bingoWin();
+  }
+
+}
+
+
+/* WIN */
+
+function bingoWin(){
+
+  document.getElementById("message").textContent =
+    "🎉 BINGO! You win!";
+
+}
+
+
+/* NEW GAME */
+
+function newGame(){
+
+  calledNumbers=[];
+  document.getElementById("number").textContent="—";
+  document.getElementById("message").textContent =
+    "New game started.";
+
+  createCard();
+}
+
 </script>
 
 </body>
