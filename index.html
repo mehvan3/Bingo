@@ -1359,29 +1359,72 @@ function showCalledNumber(random){
 /* =========================
    CALLED NUMBERS HISTORY
 ========================= */
-function renderCalledNumbers(){
-  const list=
-    document.getElementById("calledList");
-  list.innerHTML="";
-  calledNumbers.forEach((number,index)=>{
-    const item=
-      document.createElement("div");
-    item.className=
-      "called-item "+
-      getBingoLetter(number);
-    if(index===calledNumbers.length-1){
-      item.classList.add("latest");
-    }
-    item.textContent=number;
-    list.appendChild(item);
-  });
-  /* AUTO SCROLL → دوا ژمارە */
-  requestAnimationFrame(()=>{
-    list.scrollTo({
-      left:list.scrollWidth,
-      behavior:"smooth"
-    });
-  });
+ /* CALLED NUMBERS */
+.called-wrap{
+  max-width:600px;
+  margin:0 auto 15px;
+  overflow:hidden;
+}
+
+.called-title{
+  font-size:14px;
+  color:#9eb3ce;
+  margin-bottom:6px;
+  text-align:right;
+}
+
+.called-list{
+  display:flex;
+  flex-direction:row-reverse;
+  gap:8px;
+  overflow-x:auto;
+  padding:8px 4px 12px;
+  scroll-behavior:smooth;
+  scrollbar-width:none;
+  direction:rtl;
+}
+
+.called-list::-webkit-scrollbar{
+  display:none;
+}
+
+.called-item{
+  min-width:43px;
+  height:43px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  border:2px solid rgba(255,255,255,.18);
+  flex-shrink:0;
+  transition:.35s;
+  animation:calledIn .4s ease;
+}
+
+.called-item.B{background:#1677ff}
+.called-item.I{background:#a13cff}
+.called-item.N{background:#00c77a}
+.called-item.G{background:#ff8a00}
+.called-item.O{background:#ff315d}
+
+.called-item.latest{
+  transform:scale(1.15);
+  box-shadow:
+    0 0 12px rgba(255,255,255,.5),
+    0 0 28px rgba(0,217,255,.35);
+  border-color:#fff;
+}
+
+@keyframes calledIn{
+  from{
+    opacity:0;
+    transform:translateX(35px) scale(.7);
+  }
+  to{
+    opacity:1;
+    transform:translateX(0) scale(1);
+  }
 }
 /* =========================
    LETTER
