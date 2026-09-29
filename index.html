@@ -2,7 +2,8 @@
 <html lang="ku">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
 <title>BINGO</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -13,12 +14,21 @@
   -webkit-tap-highlight-color:transparent
 }
 
-body{
+html,body{
   margin:0;
+  padding:0;
+  min-height:100%;
   font-family:Arial,sans-serif;
-  color:white;
+  color:#fff;
+  background:#050b16
+}
+
+body{
   min-height:100vh;
-  background:linear-gradient(135deg,#07111f,#101d35)
+  background:
+    radial-gradient(circle at 20% 0%,rgba(0,174,255,.15),transparent 35%),
+    radial-gradient(circle at 90% 15%,rgba(123,60,255,.18),transparent 35%),
+    linear-gradient(145deg,#050b16,#0b1528 55%,#11102a);
 }
 
 button,input{
@@ -26,7 +36,9 @@ button,input{
 }
 
 button{
-  cursor:pointer
+  cursor:pointer;
+  -webkit-user-select:none;
+  user-select:none
 }
 
 .hidden{
@@ -35,8 +47,521 @@ button{
 
 .page{
   min-height:100vh;
-  padding:18px
+  padding:16px;
 }
+
+/* =====================================================
+   PREMIUM HOME
+===================================================== */
+
+.premium-home{
+  max-width:600px;
+  margin:auto;
+  padding:
+    max(14px,env(safe-area-inset-top))
+    14px
+    max(25px,env(safe-area-inset-bottom))
+    14px;
+  overflow:hidden;
+}
+
+.home-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:22px;
+}
+
+.profile-mini{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
+
+.avatar{
+  width:52px;
+  height:52px;
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:
+    linear-gradient(145deg,#18cfff,#713cff);
+  border:2px solid rgba(255,255,255,.3);
+  box-shadow:
+    0 0 20px rgba(0,200,255,.25);
+  font-size:27px;
+}
+
+.profile-info{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  min-width:0;
+}
+
+.profile-info strong{
+  font-size:16px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.profile-info span{
+  color:#b8c7dc;
+  font-size:11px;
+}
+
+.profile-info small{
+  color:#42ef9b;
+  font-size:10px;
+}
+
+.home-actions{
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.coin-box{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  padding:9px 12px;
+  border-radius:18px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1);
+  box-shadow:inset 0 1px rgba(255,255,255,.08);
+  white-space:nowrap;
+}
+
+.coin-box span{
+  font-size:17px;
+}
+
+.coin-box strong{
+  font-size:13px;
+}
+
+.notify-btn{
+  width:39px;
+  height:39px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:50%;
+  background:#15233a;
+  color:#fff;
+  font-size:17px;
+}
+
+.bingo-brand{
+  position:relative;
+  text-align:center;
+  margin:10px 0 27px;
+}
+
+.brand-glow{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:220px;
+  height:110px;
+  transform:translate(-50%,-50%);
+  background:
+    radial-gradient(circle,rgba(0,213,255,.22),transparent 68%);
+  filter:blur(10px);
+  pointer-events:none;
+}
+
+.logo-premium{
+  position:relative;
+  font-size:clamp(48px,15vw,76px);
+  line-height:.95;
+  font-weight:1000;
+  letter-spacing:6px;
+  color:#fff;
+  background:linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #aeeaff 38%,
+    #6f9fff 100%
+  );
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:
+    0 0 20px rgba(0,195,255,.35);
+}
+
+.bingo-brand p{
+  position:relative;
+  margin:9px 0 0;
+  color:#8fa6c5;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:3px;
+}
+
+.play-area{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.premium-play,
+.friends-play{
+  width:100%;
+  border:0;
+  color:white;
+  border-radius:21px;
+  display:flex;
+  align-items:center;
+  text-align:left;
+  transition:.18s;
+}
+
+.premium-play{
+  min-height:77px;
+  padding:11px 14px;
+  background:
+    linear-gradient(105deg,#00a9ff,#4269ff 48%,#7b3cff);
+  box-shadow:
+    0 12px 35px rgba(0,136,255,.2),
+    inset 0 1px rgba(255,255,255,.3);
+}
+
+.premium-play:active,
+.friends-play:active,
+.quick-card:active,
+.fee:active,
+.mode:active,
+.count-btn:active{
+  transform:scale(.98);
+}
+
+.play-icon{
+  width:51px;
+  height:51px;
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:16px;
+  background:rgba(255,255,255,.16);
+  font-size:25px;
+}
+
+.play-text{
+  display:flex;
+  flex-direction:column;
+  margin-left:12px;
+  gap:4px;
+}
+
+.play-text strong{
+  font-size:19px;
+}
+
+.play-text small{
+  color:rgba(255,255,255,.72);
+  font-size:11px;
+}
+
+.play-arrow{
+  margin-left:auto;
+  font-size:34px;
+  font-weight:300;
+  opacity:.75;
+}
+
+.friends-play{
+  min-height:63px;
+  padding:10px 14px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(123,60,255,.22),
+      rgba(0,168,255,.12)
+    );
+  border:1px solid rgba(123,60,255,.3);
+}
+
+.friends-play>span{
+  width:42px;
+  height:42px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:13px;
+  background:rgba(123,60,255,.2);
+  font-size:21px;
+}
+
+.friends-play div{
+  margin-left:11px;
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+
+.friends-play strong{
+  font-size:13px;
+}
+
+.friends-play small{
+  color:#8296b3;
+  font-size:10px;
+}
+
+.friends-play>b{
+  margin-left:auto;
+  font-size:26px;
+  font-weight:300;
+  color:#8096b7;
+}
+
+/* HOME GAME SETTINGS */
+
+.home-settings{
+  margin-top:17px;
+  padding:15px;
+  border-radius:21px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.settings-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:11px;
+}
+
+.settings-title strong{
+  font-size:14px;
+}
+
+.settings-title span{
+  color:#7187a5;
+  font-size:10px;
+}
+
+.setting-label{
+  color:#8499b5;
+  font-size:10px;
+  font-weight:700;
+  margin:10px 0 7px;
+}
+
+.fees{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:6px;
+}
+
+.fee,
+.mode,
+.count-btn{
+  min-height:38px;
+  border:1px solid #263954;
+  background:#111f34;
+  color:#cbd8e9;
+  border-radius:11px;
+  font-size:11px;
+  font-weight:900;
+  transition:.18s;
+}
+
+.fee.selected{
+  color:white;
+  background:
+    linear-gradient(135deg,#00a8ff,#5364ff);
+  border-color:#35c8ff;
+  box-shadow:0 0 16px rgba(0,168,255,.22);
+}
+
+.modes{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+}
+
+.mode{
+  min-height:42px;
+}
+
+.mode.selected{
+  color:white;
+  background:
+    linear-gradient(135deg,#713cff,#a14cff);
+  border-color:#ae83ff;
+  box-shadow:0 0 16px rgba(123,60,255,.22);
+}
+
+.card-count{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+}
+
+.count-btn{
+  min-height:42px;
+}
+
+.count-btn.selected{
+  color:white;
+  background:
+    linear-gradient(135deg,#00a878,#00cfa0);
+  border-color:#36efb4;
+}
+
+.lobby-section{
+  margin-top:21px;
+}
+
+.section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:11px;
+  font-size:15px;
+}
+
+.section-title span{
+  color:#687d99;
+  font-size:10px;
+}
+
+.quick-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:7px;
+}
+
+.quick-card{
+  min-width:0;
+  padding:11px 4px;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:17px;
+  background:rgba(255,255,255,.045);
+  color:white;
+  transition:.18s;
+}
+
+.quick-icon{
+  width:39px;
+  height:39px;
+  margin:0 auto 7px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:13px;
+  background:#162943;
+  font-size:19px;
+}
+
+.quick-card strong{
+  display:block;
+  font-size:10px;
+}
+
+.quick-card small{
+  display:block;
+  margin-top:3px;
+  color:#7185a1;
+  font-size:8px;
+}
+
+.online-bar{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:18px;
+  padding:11px;
+  border-radius:18px;
+  background:rgba(0,207,145,.055);
+  border:1px solid rgba(54,239,180,.1);
+}
+
+.online-avatars{
+  display:flex;
+  align-items:center;
+  padding-left:5px;
+}
+
+.online-avatars span{
+  width:29px;
+  height:29px;
+  margin-left:-6px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:#182941;
+  border:2px solid #0b1627;
+  font-size:15px;
+}
+
+.online-bar>div:nth-child(2){
+  flex:1;
+  min-width:0;
+}
+
+.online-bar strong{
+  display:block;
+  font-size:10px;
+}
+
+.online-bar small{
+  display:block;
+  margin-top:3px;
+  color:#7185a1;
+  font-size:8px;
+}
+
+.online-bar .online-dot{
+  width:auto;
+  height:auto;
+  margin:0 3px 0 0;
+  background:none;
+  color:#35e99a;
+  box-shadow:none;
+  font-size:12px;
+}
+
+.premium-bottom{
+  grid-template-columns:repeat(5,1fr)!important;
+  margin-top:19px;
+  padding-top:4px;
+}
+
+.premium-bottom button{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  padding:9px 3px;
+  background:transparent;
+  color:#647993;
+}
+
+.premium-bottom button span{
+  font-size:18px;
+}
+
+.premium-bottom button small{
+  font-size:8px;
+}
+
+.premium-bottom button.active{
+  color:#42caff;
+}
+
+/* =====================================================
+   OLD / COMMON
+===================================================== */
 
 .logo{
   text-align:center;
@@ -73,57 +598,6 @@ input{
   color:white
 }
 
-.fees,
-.modes,
-.card-count{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-  margin:10px 0 20px
-}
-
-.fee,
-.mode,
-.count-btn{
-  padding:12px 4px;
-  border:1px solid #344762;
-  background:#16243a;
-  color:white;
-  border-radius:12px
-}
-
-.fee.selected{
-  background:#00a8ff;
-  border-color:#00d9ff
-}
-
-.modes{
-  grid-template-columns:1fr 1fr
-}
-
-.mode{
-  padding:14px
-}
-
-.mode.selected{
-  background:#7b3cff;
-  border-color:#a979ff
-}
-
-.card-count{
-  grid-template-columns:1fr 1fr
-}
-
-.count-btn{
-  padding:14px;
-  font-weight:900
-}
-
-.count-btn.selected{
-  background:#00a878;
-  border-color:#2ee79b
-}
-
 .play{
   width:100%;
   padding:18px;
@@ -135,9 +609,7 @@ input{
   font-weight:900
 }
 
-/* =========================
-   CARD SELECT
-========================= */
+/* CARD SELECT */
 
 .card-select-panel{
   position:fixed;
@@ -230,6 +702,12 @@ input{
   background:#ffd23f
 }
 
+.select-cell.col-B{color:#0759c9}
+.select-cell.col-I{color:#7926b8}
+.select-cell.col-N{color:#08794e}
+.select-cell.col-G{color:#b95300}
+.select-cell.col-O{color:#c51c42}
+
 .confirm-selection{
   width:100%;
   margin-top:18px;
@@ -241,9 +719,7 @@ input{
   font-weight:900
 }
 
-/* =========================
-   GAME
-========================= */
+/* GAME */
 
 .topbar{
   max-width:600px;
@@ -268,8 +744,7 @@ input{
 
 .caller{
   max-width:600px;
-  margin:10px auto 10px;
-  text-align:center
+  margin:10px auto
 }
 
 .number{
@@ -290,39 +765,16 @@ input{
 }
 
 @keyframes numberPop{
-  0%{
-    transform:scale(.7);
-    opacity:.2
-  }
-  70%{
-    transform:scale(1.08);
-    opacity:1
-  }
-  100%{
-    transform:scale(1);
-    opacity:1
-  }
+  0%{transform:scale(.7);opacity:.2}
+  70%{transform:scale(1.08);opacity:1}
+  100%{transform:scale(1);opacity:1}
 }
 
-.number-B{
-  background:linear-gradient(135deg,#1677ff,#0046b8)
-}
-
-.number-I{
-  background:linear-gradient(135deg,#a13cff,#6415b5)
-}
-
-.number-N{
-  background:linear-gradient(135deg,#00c77a,#087e51)
-}
-
-.number-G{
-  background:linear-gradient(135deg,#ff8a00,#c44d00)
-}
-
-.number-O{
-  background:linear-gradient(135deg,#ff315d,#ad1235)
-}
+.number-B{background:linear-gradient(135deg,#1677ff,#0046b8)}
+.number-I{background:linear-gradient(135deg,#a13cff,#6415b5)}
+.number-N{background:linear-gradient(135deg,#00c77a,#087e51)}
+.number-G{background:linear-gradient(135deg,#ff8a00,#c44d00)}
+.number-O{background:linear-gradient(135deg,#ff315d,#ad1235)}
 
 .message{
   text-align:center;
@@ -330,10 +782,6 @@ input{
   margin:8px 0;
   color:#c8d6e8
 }
-
-/* =========================
-   CALLED NUMBERS
-========================= */
 
 .called-wrap{
   max-width:600px;
@@ -367,52 +815,25 @@ input{
   font-weight:900;
   border:2px solid rgba(255,255,255,.18);
   flex-shrink:0;
-  transition:.35s;
   animation:calledIn .4s ease
 }
 
-.called-item.B{
-  background:#1677ff
-}
-
-.called-item.I{
-  background:#a13cff
-}
-
-.called-item.N{
-  background:#00c77a
-}
-
-.called-item.G{
-  background:#ff8a00
-}
-
-.called-item.O{
-  background:#ff315d
-}
+.called-item.B{background:#1677ff}
+.called-item.I{background:#a13cff}
+.called-item.N{background:#00c77a}
+.called-item.G{background:#ff8a00}
+.called-item.O{background:#ff315d}
 
 .called-item.latest{
   transform:scale(1.15);
-  box-shadow:
-    0 0 12px rgba(255,255,255,.5),
-    0 0 28px rgba(0,217,255,.35);
+  box-shadow:0 0 12px rgba(255,255,255,.5),0 0 28px rgba(0,217,255,.35);
   border-color:#fff
 }
 
 @keyframes calledIn{
-  from{
-    opacity:0;
-    transform:translateX(35px) scale(.7)
-  }
-  to{
-    opacity:1;
-    transform:translateX(0) scale(1)
-  }
+  from{opacity:0;transform:translateX(35px) scale(.7)}
+  to{opacity:1;transform:translateX(0) scale(1)}
 }
-
-/* =========================
-   MULTIPLE BOARDS
-========================= */
 
 .boards{
   max-width:600px;
@@ -424,11 +845,11 @@ input{
 
 .board{
   position:relative;
-  transition:.3s;
   padding:7px;
   border-radius:18px;
   background:rgba(255,255,255,.035);
-  min-width:0
+  min-width:0;
+  transition:.3s
 }
 
 .board.locked{
@@ -441,12 +862,8 @@ input{
 }
 
 @keyframes winnerGlow{
-  from{
-    box-shadow:0 0 10px rgba(255,210,63,.2)
-  }
-  to{
-    box-shadow:0 0 30px rgba(255,210,63,.8)
-  }
+  from{box-shadow:0 0 10px rgba(255,210,63,.2)}
+  to{box-shadow:0 0 30px rgba(255,210,63,.8)}
 }
 
 .board-label{
@@ -480,25 +897,11 @@ input{
   font-weight:900
 }
 
-.head-B{
-  color:#35a7ff
-}
-
-.head-I{
-  color:#c16cff
-}
-
-.head-N{
-  color:#2ee79b
-}
-
-.head-G{
-  color:#ff9c35
-}
-
-.head-O{
-  color:#ff5276
-}
+.head-B{color:#35a7ff}
+.head-I{color:#c16cff}
+.head-N{color:#2ee79b}
+.head-G{color:#ff9c35}
+.head-O{color:#ff5276}
 
 .bingo-grid{
   display:grid;
@@ -525,104 +928,48 @@ input{
   transform:scale(.94)
 }
 
-.cell.marked-B{
-  background:#1677ff
-}
-
-.cell.marked-I{
-  background:#a13cff
-}
-
-.cell.marked-N{
-  background:#00c77a
-}
-
-.cell.marked-G{
-  background:#ff8a00
-}
-
-.cell.marked-O{
-  background:#ff315d
-}
+.cell.marked-B{background:#1677ff}
+.cell.marked-I{background:#a13cff}
+.cell.marked-N{background:#00c77a}
+.cell.marked-G{background:#ff8a00}
+.cell.marked-O{background:#ff315d}
 
 .cell.free{
   background:#ffd23f;
   color:#1b1600
 }
 
-/* =========================
-   BINGO COLUMN COLORS
-========================= */
-
 .cell.col-B{
-  background:linear-gradient(
-    145deg,
-    #e8f3ff,
-    #cfe6ff
-  );
-  color:#0759c9;
+  background:linear-gradient(145deg,#e8f3ff,#cfe6ff);
+  color:#0759c9
 }
 
 .cell.col-I{
-  background:linear-gradient(
-    145deg,
-    #f2e6ff,
-    #dfc7ff
-  );
-  color:#7926b8;
+  background:linear-gradient(145deg,#f2e6ff,#dfc7ff);
+  color:#7926b8
 }
 
 .cell.col-N{
-  background:linear-gradient(
-    145deg,
-    #e2fff3,
-    #c5f6df
-  );
-  color:#08794e;
+  background:linear-gradient(145deg,#e2fff3,#c5f6df);
+  color:#08794e
 }
 
 .cell.col-G{
-  background:linear-gradient(
-    145deg,
-    #fff0df,
-    #ffd9b0
-  );
-  color:#b95300;
+  background:linear-gradient(145deg,#fff0df,#ffd9b0);
+  color:#b95300
 }
 
 .cell.col-O{
-  background:linear-gradient(
-    145deg,
-    #ffe5eb,
-    #ffcbd6
-  );
-  color:#c51c42;
+  background:linear-gradient(145deg,#ffe5eb,#ffcbd6);
+  color:#c51c42
 }
 
-/* =========================
-   GOLD BINGO MARK
-========================= */
-
 .cell.gold-mark{
-  background:
-    radial-gradient(
-      circle at 35% 30%,
-      #fff8b0 0%,
-      #ffd84a 28%,
-      #d99a00 62%,
-      #8a5600 100%
-    );
-
+  background:radial-gradient(circle at 35% 30%,#fff8b0 0%,#ffd84a 28%,#d99a00 62%,#8a5600 100%);
   color:transparent;
-
-  box-shadow:
-    0 0 8px rgba(255,210,63,.8),
-    0 0 18px rgba(255,180,0,.55),
-    inset 0 2px 5px rgba(255,255,255,.7),
-    inset 0 -4px 7px rgba(120,70,0,.5);
-
+  box-shadow:0 0 8px rgba(255,210,63,.8),0 0 18px rgba(255,180,0,.55),inset 0 2px 5px rgba(255,255,255,.7),inset 0 -4px 7px rgba(120,70,0,.5);
   transform:scale(.94);
-  border:2px solid #ffe98a;
+  border:2px solid #ffe98a
 }
 
 .cell.gold-mark::before{
@@ -630,9 +977,7 @@ input{
   position:absolute;
   inset:4px;
   border-radius:50%;
-  border:2px solid rgba(255,248,176,.85);
-  box-shadow:
-    inset 0 0 5px rgba(255,255,255,.7);
+  border:2px solid rgba(255,248,176,.85)
 }
 
 .cell.gold-mark .gold-bingo{
@@ -644,32 +989,16 @@ input{
   color:#fff8c7;
   font-size:9px;
   font-weight:1000;
-  letter-spacing:.3px;
-  text-shadow:
-    0 1px 2px #6b4300,
-    0 0 5px rgba(255,255,255,.8);
+  text-shadow:0 1px 2px #6b4300,0 0 5px rgba(255,255,255,.8);
   z-index:2;
-  animation:goldBingoPop .35s ease-out;
+  animation:goldBingoPop .35s ease-out
 }
 
 @keyframes goldBingoPop{
-  0%{
-    transform:scale(.2) rotate(-25deg);
-    opacity:0;
-  }
-  70%{
-    transform:scale(1.18) rotate(5deg);
-    opacity:1;
-  }
-  100%{
-    transform:scale(1) rotate(0);
-    opacity:1;
-  }
+  0%{transform:scale(.2) rotate(-25deg);opacity:0}
+  70%{transform:scale(1.18) rotate(5deg);opacity:1}
+  100%{transform:scale(1) rotate(0);opacity:1}
 }
-
-/* =========================
-   LARGE BINGO LOGO
-========================= */
 
 .board-bingo-logo{
   position:absolute;
@@ -684,64 +1013,28 @@ input{
   font-weight:1000;
   letter-spacing:3px;
   color:#fff8b0;
-  background:
-    radial-gradient(
-      circle,
-      rgba(255,224,77,.96),
-      rgba(185,113,0,.94)
-    );
+  background:radial-gradient(circle,rgba(255,224,77,.96),rgba(185,113,0,.94));
   border:4px solid #fff0a0;
   border-radius:22px;
-  text-shadow:
-    0 3px 4px #704300,
-    0 0 12px #fff;
-  box-shadow:
-    0 0 15px #ffd23f,
-    0 0 40px rgba(255,180,0,.8),
-    inset 0 3px 8px rgba(255,255,255,.7);
-  animation:bingoLogoPop .55s ease-out;
+  text-shadow:0 3px 4px #704300,0 0 12px #fff;
+  box-shadow:0 0 15px #ffd23f,0 0 40px rgba(255,180,0,.8),inset 0 3px 8px rgba(255,255,255,.7);
+  animation:bingoLogoPop .55s ease-out
 }
 
 @keyframes bingoLogoPop{
-  0%{
-    opacity:0;
-    transform:
-      translate(-50%,-50%)
-      scale(.2)
-      rotate(-10deg);
-  }
-
-  70%{
-    transform:
-      translate(-50%,-50%)
-      scale(1.12)
-      rotate(2deg);
-  }
-
-  100%{
-    opacity:1;
-    transform:
-      translate(-50%,-50%)
-      scale(1)
-      rotate(0);
-  }
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.2) rotate(-10deg)}
+  70%{transform:translate(-50%,-50%) scale(1.12) rotate(2deg)}
+  100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0)}
 }
 
-/* =========================
-   LIVE WINNERS
-========================= */
+/* WINNERS */
 
 .live-winners-section{
   max-width:600px;
   margin:18px auto 8px;
   padding:12px;
   border-radius:20px;
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255,210,63,.08),
-      rgba(123,60,255,.08)
-    );
+  background:linear-gradient(145deg,rgba(255,210,63,.08),rgba(123,60,255,.08));
   border:1px solid rgba(255,210,63,.18)
 }
 
@@ -805,94 +1098,11 @@ input{
   font-size:12px
 }
 
-/* =========================
-   IPHONE
-========================= */
-
-@media(max-width:430px){
-
-  .page{
-    padding:12px
-  }
-
-  .boards{
-    gap:7px
-  }
-
-  .board{
-    padding:5px;
-    border-radius:15px
-  }
-
-  .board-label{
-    font-size:10px
-  }
-
-  .card-badge{
-    font-size:8px;
-    padding:3px 5px
-  }
-
-  .bingo-head{
-    gap:2px
-  }
-
-  .bingo-head div{
-    font-size:13px;
-    padding:3px 0
-  }
-
-  .bingo-grid{
-    gap:2px
-  }
-
-  .cell{
-    border-radius:5px;
-    font-size:10px
-  }
-
-  .called-item{
-    min-width:40px;
-    height:40px
-  }
-
-  .cell.gold-mark .gold-bingo{
-    font-size:7px;
-    letter-spacing:0;
-  }
-
-  .board-bingo-logo{
-    width:90%;
-    padding:13px 5px;
-    font-size:clamp(22px,9vw,38px);
-    border-width:3px;
-  }
-
-  .live-winners-section{
-    margin-top:15px;
-    padding:10px
-  }
-
-  .live-winner-avatar{
-    width:42px;
-    height:42px
-  }
-
-}
-
-/* =========================
-   PLAYERS
-========================= */
+/* PLAYERS */
 
 .players-section{
   max-width:600px;
   margin:22px auto 0
-}
-
-.section-title{
-  font-size:19px;
-  font-weight:900;
-  margin-bottom:10px
 }
 
 .players-list{
@@ -968,9 +1178,7 @@ input{
   color:#aebed1
 }
 
-/* =========================
-   FRIEND
-========================= */
+/* FRIEND */
 
 .friend-game-panel{
   position:fixed;
@@ -1036,42 +1244,18 @@ input{
   color:white
 }
 
-.friend-cell.marked-B{
-  background:#1677ff
-}
-
-.friend-cell.marked-I{
-  background:#a13cff
-}
-
-.friend-cell.marked-N{
-  background:#00c77a
-}
-
-.friend-cell.marked-G{
-  background:#ff8a00
-}
-
-.friend-cell.marked-O{
-  background:#ff315d
-}
+.friend-cell.marked-B{background:#1677ff}
+.friend-cell.marked-I{background:#a13cff}
+.friend-cell.marked-N{background:#00c77a}
+.friend-cell.marked-G{background:#ff8a00}
+.friend-cell.marked-O{background:#ff315d}
 
 .friend-cell.free{
   background:#ffd23f;
   color:#1b1600
 }
 
-.friend-empty{
-  text-align:center;
-  padding:30px 10px;
-  color:#9eb3ce
-}
-
-/* =========================
-   WINNER POPUP
-   Kept for compatibility,
-   but no longer opened.
-========================= */
+/* OVERLAY */
 
 .overlay{
   position:fixed;
@@ -1098,38 +1282,11 @@ input{
   text-align:center;
   background:linear-gradient(145deg,#101c34,#281550,#111b32);
   border:2px solid #ffd23f;
-  box-shadow:
-    0 0 25px rgba(255,210,63,.35),
-    0 0 80px rgba(123,60,255,.25);
-  animation:winBox .7s ease
-}
-
-@keyframes winBox{
-  0%{
-    transform:scale(.4) rotate(-8deg);
-    opacity:0
-  }
-  70%{
-    transform:scale(1.08) rotate(2deg)
-  }
-  100%{
-    transform:scale(1) rotate(0);
-    opacity:1
-  }
+  box-shadow:0 0 25px rgba(255,210,63,.35),0 0 80px rgba(123,60,255,.25)
 }
 
 .crown{
-  font-size:72px;
-  animation:crownFloat 1s infinite alternate
-}
-
-@keyframes crownFloat{
-  from{
-    transform:translateY(0) rotate(-4deg)
-  }
-  to{
-    transform:translateY(-12px) rotate(4deg)
-  }
+  font-size:72px
 }
 
 .win-title{
@@ -1157,8 +1314,7 @@ input{
   gap:10px;
   padding:11px;
   border-radius:15px;
-  background:rgba(255,255,255,.07);
-  border:1px solid rgba(255,255,255,.08)
+  background:rgba(255,255,255,.07)
 }
 
 .winner-place{
@@ -1198,28 +1354,111 @@ input{
   background:linear-gradient(90deg,#ffb300,#ff5c00)
 }
 
-.rank-badge{
-  display:inline-block;
-  margin-top:5px;
-  padding:5px 10px;
-  border-radius:12px;
-  background:rgba(255,210,63,.12);
-  color:#ffd23f;
-  font-size:12px;
-  font-weight:900
-}
+/* MOBILE */
 
-.confetti{
-  position:absolute;
-  width:10px;
-  height:18px;
-  top:-30px;
-  animation:confettiFall 3s linear forwards
-}
+@media(max-width:430px){
 
-@keyframes confettiFall{
-  to{
-    transform:translateY(110vh) rotate(720deg)
+  .premium-home{
+    padding-left:11px;
+    padding-right:11px
+  }
+
+  .home-top{
+    gap:7px
+  }
+
+  .coin-box{
+    padding:8px 9px
+  }
+
+  .coin-box strong{
+    font-size:11px
+  }
+
+  .notify-btn{
+    width:36px;
+    height:36px
+  }
+
+  .fees{
+    grid-template-columns:repeat(4,1fr)
+  }
+
+  .fee{
+    font-size:10px
+  }
+
+  .boards{
+    gap:7px
+  }
+
+  .board{
+    padding:5px;
+    border-radius:15px
+  }
+
+  .board-label{
+    font-size:10px
+  }
+
+  .card-badge{
+    font-size:8px;
+    padding:3px 5px
+  }
+
+  .bingo-head{
+    gap:2px
+  }
+
+  .bingo-head div{
+    font-size:13px;
+    padding:3px 0
+  }
+
+  .bingo-grid{
+    gap:2px
+  }
+
+  .cell{
+    border-radius:5px;
+    font-size:10px
+  }
+
+  .called-item{
+    min-width:40px;
+    height:40px
+  }
+
+  .cell.gold-mark .gold-bingo{
+    font-size:7px;
+    letter-spacing:0
+  }
+
+  .board-bingo-logo{
+    width:90%;
+    padding:13px 5px;
+    font-size:clamp(22px,9vw,38px);
+    border-width:3px
+  }
+
+  .live-winners-section{
+    margin-top:15px;
+    padding:10px
+  }
+
+  .live-winner-avatar{
+    width:42px;
+    height:42px
+  }
+
+  .quick-card{
+    padding-left:2px;
+    padding-right:2px
+  }
+
+  .quick-icon{
+    width:35px;
+    height:35px
   }
 }
 </style>
@@ -1227,31 +1466,57 @@ input{
 
 <body>
 
-<!-- HOME -->
+<!-- =====================================================
+     HOME
+===================================================== -->
 
 <section id="homePage" class="page premium-home">
 
   <div class="home-top">
 
     <div class="profile-mini">
-      <div class="avatar">
+
+      <div class="avatar" id="homeAvatar">
         👤
       </div>
 
       <div class="profile-info">
-        <strong id="homePlayerName">Mehvan</strong>
-        <span>⭐ Level 12</span>
-        <small>🟢 Online</small>
+
+        <strong id="homePlayerName">
+          Mehvan
+        </strong>
+
+        <span>
+          ⭐ Level 12
+        </span>
+
+        <small>
+          🟢 Online
+        </small>
+
       </div>
+
     </div>
 
     <div class="home-actions">
+
       <div class="coin-box">
+
         <span>🪙</span>
-        <strong id="homeCoins">25,000</strong>
+
+        <strong id="homeCoins">
+          25,000
+        </strong>
+
       </div>
 
-      <button class="notify-btn">🔔</button>
+      <button
+        class="notify-btn"
+        type="button"
+      >
+        🔔
+      </button>
+
     </div>
 
   </div>
@@ -1265,39 +1530,213 @@ input{
       BINGO
     </div>
 
-    <p>LET'S PLAY & WIN</p>
+    <p>
+      LET'S PLAY & WIN
+    </p>
 
   </div>
 
 
   <div class="play-area">
 
-    <button class="premium-play" onclick="playGame()">
+    <button
+      class="premium-play"
+      onclick="playGame()"
+      type="button"
+    >
 
-      <span class="play-icon">🎮</span>
-
-      <span class="play-text">
-        <strong>PLAY NOW</strong>
-        <small>Find a game</small>
+      <span class="play-icon">
+        🎮
       </span>
 
-      <span class="play-arrow">›</span>
+      <span class="play-text">
+
+        <strong>
+          PLAY NOW
+        </strong>
+
+        <small>
+          Find a game
+        </small>
+
+      </span>
+
+      <span class="play-arrow">
+        ›
+      </span>
 
     </button>
 
 
-    <button class="friends-play" onclick="openFriendGame()">
+    <button
+      class="friends-play"
+      onclick="startFriendsGame()"
+      type="button"
+    >
 
-      <span>👥</span>
+      <span>
+        👥
+      </span>
 
       <div>
-        <strong>PLAY WITH FRIENDS</strong>
-        <small>Create a private room</small>
+
+        <strong>
+          PLAY WITH FRIENDS
+        </strong>
+
+        <small>
+          Join the game room
+        </small>
+
       </div>
 
-      <b>›</b>
+      <b>
+        ›
+      </b>
 
     </button>
+
+  </div>
+
+
+  <!-- GAME SETTINGS -->
+
+  <div class="home-settings">
+
+    <div class="settings-title">
+
+      <strong>
+        Game Settings
+      </strong>
+
+      <span>
+        Choose your game
+      </span>
+
+    </div>
+
+
+    <div class="setting-label">
+      🪙 ENTRY FEE
+    </div>
+
+    <div class="fees">
+
+      <button
+        class="fee selected"
+        data-fee="100"
+        type="button"
+      >
+        100
+      </button>
+
+      <button
+        class="fee"
+        data-fee="500"
+        type="button"
+      >
+        500
+      </button>
+
+      <button
+        class="fee"
+        data-fee="1000"
+        type="button"
+      >
+        1K
+      </button>
+
+      <button
+        class="fee"
+        data-fee="5000"
+        type="button"
+      >
+        5K
+      </button>
+
+      <button
+        class="fee"
+        data-fee="10000"
+        type="button"
+      >
+        10K
+      </button>
+
+      <button
+        class="fee"
+        data-fee="25000"
+        type="button"
+      >
+        25K
+      </button>
+
+      <button
+        class="fee"
+        data-fee="50000"
+        type="button"
+      >
+        50K
+      </button>
+
+      <button
+        class="fee"
+        data-fee="100000"
+        type="button"
+      >
+        100K
+      </button>
+
+    </div>
+
+
+    <div class="setting-label">
+      🎮 MODE
+    </div>
+
+    <div class="modes">
+
+      <button
+        class="mode selected"
+        data-mode="solo"
+        type="button"
+      >
+        🎮 Solo
+      </button>
+
+      <button
+        class="mode"
+        data-mode="friends"
+        type="button"
+      >
+        👥 Friends
+      </button>
+
+    </div>
+
+
+    <div class="setting-label">
+      🃏 NUMBER OF CARDS
+    </div>
+
+    <div class="card-count">
+
+      <button
+        class="count-btn selected"
+        data-count="1"
+        type="button"
+      >
+        🃏 1 Card
+      </button>
+
+      <button
+        class="count-btn"
+        data-count="2"
+        type="button"
+      >
+        🃏🃏 2 Cards
+      </button>
+
+    </div>
 
   </div>
 
@@ -1305,35 +1744,101 @@ input{
   <div class="lobby-section">
 
     <div class="section-title">
-      <strong>Quick Access</strong>
-      <span>View All ›</span>
+
+      <strong>
+        Quick Access
+      </strong>
+
+      <span>
+        View All ›
+      </span>
+
     </div>
 
 
     <div class="quick-grid">
 
-      <button class="quick-card">
-        <div class="quick-icon winner-icon">🏆</div>
-        <strong>Winners</strong>
-        <small>Top players</small>
+      <button
+        class="quick-card"
+        type="button"
+        onclick="showHomeMessage('Winners')"
+      >
+
+        <div class="quick-icon">
+          🏆
+        </div>
+
+        <strong>
+          Winners
+        </strong>
+
+        <small>
+          Top players
+        </small>
+
       </button>
 
-      <button class="quick-card">
-        <div class="quick-icon players-icon">👥</div>
-        <strong>Players</strong>
-        <small>Online now</small>
+
+      <button
+        class="quick-card"
+        type="button"
+        onclick="showHomeMessage('Players')"
+      >
+
+        <div class="quick-icon">
+          👥
+        </div>
+
+        <strong>
+          Players
+        </strong>
+
+        <small>
+          Online now
+        </small>
+
       </button>
 
-      <button class="quick-card">
-        <div class="quick-icon reward-icon">🎁</div>
-        <strong>Rewards</strong>
-        <small>Daily gifts</small>
+
+      <button
+        class="quick-card"
+        type="button"
+        onclick="showHomeMessage('Rewards')"
+      >
+
+        <div class="quick-icon">
+          🎁
+        </div>
+
+        <strong>
+          Rewards
+        </strong>
+
+        <small>
+          Daily gifts
+        </small>
+
       </button>
 
-      <button class="quick-card">
-        <div class="quick-icon chat-icon">💬</div>
-        <strong>Chat</strong>
-        <small>Meet players</small>
+
+      <button
+        class="quick-card"
+        type="button"
+        onclick="showHomeMessage('Chat')"
+      >
+
+        <div class="quick-icon">
+          💬
+        </div>
+
+        <strong>
+          Chat
+        </strong>
+
+        <small>
+          Meet players
+        </small>
+
       </button>
 
     </div>
@@ -1344,45 +1849,71 @@ input{
   <div class="online-bar">
 
     <div class="online-avatars">
+
       <span>👨🏻</span>
       <span>👩🏻</span>
       <span>🧑🏻</span>
       <span>👨🏽</span>
+
     </div>
 
     <div>
-      <strong>1,248 Players Online</strong>
-      <small>Players are waiting for a game</small>
+
+      <strong>
+        Players Online
+      </strong>
+
+      <small>
+        Players are waiting for a game
+      </small>
+
     </div>
 
-    <span class="online-dot">●</span>
+    <span class="online-dot">
+      ●
+    </span>
 
   </div>
 
 
   <div class="bottom premium-bottom">
 
-    <button class="active">
+    <button
+      class="active"
+      type="button"
+    >
       <span>🏠</span>
       <small>Home</small>
     </button>
 
-    <button>
+    <button
+      type="button"
+      onclick="showHomeMessage('Friends')"
+    >
       <span>👥</span>
       <small>Friends</small>
     </button>
 
-    <button>
+    <button
+      type="button"
+      onclick="showHomeMessage('Chat')"
+    >
       <span>💬</span>
       <small>Chat</small>
     </button>
 
-    <button>
+    <button
+      type="button"
+      onclick="showHomeMessage('Rewards')"
+    >
       <span>🎁</span>
       <small>Rewards</small>
     </button>
 
-    <button>
+    <button
+      type="button"
+      onclick="showHomeMessage('Profile')"
+    >
       <span>👤</span>
       <small>Profile</small>
     </button>
@@ -1392,24 +1923,35 @@ input{
 </section>
 
 
-<!-- GAME -->
+<!-- =====================================================
+     GAME
+===================================================== -->
 
 <section id="gamePage" class="page hidden">
 
   <div class="topbar">
 
-    <strong>BINGO</strong>
+    <strong>
+      BINGO
+    </strong>
 
     <div class="coins">
-      🪙 <span id="coinText">0</span>
+      🪙
+      <span id="coinText">
+        0
+      </span>
     </div>
 
   </div>
 
+
   <div class="room">
     Room:
-    <span id="roomText">------</span>
+    <span id="roomText">
+      ------
+    </span>
   </div>
+
 
   <div class="caller">
 
@@ -1429,6 +1971,7 @@ input{
 
   </div>
 
+
   <div class="called-wrap">
 
     <div class="called-title">
@@ -1442,12 +1985,12 @@ input{
 
   </div>
 
+
   <div
     id="boards"
     class="boards"
   ></div>
 
-  <!-- LIVE WINNERS -->
 
   <div class="live-winners-section">
 
@@ -1468,12 +2011,13 @@ input{
 
   </div>
 
-  <!-- PLAYERS -->
 
   <div class="players-section">
 
     <div class="section-title">
-      👥 یاریزانەکان
+      <strong>
+        👥 یاریزانەکان
+      </strong>
     </div>
 
     <div
@@ -1490,25 +2034,40 @@ input{
     <button
       class="friend-button"
       onclick="openFriendGameSelector()"
+      type="button"
     >
       👀 View Friend Game
     </button>
 
   </div>
 
+
   <div class="bottom">
 
-    <button>🎮 Play</button>
-    <button>💬 Chat</button>
-    <button>🎁 Reward</button>
-    <button>👤 Profile</button>
+    <button type="button">
+      🎮 Play
+    </button>
+
+    <button type="button">
+      💬 Chat
+    </button>
+
+    <button type="button">
+      🎁 Reward
+    </button>
+
+    <button type="button">
+      👤 Profile
+    </button>
 
   </div>
 
 </section>
 
 
-<!-- CARD SELECTION -->
+<!-- =====================================================
+     CARD SELECTION
+===================================================== -->
 
 <div
   id="cardSelectPanel"
@@ -1536,6 +2095,7 @@ input{
     <button
       class="confirm-selection"
       onclick="confirmCardSelection()"
+      type="button"
     >
       ✓ دەستپێکردنی یاری
     </button>
@@ -1545,7 +2105,9 @@ input{
 </div>
 
 
-<!-- FRIEND GAME -->
+<!-- =====================================================
+     FRIEND GAME
+===================================================== -->
 
 <div
   id="friendGamePanel"
@@ -1584,6 +2146,7 @@ input{
       <button
         class="friend-close"
         onclick="closeFriendGame()"
+        type="button"
       >
         ×
       </button>
@@ -1607,10 +2170,9 @@ input{
 </div>
 
 
-<!-- WINNER OVERLAY
-     Kept in HTML for compatibility,
-     but showMyWinner() no longer opens it.
--->
+<!-- =====================================================
+     WINNER OVERLAY
+===================================================== -->
 
 <div
   id="winnerOverlay"
@@ -1648,6 +2210,7 @@ input{
     <button
       class="watch-button"
       onclick="watchWinnerGame()"
+      type="button"
     >
       👀 سەیری یاری بکە
     </button>
@@ -1655,6 +2218,7 @@ input{
     <button
       class="new-game"
       onclick="newGame()"
+      type="button"
     >
       NEW GAME
     </button>
@@ -1666,9 +2230,9 @@ input{
 
 <script>
 
-/* =========================
+/* =====================================================
    SUPABASE
-========================= */
+===================================================== */
 
 const SUPABASE_URL =
   "https://szmqbywztfgtyoemzgiq.supabase.co";
@@ -1683,9 +2247,9 @@ const supabaseClient =
   );
 
 
-/* =========================
+/* =====================================================
    STATE
-========================= */
+===================================================== */
 
 let roomCode="";
 let currentRoomId=null;
@@ -1693,16 +2257,21 @@ let currentPlayerId=null;
 let playerName="Mehvan";
 let currentGender="";
 let currentProfilePicture="";
+
 let selectedEntryFee=100;
 let selectedMode="solo";
 let selectedCardCount=1;
+
 let availableCards=[];
 let selectedCards=[];
 let calledNumbers=[];
+
 let autoCallTimer=null;
 let playersRefreshTimer=null;
+
 let gameFinished=false;
 let winners=[];
+
 let audioContext=null;
 let roomChannel=null;
 
@@ -1711,90 +2280,124 @@ const sessionId =
     ? crypto.randomUUID()
     : Date.now()+"-"+Math.random();
 
-let winningCardIds=new Set();
+let winningCardIds=
+  new Set();
 
 
-/* =========================
-   FEES
-========================= */
+/* =====================================================
+   HOME SETTINGS
+===================================================== */
 
 document
   .querySelectorAll(".fee")
   .forEach(button=>{
 
-    button.addEventListener("click",()=>{
+    button.addEventListener(
+      "click",
+      ()=>{
 
-      document
-        .querySelectorAll(".fee")
-        .forEach(b=>
-          b.classList.remove("selected")
+        document
+          .querySelectorAll(".fee")
+          .forEach(
+            b=>b.classList.remove(
+              "selected"
+            )
+          );
+
+        button.classList.add(
+          "selected"
         );
 
-      button.classList.add("selected");
+        selectedEntryFee=
+          Number(
+            button.dataset.fee
+          );
 
-      selectedEntryFee =
-        Number(button.dataset.fee);
-
-    });
+      }
+    );
 
   });
 
-
-/* =========================
-   MODE
-========================= */
 
 document
   .querySelectorAll(".mode")
   .forEach(button=>{
 
-    button.addEventListener("click",()=>{
+    button.addEventListener(
+      "click",
+      ()=>{
 
-      document
-        .querySelectorAll(".mode")
-        .forEach(b=>
-          b.classList.remove("selected")
+        document
+          .querySelectorAll(".mode")
+          .forEach(
+            b=>b.classList.remove(
+              "selected"
+            )
+          );
+
+        button.classList.add(
+          "selected"
         );
 
-      button.classList.add("selected");
+        selectedMode=
+          button.dataset.mode;
 
-      selectedMode =
-        button.dataset.mode;
-
-    });
+      }
+    );
 
   });
 
-
-/* =========================
-   CARD COUNT
-========================= */
 
 document
   .querySelectorAll(".count-btn")
   .forEach(button=>{
 
-    button.addEventListener("click",()=>{
+    button.addEventListener(
+      "click",
+      ()=>{
 
-      document
-        .querySelectorAll(".count-btn")
-        .forEach(b=>
-          b.classList.remove("selected")
+        document
+          .querySelectorAll(".count-btn")
+          .forEach(
+            b=>b.classList.remove(
+              "selected"
+            )
+          );
+
+        button.classList.add(
+          "selected"
         );
 
-      button.classList.add("selected");
+        selectedCardCount=
+          Number(
+            button.dataset.count
+          );
 
-      selectedCardCount =
-        Number(button.dataset.count);
-
-    });
+      }
+    );
 
   });
 
 
-/* =========================
-   AUDIO UNLOCK
-========================= */
+/* =====================================================
+   HOME MESSAGE
+===================================================== */
+
+function showHomeMessage(
+  section
+){
+
+  alert(
+    section+
+    " بەشی داهاتوودا زیاد دەکرێت."
+  );
+
+}
+
+
+/* =====================================================
+   AUDIO
+===================================================== */
 
 function unlockAudio(){
 
@@ -1802,15 +2405,21 @@ function unlockAudio(){
 
     if(!audioContext){
 
-      audioContext=new(
-        window.AudioContext ||
-        window.webkitAudioContext
-      )();
+      audioContext=
+        new(
+          window.AudioContext ||
+          window.webkitAudioContext
+        )();
 
     }
 
-    if(audioContext.state==="suspended"){
+    if(
+      audioContext.state===
+      "suspended"
+    ){
+
       audioContext.resume();
+
     }
 
     const osc=
@@ -1819,90 +2428,82 @@ function unlockAudio(){
     const gain=
       audioContext.createGain();
 
-    gain.gain.value=0.001;
+    gain.gain.value=.001;
 
     osc.connect(gain);
+
     gain.connect(
       audioContext.destination
     );
 
     osc.start();
+
     osc.stop(
-      audioContext.currentTime+0.03
+      audioContext.currentTime+.03
     );
 
   }catch(error){
-    console.log("Audio:",error);
-  }
 
-  try{
+    console.log(
+      "Audio:",
+      error
+    );
 
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.resume();
-
-    const test=
-      new SpeechSynthesisUtterance(" ");
-
-    test.volume=0.01;
-    test.rate=2;
-
-    window.speechSynthesis.speak(test);
-
-  }catch(error){
-    console.log("Speech:",error);
   }
 
 }
 
 
-/* =========================
-   MARK SOUND
-========================= */
-
 function playMarkSound(){
 
   try{
 
-    const AudioCtx =
+    const AudioCtx=
       window.AudioContext ||
       window.webkitAudioContext;
 
-    const ctx =
+    const ctx=
       new AudioCtx();
 
-    const osc =
+    const osc=
       ctx.createOscillator();
 
-    const gain =
+    const gain=
       ctx.createGain();
 
     osc.type="sine";
     osc.frequency.value=900;
 
     gain.gain.setValueAtTime(
-      0.25,
+      .25,
       ctx.currentTime
     );
 
     gain.gain.exponentialRampToValueAtTime(
-      0.001,
-      ctx.currentTime+0.12
+      .001,
+      ctx.currentTime+.12
     );
 
     osc.connect(gain);
-    gain.connect(ctx.destination);
+
+    gain.connect(
+      ctx.destination
+    );
 
     osc.start();
 
     osc.stop(
-      ctx.currentTime+0.12
+      ctx.currentTime+.12
     );
 
-    setTimeout(()=>{
-      try{
-        ctx.close();
-      }catch(e){}
-    },200);
+    setTimeout(
+      ()=>{
+        try{
+          ctx.close();
+        }catch(e){}
+      },
+      200
+    );
 
   }catch(error){
 
@@ -1915,10 +2516,6 @@ function playMarkSound(){
 
 }
 
-
-/* =========================
-   WIN SOUND
-========================= */
 
 function playWinSound(){
 
@@ -1939,20 +2536,21 @@ function playWinSound(){
     notes.forEach(
       (freq,index)=>{
 
-        const osc =
+        const osc=
           audioContext.createOscillator();
 
-        const gain =
+        const gain=
           audioContext.createGain();
 
-        osc.type =
+        osc.type=
           index<2
             ?"sine"
             :"triangle";
 
-        osc.frequency.value=freq;
+        osc.frequency.value=
+          freq;
 
-        const start =
+        const start=
           audioContext.currentTime+
           index*.13;
 
@@ -1972,12 +2570,16 @@ function playWinSound(){
         );
 
         osc.connect(gain);
+
         gain.connect(
           audioContext.destination
         );
 
         osc.start(start);
-        osc.stop(start+.4);
+
+        osc.stop(
+          start+.4
+        );
 
       }
     );
@@ -1986,10 +2588,6 @@ function playWinSound(){
 
 }
 
-
-/* =========================
-   VOICE
-========================= */
 
 function speakText(
   text,
@@ -2004,7 +2602,7 @@ function speakText(
 
   window.speechSynthesis.cancel();
 
-  const utterance =
+  const utterance=
     new SpeechSynthesisUtterance(
       String(text)
     );
@@ -2040,9 +2638,9 @@ function speakText(
 }
 
 
-/* =========================
+/* =====================================================
    PLAY
-========================= */
+===================================================== */
 
 async function playGame(){
 
@@ -2050,11 +2648,24 @@ async function playGame(){
 
     unlockAudio();
 
-    playerName =
-      document
-        .getElementById("name")
-        .value
-        .trim();
+    /*
+      IMPORTANT:
+      The old code tried:
+      document.getElementById("name").value
+
+      There is no #name input in the new Home.
+      We now safely use the profile name instead.
+    */
+
+    const homeName=
+      document.getElementById(
+        "homePlayerName"
+      );
+
+    playerName=
+      homeName
+        ?homeName.textContent.trim()
+        :"Mehvan";
 
     if(!playerName){
       playerName="Mehvan";
@@ -2068,7 +2679,10 @@ async function playGame(){
 
     alert(
       "کێشەیەک ڕوویدا:\n"+
-      error.message
+      (
+        error?.message ||
+        "Unknown error"
+      )
     );
 
   }
@@ -2076,57 +2690,114 @@ async function playGame(){
 }
 
 
-/* =========================
+/* =====================================================
+   FRIENDS START
+===================================================== */
+
+async function startFriendsGame(){
+
+  selectedMode="friends";
+
+  document
+    .querySelectorAll(".mode")
+    .forEach(
+      b=>b.classList.remove(
+        "selected"
+      )
+    );
+
+  const friendMode=
+    document.querySelector(
+      '.mode[data-mode="friends"]'
+    );
+
+  if(friendMode){
+
+    friendMode.classList.add(
+      "selected"
+    );
+
+  }
+
+  await playGame();
+
+}
+
+
+/* =====================================================
    CREATE ROOM
-========================= */
+===================================================== */
+
 async function createRoom(){
 
-  const {data,error} =
+  const {data,error}=
     await supabaseClient.rpc(
       "find_or_create_bingo_room",
       {
-        p_entry_fee: selectedEntryFee
+        p_entry_fee:
+          selectedEntryFee
       }
     );
-
-  if(error) throw error;
-
-  const room = Array.isArray(data) ? data[0] : data;
-
-  if(!room){
-    throw new Error("Game Room دروست نەکرا.");
-  }
-
-  currentRoomId = room.id;
-  roomCode = room.room_code;
-
-  document.getElementById("roomText").textContent = roomCode;
-
-  await createPlayer(currentRoomId);
-}
-/* =========================
-   CREATE PLAYER
-========================= */
-
-async function createPlayer(
-  roomId
-){
-
-  const {data,error} =
-    await supabaseClient
-      .rpc(
-        "use_owner_player",
-        {
-          p_room_id:
-            roomId
-        }
-      );
 
   if(error){
     throw error;
   }
 
-  const player =
+  const room=
+    Array.isArray(data)
+      ?data[0]
+      :data;
+
+  if(!room){
+
+    throw new Error(
+      "Game Room دروست نەکرا."
+    );
+
+  }
+
+  currentRoomId=
+    room.id;
+
+  roomCode=
+    room.room_code;
+
+  document
+    .getElementById(
+      "roomText"
+    )
+    .textContent=
+      roomCode;
+
+  await createPlayer(
+    currentRoomId
+  );
+
+}
+
+
+/* =====================================================
+   CREATE PLAYER
+===================================================== */
+
+async function createPlayer(
+  roomId
+){
+
+  const {data,error}=
+    await supabaseClient.rpc(
+      "use_owner_player",
+      {
+        p_room_id:
+          roomId
+      }
+    );
+
+  if(error){
+    throw error;
+  }
+
+  const player=
     Array.isArray(data)
       ?data[0]
       :data;
@@ -2151,69 +2822,143 @@ async function createPlayer(
 }
 
 
-/* =========================
+/* =====================================================
    PROFILE
-========================= */
+===================================================== */
 
 async function loadProfile(){
 
   try{
 
-    const {data,error} =
-      await supabaseClient
-        .rpc(
-          "get_player_profile",
-          {
-            p_player_id:
-              currentPlayerId
-          }
-        );
+    const {data,error}=
+      await supabaseClient.rpc(
+        "get_player_profile",
+        {
+          p_player_id:
+            currentPlayerId
+        }
+      );
 
-    if(error) return;
+    if(error){
+      return;
+    }
 
-    const profile =
+    const profile=
       Array.isArray(data)
         ?data[0]
         :data;
 
-    if(!profile) return;
+    if(!profile){
+      return;
+    }
 
-    playerName =
+    playerName=
       profile.username ||
       playerName;
 
-    currentGender =
-      (profile.gender||"")
-        .toLowerCase();
+    currentGender=
+      (
+        profile.gender ||
+        ""
+      ).toLowerCase();
 
-    currentProfilePicture =
+    currentProfilePicture=
       profile.profile_picture ||
       makeAvatar(
         profile.username ||
         playerName
       );
 
-    document
-      .getElementById("coinText")
-      .textContent =
-        Number(
-          profile.coin||0
-        ).toLocaleString();
+    const coins=
+      Number(
+        profile.coin||0
+      ).toLocaleString();
+
+    const coinText=
+      document.getElementById(
+        "coinText"
+      );
+
+    if(coinText){
+      coinText.textContent=
+        coins;
+    }
+
+    const homeCoins=
+      document.getElementById(
+        "homeCoins"
+      );
+
+    if(homeCoins){
+      homeCoins.textContent=
+        coins;
+    }
+
+    const homeName=
+      document.getElementById(
+        "homePlayerName"
+      );
+
+    if(homeName){
+      homeName.textContent=
+        playerName;
+    }
+
+    const homeAvatar=
+      document.getElementById(
+        "homeAvatar"
+      );
+
+    if(
+      homeAvatar &&
+      currentProfilePicture
+    ){
+
+      if(
+        currentProfilePicture.startsWith(
+          "http"
+        )
+      ){
+
+        homeAvatar.innerHTML=
+          `
+          <img
+            src="${escapeHtml(
+              currentProfilePicture
+            )}"
+            style="
+              width:100%;
+              height:100%;
+              border-radius:50%;
+              object-fit:cover;
+            "
+            alt=""
+          >
+          `;
+
+      }
+
+    }
 
   }catch(error){
 
-    console.log(error);
+    console.log(
+      "Profile:",
+      error
+    );
 
   }
 
 }
 
 
-/* =========================
+/* =====================================================
    CARD GENERATOR
-========================= */
+===================================================== */
 
-function generateBingoCard(id){
+function generateBingoCard(
+  id
+){
 
   const columns=[
     randomNumbers(1,15,5),
@@ -2274,9 +3019,9 @@ function generateBingoCard(id){
 }
 
 
-/* =========================
+/* =====================================================
    OPEN CARD SELECTION
-========================= */
+===================================================== */
 
 async function openCardSelection(){
 
@@ -2302,18 +3047,20 @@ async function openCardSelection(){
     .getElementById(
       "cardSelectPanel"
     )
-    .classList.add("show");
+    .classList.add(
+      "show"
+    );
 
 }
 
 
-/* =========================
-   RENDER SELECTION
-========================= */
+/* =====================================================
+   RENDER CARD SELECTION
+===================================================== */
 
 function renderCardSelection(){
 
-  const container =
+  const container=
     document.getElementById(
       "selectionCards"
     );
@@ -2324,7 +3071,7 @@ function renderCardSelection(){
     .getElementById(
       "selectInfo"
     )
-    .textContent =
+    .textContent=
       selectedCardCount===1
         ?"یەک کارت هەڵبژێرە"
         :"دوو کارت هەڵبژێرە";
@@ -2332,7 +3079,7 @@ function renderCardSelection(){
   availableCards.forEach(
     card=>{
 
-      const wrapper =
+      const wrapper=
         document.createElement(
           "div"
         );
@@ -2352,7 +3099,7 @@ function renderCardSelection(){
 
       }
 
-      const head =
+      const head=
         document.createElement(
           "div"
         );
@@ -2376,9 +3123,11 @@ function renderCardSelection(){
         </span>
       `;
 
-      wrapper.appendChild(head);
+      wrapper.appendChild(
+        head
+      );
 
-      const grid =
+      const grid=
         document.createElement(
           "div"
         );
@@ -2389,7 +3138,7 @@ function renderCardSelection(){
       card.numbers.forEach(
         value=>{
 
-          const cell =
+          const cell=
             document.createElement(
               "div"
             );
@@ -2410,16 +3159,14 @@ function renderCardSelection(){
 
           }else{
 
-            cell.textContent =
+            cell.textContent=
               value;
 
-            const letter =
+            cell.classList.add(
+              "col-"+
               getBingoLetter(
                 Number(value)
-              );
-
-            cell.classList.add(
-              "col-"+letter
+              )
             );
 
           }
@@ -2454,15 +3201,15 @@ function renderCardSelection(){
 }
 
 
-/* =========================
-   SELECT / UNSELECT
-========================= */
+/* =====================================================
+   TOGGLE CARD
+===================================================== */
 
 function toggleCardSelection(
   cardId
 ){
 
-  const index =
+  const index=
     selectedCards.findIndex(
       c=>c.id===cardId
     );
@@ -2491,7 +3238,7 @@ function toggleCardSelection(
 
     }
 
-    const card =
+    const card=
       availableCards.find(
         c=>c.id===cardId
       );
@@ -2511,14 +3258,14 @@ function toggleCardSelection(
 }
 
 
-/* =========================
-   CONFIRM CARD SELECTION
-========================= */
+/* =====================================================
+   CONFIRM CARD
+===================================================== */
 
 async function confirmCardSelection(){
 
   if(
-    selectedCards.length !==
+    selectedCards.length!==
     selectedCardCount
   ){
 
@@ -2540,30 +3287,29 @@ async function confirmCardSelection(){
       i++
     ){
 
-      const card =
+      const card=
         selectedCards[i];
 
-      const {error} =
-        await supabaseClient
-          .rpc(
-            "save_bingo_card",
-            {
-              p_card_id:
-                card.id,
+      const {error}=
+        await supabaseClient.rpc(
+          "save_bingo_card",
+          {
+            p_card_id:
+              card.id,
 
-              p_room_id:
-                currentRoomId,
+            p_room_id:
+              currentRoomId,
 
-              p_player_id:
-                currentPlayerId,
+            p_player_id:
+              currentPlayerId,
 
-              p_card_slot:
-                i+1,
+            p_card_slot:
+              i+1,
 
-              p_numbers:
-                card.numbers
-            }
-          );
+            p_numbers:
+              card.numbers
+          }
+        );
 
       if(error){
         throw error;
@@ -2595,9 +3341,9 @@ async function confirmCardSelection(){
 }
 
 
-/* =========================
+/* =====================================================
    START GAME
-========================= */
+===================================================== */
 
 async function startGame(){
 
@@ -2672,13 +3418,13 @@ async function startGame(){
 }
 
 
-/* =========================
+/* =====================================================
    RENDER BOARDS
-========================= */
+===================================================== */
 
 function renderBoards(){
 
-  const boards =
+  const boards=
     document.getElementById(
       "boards"
     );
@@ -2688,7 +3434,7 @@ function renderBoards(){
   selectedCards.forEach(
     (card,index)=>{
 
-      const board =
+      const board=
         document.createElement(
           "div"
         );
@@ -2699,7 +3445,7 @@ function renderBoards(){
       board.id=
         "board-"+card.id;
 
-      const label =
+      const label=
         document.createElement(
           "div"
         );
@@ -2724,7 +3470,7 @@ function renderBoards(){
         label
       );
 
-      const head =
+      const head=
         document.createElement(
           "div"
         );
@@ -2741,7 +3487,7 @@ function renderBoards(){
       ].forEach(
         letter=>{
 
-          const div =
+          const div=
             document.createElement(
               "div"
             );
@@ -2763,7 +3509,7 @@ function renderBoards(){
         head
       );
 
-      const grid =
+      const grid=
         document.createElement(
           "div"
         );
@@ -2777,7 +3523,7 @@ function renderBoards(){
       card.numbers.forEach(
         (value,index2)=>{
 
-          const cell =
+          const cell=
             document.createElement(
               "button"
             );
@@ -2799,13 +3545,11 @@ function renderBoards(){
             cell.textContent=
               value;
 
-            const letter =
+            cell.classList.add(
+              "col-"+
               getBingoLetter(
                 Number(value)
-              );
-
-            cell.classList.add(
-              "col-"+letter
+              )
             );
 
           }
@@ -2841,9 +3585,9 @@ function renderBoards(){
 }
 
 
-/* =========================
+/* =====================================================
    MARK CELL
-========================= */
+===================================================== */
 
 function markCell(
   cardId,
@@ -2851,26 +3595,30 @@ function markCell(
 ){
 
   if(
-    winningCardIds.has(cardId)
+    winningCardIds.has(
+      cardId
+    )
   ){
     return;
   }
 
-  const card =
+  const card=
     selectedCards.find(
       c=>c.id===cardId
     );
 
-  if(!card) return;
+  if(!card){
+    return;
+  }
 
-  const value =
+  const value=
     card.numbers[index];
 
   if(value==="FREE"){
     return;
   }
 
-  const number =
+  const number=
     Number(value);
 
   if(
@@ -2898,12 +3646,12 @@ function markCell(
 
   card.marked[index]=true;
 
-  const grid =
+  const grid=
     document.getElementById(
       "grid-"+cardId
     );
 
-  const cell =
+  const cell=
     grid.children[index];
 
   cell.classList.add(
@@ -2911,7 +3659,7 @@ function markCell(
     "gold-mark"
   );
 
-  cell.innerHTML =
+  cell.innerHTML=
     '<span class="gold-bingo">BINGO</span>';
 
   playMarkSound();
@@ -2923,9 +3671,9 @@ function markCell(
 }
 
 
-/* =========================
+/* =====================================================
    CHECK BINGO
-========================= */
+===================================================== */
 
 function checkBingo(
   cardId
@@ -2945,7 +3693,7 @@ function checkBingo(
     return;
   }
 
-  const card =
+  const card=
     selectedCards.find(
       c=>c.id===cardId
     );
@@ -2954,7 +3702,7 @@ function checkBingo(
     return;
   }
 
-  const winMarked =
+  const winMarked=
     [...card.marked];
 
   winMarked[12]=true;
@@ -2988,7 +3736,7 @@ function checkBingo(
     6,8,16,18
   ];
 
-  const rowWin =
+  const rowWin=
     rows.some(
       line=>
         line.every(
@@ -2996,7 +3744,7 @@ function checkBingo(
         )
     );
 
-  const columnWin =
+  const columnWin=
     columns.some(
       line=>
         line.every(
@@ -3004,7 +3752,7 @@ function checkBingo(
         )
     );
 
-  const diagonalWin =
+  const diagonalWin=
     diagonals.some(
       line=>
         line.every(
@@ -3012,47 +3760,36 @@ function checkBingo(
         )
     );
 
-  const cornerWin =
+  const cornerWin=
     cardCorners.every(
       i=>winMarked[i]
     );
 
-  const freeCornerWin =
+  const freeCornerWin=
     freeCorners.every(
       i=>winMarked[i]
     );
 
   if(
-    rowWin ||
-    columnWin ||
-    diagonalWin ||
-    cornerWin ||
+    rowWin||
+    columnWin||
+    diagonalWin||
+    cornerWin||
     freeCornerWin
   ){
 
-    let reason=
-      "BINGO";
+    let reason="BINGO";
 
     if(rowWin){
-
       reason="ڕیز";
-
     }else if(columnWin){
-
       reason="ستوون";
-
     }else if(diagonalWin){
-
       reason="دیاگۆناڵ";
-
     }else if(cornerWin){
-
       reason="٤ گۆشە";
-
     }else if(freeCornerWin){
-
       reason="٤ گۆشەی FREE";
-
     }
 
     claimWinner(
@@ -3065,9 +3802,9 @@ function checkBingo(
 }
 
 
-/* =========================
+/* =====================================================
    CLAIM WINNER
-========================= */
+===================================================== */
 
 async function claimWinner(
   cardId,
@@ -3088,7 +3825,7 @@ async function claimWinner(
     return;
   }
 
-  const cardIndex =
+  const cardIndex=
     selectedCards.findIndex(
       c=>c.id===cardId
     );
@@ -3130,14 +3867,11 @@ async function claimWinner(
 
       await roomChannel.send({
 
-        type:
-          "broadcast",
+        type:"broadcast",
 
-        event:
-          "winner_claim",
+        event:"winner_claim",
 
-        payload:
-          payload
+        payload:payload
 
       });
 
@@ -3162,16 +3896,16 @@ async function claimWinner(
 }
 
 
-/* =========================
+/* =====================================================
    HANDLE WINNER
-========================= */
+===================================================== */
 
 function handleWinnerClaim(
   payload
 ){
 
   if(
-    !payload ||
+    !payload||
     !payload.session_id
   ){
     return;
@@ -3181,7 +3915,7 @@ function handleWinnerClaim(
     winners.some(
       w=>
         w.session_id===
-          payload.session_id &&
+          payload.session_id&&
         w.bingo_card_id===
           payload.bingo_card_id
     )
@@ -3195,7 +3929,7 @@ function handleWinnerClaim(
     return;
   }
 
-  const rank =
+  const rank=
     winners.length+1;
 
   const winner={
@@ -3216,7 +3950,7 @@ function handleWinnerClaim(
       payload.bingo_card_id
     );
 
-    const card =
+    const card=
       selectedCards.find(
         c=>
           c.id===
@@ -3224,10 +3958,7 @@ function handleWinnerClaim(
       );
 
     if(card){
-
-      card.winnerRank=
-        rank;
-
+      card.winnerRank=rank;
     }
 
     lockCard(
@@ -3264,15 +3995,15 @@ function handleWinnerClaim(
 }
 
 
-/* =========================
-   LOCK WINNING CARD
-========================= */
+/* =====================================================
+   LOCK CARD
+===================================================== */
 
 function lockCard(
   cardId
 ){
 
-  const board =
+  const board=
     document.getElementById(
       "board-"+cardId
     );
@@ -3286,16 +4017,14 @@ function lockCard(
     "winner"
   );
 
-  const status =
+  const status=
     document.getElementById(
       "card-status-"+cardId
     );
 
   if(status){
-
     status.textContent=
       "🏆 BINGO";
-
   }
 
   if(
@@ -3304,7 +4033,7 @@ function lockCard(
     )
   ){
 
-    const logo =
+    const logo=
       document.createElement(
         "div"
       );
@@ -3324,10 +4053,9 @@ function lockCard(
 }
 
 
-/* =========================
-   WINNER SOUND / VOICE
-   No popup
-========================= */
+/* =====================================================
+   WINNER SOUND
+===================================================== */
 
 function showMyWinner(
   rank,
@@ -3337,9 +4065,9 @@ function showMyWinner(
 
   playWinSound();
 
-  const isFemale =
-    currentGender==="female" ||
-    currentGender==="f" ||
+  const isFemale=
+    currentGender==="female"||
+    currentGender==="f"||
     currentGender==="girl";
 
   setTimeout(
@@ -3351,7 +4079,6 @@ function showMyWinner(
           isFemale
             ?"You are Queen"
             :"You are King",
-
           isFemale
             ?"female"
             :"male"
@@ -3380,13 +4107,13 @@ function showMyWinner(
 }
 
 
-/* =========================
-   LIVE WINNER LIST
-========================= */
+/* =====================================================
+   WINNER DISPLAY
+===================================================== */
 
 function updateWinnerDisplay(){
 
-  const list =
+  const list=
     document.getElementById(
       "liveWinnerList"
     );
@@ -3406,7 +4133,6 @@ function updateWinnerDisplay(){
     `;
 
     return;
-
   }
 
   winners.forEach(
@@ -3414,19 +4140,15 @@ function updateWinnerDisplay(){
 
       let medal="🥇";
 
-      if(
-        winner.rank===2
-      ){
+      if(winner.rank===2){
         medal="🥈";
       }
 
-      if(
-        winner.rank===3
-      ){
+      if(winner.rank===3){
         medal="🥉";
       }
 
-      const row =
+      const row=
         document.createElement(
           "div"
         );
@@ -3434,10 +4156,10 @@ function updateWinnerDisplay(){
       row.className=
         "live-winner-row";
 
-      const avatar =
-        winner.profile_picture ||
+      const avatar=
+        winner.profile_picture||
         makeAvatar(
-          winner.username ||
+          winner.username||
           "Player"
         );
 
@@ -3449,14 +4171,14 @@ function updateWinnerDisplay(){
 
         <img
           class="live-winner-avatar"
-          src="${avatar}"
+          src="${escapeHtml(avatar)}"
           alt=""
         >
 
         <div class="live-winner-name">
 
           ${escapeHtml(
-            winner.username ||
+            winner.username||
             "Player"
           )}
 
@@ -3486,53 +4208,9 @@ function updateWinnerDisplay(){
 }
 
 
-/* =========================
-   OLD WINNER REASON
-   Kept for compatibility
-========================= */
-
-function getWinnerReason(
-  reason
-){
-
-  if(
-    reason==="ڕیز"
-  ){
-    return "BINGO - ڕیز";
-  }
-
-  if(
-    reason==="ستوون"
-  ){
-    return "BINGO - ستوون";
-  }
-
-  if(
-    reason==="دیاگۆناڵ"
-  ){
-    return "BINGO - دیاگۆناڵ";
-  }
-
-  if(
-    reason==="٤ گۆشە"
-  ){
-    return "٤ گۆشە";
-  }
-
-  if(
-    reason==="٤ گۆشەی FREE"
-  ){
-    return "٤ گۆشەی FREE";
-  }
-
-  return "BINGO";
-
-}
-
-
-/* =========================
+/* =====================================================
    REALTIME
-========================= */
+===================================================== */
 
 async function setupRoomChannel(){
 
@@ -3549,7 +4227,7 @@ async function setupRoomChannel(){
 
   }
 
-  roomChannel =
+  roomChannel=
     supabaseClient.channel(
       "bingo-room-"+currentRoomId,
       {
@@ -3569,7 +4247,7 @@ async function setupRoomChannel(){
     message=>{
 
       if(
-        message &&
+        message&&
         message.payload
       ){
 
@@ -3590,7 +4268,7 @@ async function setupRoomChannel(){
     message=>{
 
       if(
-        message &&
+        message&&
         message.payload
       ){
 
@@ -3626,9 +4304,9 @@ async function setupRoomChannel(){
 }
 
 
-/* =========================
-   NUMBER CALL
-========================= */
+/* =====================================================
+   AUTO CALL
+===================================================== */
 
 function startAutoCall(){
 
@@ -3638,7 +4316,7 @@ function startAutoCall(){
     return;
   }
 
-  autoCallTimer =
+  autoCallTimer=
     setInterval(
       ()=>{
         callNumber();
@@ -3664,9 +4342,9 @@ function stopAutoCall(){
 }
 
 
-/* =========================
+/* =====================================================
    CALL NUMBER
-========================= */
+===================================================== */
 
 async function callNumber(){
 
@@ -3688,7 +4366,7 @@ async function callNumber(){
 
   do{
 
-    random =
+    random=
       Math.floor(
         Math.random()*75
       )+1;
@@ -3701,8 +4379,7 @@ async function callNumber(){
 
   const payload={
 
-    number:
-      random,
+    number:random,
 
     session_id:
       sessionId,
@@ -3718,14 +4395,11 @@ async function callNumber(){
 
       await roomChannel.send({
 
-        type:
-          "broadcast",
+        type:"broadcast",
 
-        event:
-          "number_called",
+        event:"number_called",
 
-        payload:
-          payload
+        payload:payload
 
       });
 
@@ -3748,9 +4422,9 @@ async function callNumber(){
 }
 
 
-/* =========================
+/* =====================================================
    RECEIVE NUMBER
-========================= */
+===================================================== */
 
 function receiveCalledNumber(
   payload
@@ -3760,7 +4434,7 @@ function receiveCalledNumber(
     return;
   }
 
-  const number =
+  const number=
     Number(
       payload.number
     );
@@ -3790,20 +4464,20 @@ function receiveCalledNumber(
 }
 
 
-/* =========================
+/* =====================================================
    SHOW NUMBER
-========================= */
+===================================================== */
 
 function showCalledNumber(
   random
 ){
 
-  const letter =
+  const letter=
     getBingoLetter(
       random
     );
 
-  const numberElement =
+  const numberElement=
     document.getElementById(
       "numberDisplay"
     );
@@ -3837,13 +4511,13 @@ function showCalledNumber(
 }
 
 
-/* =========================
-   CALLED NUMBERS HISTORY
-========================= */
+/* =====================================================
+   CALLED HISTORY
+===================================================== */
 
 function renderCalledNumbers(){
 
-  const list =
+  const list=
     document.getElementById(
       "calledList"
     );
@@ -3857,7 +4531,7 @@ function renderCalledNumbers(){
     .forEach(
       (number,index)=>{
 
-        const item =
+        const item=
           document.createElement(
             "div"
           );
@@ -3868,9 +4542,7 @@ function renderCalledNumbers(){
             number
           );
 
-        if(
-          index===0
-        ){
+        if(index===0){
 
           item.classList.add(
             "latest"
@@ -3891,37 +4563,37 @@ function renderCalledNumbers(){
 }
 
 
-/* =========================
+/* =====================================================
    LETTER
-========================= */
+===================================================== */
 
 function getBingoLetter(
   number
 ){
 
   if(
-    number>=1 &&
+    number>=1&&
     number<=15
   ){
     return "B";
   }
 
   if(
-    number>=16 &&
+    number>=16&&
     number<=30
   ){
     return "I";
   }
 
   if(
-    number>=31 &&
+    number>=31&&
     number<=45
   ){
     return "N";
   }
 
   if(
-    number>=46 &&
+    number>=46&&
     number<=60
   ){
     return "G";
@@ -3932,9 +4604,9 @@ function getBingoLetter(
 }
 
 
-/* =========================
+/* =====================================================
    RANDOM NUMBERS
-========================= */
+===================================================== */
 
 function randomNumbers(
   min,
@@ -3960,7 +4632,7 @@ function randomNumbers(
     i--
   ){
 
-    const j =
+    const j=
       Math.floor(
         Math.random()*(i+1)
       );
@@ -3983,9 +4655,9 @@ function randomNumbers(
 }
 
 
-/* =========================
+/* =====================================================
    PLAYERS
-========================= */
+===================================================== */
 
 async function loadRoomPlayers(){
 
@@ -3995,15 +4667,14 @@ async function loadRoomPlayers(){
 
   try{
 
-    const {data,error} =
-      await supabaseClient
-        .rpc(
-          "get_room_players",
-          {
-            p_room_id:
-              currentRoomId
-          }
-        );
+    const {data,error}=
+      await supabaseClient.rpc(
+        "get_room_players",
+        {
+          p_room_id:
+            currentRoomId
+        }
+      );
 
     if(error){
       return;
@@ -4015,7 +4686,9 @@ async function loadRoomPlayers(){
 
   }catch(error){
 
-    console.log(error);
+    console.log(
+      error
+    );
 
   }
 
@@ -4026,7 +4699,7 @@ function renderPlayers(
   players
 ){
 
-  const list =
+  const list=
     document.getElementById(
       "playersList"
     );
@@ -4042,13 +4715,12 @@ function renderPlayers(
     `;
 
     return;
-
   }
 
   players.forEach(
     player=>{
 
-      const item =
+      const item=
         document.createElement(
           "div"
         );
@@ -4056,7 +4728,7 @@ function renderPlayers(
       item.className=
         "player-item";
 
-      const avatar =
+      const avatar=
         document.createElement(
           "img"
         );
@@ -4064,17 +4736,17 @@ function renderPlayers(
       avatar.className=
         "player-avatar";
 
-      avatar.src =
-        player.profile_picture ||
+      avatar.src=
+        player.profile_picture||
         makeAvatar(
           player.username
         );
 
-      avatar.alt =
+      avatar.alt=
         player.username||
         "Player";
 
-      const name =
+      const name=
         document.createElement(
           "div"
         );
@@ -4116,20 +4788,20 @@ function renderPlayers(
 }
 
 
-/* =========================
+/* =====================================================
    PLAYER REFRESH
-========================= */
+===================================================== */
 
 function startPlayersRefresh(){
 
   stopPlayersRefresh();
 
-  playersRefreshTimer =
+  playersRefreshTimer=
     setInterval(
       ()=>{
 
         if(
-          currentRoomId &&
+          currentRoomId&&
           !gameFinished
         ){
 
@@ -4146,9 +4818,7 @@ function startPlayersRefresh(){
 
 function stopPlayersRefresh(){
 
-  if(
-    playersRefreshTimer
-  ){
+  if(playersRefreshTimer){
 
     clearInterval(
       playersRefreshTimer
@@ -4161,13 +4831,13 @@ function stopPlayersRefresh(){
 }
 
 
-/* =========================
+/* =====================================================
    FRIEND GAME
-========================= */
+===================================================== */
 
 function openFriendGameSelector(){
 
-  const list =
+  const list=
     document.querySelectorAll(
       ".player-item"
     );
@@ -4179,11 +4849,10 @@ function openFriendGameSelector(){
     );
 
     return;
-
   }
 
   alert(
-    "لەسەر وێنەی یاریزانەکە کلیک بکە."
+    "لەسەر وێنەی یاریزانەکە کلیک بکە بۆ سەیرکردنی کارتەکە."
   );
 
 }
@@ -4194,7 +4863,7 @@ async function openFriendGame(
 ){
 
   if(
-    !player ||
+    !player||
     !player.player_id
   ){
     return;
@@ -4207,27 +4876,27 @@ async function openFriendGame(
     return;
   }
 
-  const panel =
+  const panel=
     document.getElementById(
       "friendGamePanel"
     );
 
-  const avatar =
+  const avatar=
     document.getElementById(
       "friendGameAvatar"
     );
 
-  const name =
+  const name=
     document.getElementById(
       "friendGameName"
     );
 
-  const message =
+  const message=
     document.getElementById(
       "friendGameMessage"
     );
 
-  const card =
+  const card=
     document.getElementById(
       "friendCard"
     );
@@ -4236,13 +4905,13 @@ async function openFriendGame(
     "show"
   );
 
-  avatar.src =
-    player.profile_picture ||
+  avatar.src=
+    player.profile_picture||
     makeAvatar(
       player.username
     );
 
-  name.textContent =
+  name.textContent=
     player.username||
     "Player";
 
@@ -4254,12 +4923,12 @@ async function openFriendGame(
     "hidden"
   );
 
-  message.textContent =
+  message.textContent=
     "کارتەکە بار دەکرێت...";
 
   try{
 
-    const {data,error} =
+    const {data,error}=
       await supabaseClient
         .from("BingoCard")
         .select(
@@ -4278,7 +4947,7 @@ async function openFriendGame(
 
     if(error){
 
-      message.textContent =
+      message.textContent=
         "کارتەکە نەدۆزرایەوە.";
 
       return;
@@ -4287,7 +4956,7 @@ async function openFriendGame(
 
     if(!data){
 
-      message.textContent =
+      message.textContent=
         "ئەم یاریزانە کارتی نییە.";
 
       return;
@@ -4295,7 +4964,6 @@ async function openFriendGame(
     }
 
     renderFriendCard(
-
       Array.isArray(
         data.numbers
       )
@@ -4307,7 +4975,6 @@ async function openFriendGame(
       )
         ?data.called_numbers
         :[]
-
     );
 
     message.classList.add(
@@ -4320,7 +4987,7 @@ async function openFriendGame(
 
   }catch(error){
 
-    message.textContent =
+    message.textContent=
       "کێشەیەک ڕوویدا.";
 
   }
@@ -4333,7 +5000,7 @@ function renderFriendCard(
   friendCalled
 ){
 
-  const card =
+  const card=
     document.getElementById(
       "friendCard"
     );
@@ -4343,7 +5010,7 @@ function renderFriendCard(
   friendNumbers.forEach(
     value=>{
 
-      const cell =
+      const cell=
         document.createElement(
           "div"
         );
@@ -4351,9 +5018,7 @@ function renderFriendCard(
       cell.className=
         "friend-cell";
 
-      if(
-        value==="FREE"
-      ){
+      if(value==="FREE"){
 
         cell.classList.add(
           "free",
@@ -4365,10 +5030,10 @@ function renderFriendCard(
 
       }else{
 
-        const number =
+        const number=
           Number(value);
 
-        const letter =
+        const letter=
           getBingoLetter(
             number
           );
@@ -4414,9 +5079,9 @@ function closeFriendGame(){
 }
 
 
-/* =========================
+/* =====================================================
    WINNER WATCH
-========================= */
+===================================================== */
 
 function watchWinnerGame(){
 
@@ -4439,11 +5104,9 @@ function watchWinnerGame(){
 
   setTimeout(
     ()=>{
-
       alert(
         "لەسەر یاریزانێک کلیک بکە بۆ سەیرکردنی یارییەکە."
       );
-
     },
     400
   );
@@ -4451,13 +5114,13 @@ function watchWinnerGame(){
 }
 
 
-/* =========================
+/* =====================================================
    CONFETTI
-========================= */
+===================================================== */
 
 function createConfetti(){
 
-  const overlay =
+  const overlay=
     document.getElementById(
       "winnerOverlay"
     );
@@ -4468,7 +5131,7 @@ function createConfetti(){
     i++
   ){
 
-    const piece =
+    const piece=
       document.createElement(
         "div"
       );
@@ -4493,6 +5156,9 @@ function createConfetti(){
       )
     ];
 
+    piece.style.animation=
+      "confettiFall 3s linear forwards";
+
     piece.style.animationDelay=
       Math.random()*1.5+
       "s";
@@ -4513,9 +5179,9 @@ function createConfetti(){
 }
 
 
-/* =========================
+/* =====================================================
    NEW GAME
-========================= */
+===================================================== */
 
 function newGame(){
 
@@ -4576,7 +5242,7 @@ function newGame(){
     )
     .innerHTML="";
 
-  const winnerList =
+  const winnerList=
     document.getElementById(
       "liveWinnerList"
     );
@@ -4596,9 +5262,9 @@ function newGame(){
 }
 
 
-/* =========================
+/* =====================================================
    ESCAPE HTML
-========================= */
+===================================================== */
 
 function escapeHtml(
   value
@@ -4634,15 +5300,15 @@ function escapeHtml(
 }
 
 
-/* =========================
+/* =====================================================
    AVATAR
-========================= */
+===================================================== */
 
 function makeAvatar(
   name
 ){
 
-  const text =
+  const text=
     encodeURIComponent(
       String(
         name||
@@ -4659,9 +5325,9 @@ function makeAvatar(
 }
 
 
-/* =========================
-   VOICE READY
-========================= */
+/* =====================================================
+   SPEECH READY
+===================================================== */
 
 if(
   "speechSynthesis" in window
@@ -4669,9 +5335,7 @@ if(
 
   window.speechSynthesis.onvoiceschanged=
     ()=>{
-
       window.speechSynthesis.getVoices();
-
     };
 
 }
