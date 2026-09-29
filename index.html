@@ -1,1021 +1,477 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ku">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BINGO</title>
 
-<title>Bingo</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-
 *{
   box-sizing:border-box;
-  margin:0;
-  padding:0;
+  -webkit-tap-highlight-color:transparent;
 }
 
 body{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:linear-gradient(135deg,#07111f,#101d35);
+  color:white;
   min-height:100vh;
-  background:
-    radial-gradient(circle at top,#252044 0,#11111b 42%,#08080d 100%);
-  color:#fff;
+}
+
+button,input{
+  font:inherit;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.page{
+  min-height:100vh;
   padding:20px;
 }
 
-.app{
-  width:100%;
-  max-width:520px;
-  margin:auto;
-  padding:15px 0 40px;
-}
-
-.header{
-  text-align:center;
-  margin:20px 0 25px;
-}
-
 .logo{
+  text-align:center;
   font-size:48px;
   font-weight:900;
   letter-spacing:5px;
-  background:linear-gradient(135deg,#fff,#9d8cff);
-  -webkit-background-clip:text;
-  color:transparent;
+  margin:20px 0 30px;
+  text-shadow:0 0 20px #00d9ff;
 }
 
-.subtitle{
-  color:#88889a;
-  margin-top:6px;
-  font-size:14px;
+.card-box{
+  max-width:500px;
+  margin:auto;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:24px;
+  padding:20px;
+  backdrop-filter:blur(15px);
 }
 
-.card{
-  background:rgba(255,255,255,.055);
-  border:1px solid rgba(255,255,255,.09);
-  border-radius:25px;
-  padding:22px;
-  box-shadow:0 25px 70px rgba(0,0,0,.4);
-  backdrop-filter:blur(18px);
+label{
+  display:block;
+  margin:10px 0 7px;
+  color:#b9c8dc;
 }
 
 input{
   width:100%;
-  padding:17px;
-  margin-bottom:12px;
-  border:1px solid #30303e;
-  border-radius:15px;
-  background:#11111a;
-  color:white;
-  font-size:16px;
-  outline:none;
-}
-
-input:focus{
-  border-color:#806cff;
-  box-shadow:0 0 0 3px rgba(128,108,255,.12);
-}
-
-button{
-  width:100%;
+  padding:15px;
   border:0;
-  border-radius:15px;
-  padding:16px;
-  font-size:16px;
-  font-weight:800;
-  cursor:pointer;
-  transition:.2s;
-}
-
-button:active{
-  transform:scale(.97);
-}
-
-#home{
-  padding-bottom:20px;
-}
-
-.home-user{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:15px;
-}
-
-.home-user-left{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.avatar{
-  width:46px;
-  height:46px;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:linear-gradient(135deg,#765cff,#a855f7);
-  font-size:23px;
-}
-
-.home-user-name{
-  font-size:15px;
-  font-weight:800;
-}
-
-.home-user-level{
-  color:#88889a;
-  font-size:11px;
-  margin-top:3px;
-}
-
-.coins{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  background:#171722;
-  border:1px solid #30303e;
-  padding:10px 13px;
-  border-radius:13px;
-  font-weight:800;
-}
-
-.play-button{
+  border-radius:14px;
+  outline:none;
+  background:#18263d;
   color:white;
-  background:linear-gradient(135deg,#765cff,#a855f7);
-  box-shadow:0 12px 30px rgba(118,92,255,.28);
-  font-size:20px;
-  padding:19px;
 }
 
-.play-button small{
-  display:block;
-  margin-top:4px;
-  font-size:11px;
-  font-weight:500;
-  color:#ddd8ff;
-}
-
-.section-title{
-  text-align:center;
-  color:#88889a;
-  font-size:11px;
-  letter-spacing:1.5px;
-  margin:24px 0 12px;
-  text-transform:uppercase;
-}
-
-.entry-grid{
+.fees{
   display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin:10px 0 20px;
 }
 
-.entry-button{
-  background:#181822;
-  color:#fff;
-  border:1px solid #30303e;
-  padding:15px 8px;
-  font-size:15px;
+.fee{
+  padding:12px 4px;
+  border:1px solid #344762;
+  background:#16243a;
+  color:white;
+  border-radius:12px;
+  font-size:13px;
 }
 
-.entry-button.selected{
-  background:linear-gradient(135deg,#765cff,#a855f7);
-  border-color:#9d8cff;
-  box-shadow:0 8px 20px rgba(118,92,255,.25);
+.fee.selected{
+  background:#00a8ff;
+  border-color:#00d9ff;
 }
 
-.entry-button:last-child{
-  grid-column:1 / -1;
-}
-
-.mode-grid{
+.modes{
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:10px;
+  margin-bottom:20px;
 }
 
-.mode-button{
-  background:#181822;
-  color:white;
-  border:1px solid #30303e;
-  padding:15px 8px;
-}
-
-.mode-button.selected{
-  background:#25213d;
-  border-color:#806cff;
-}
-
-.play-info{
-  text-align:center;
-  color:#777789;
-  font-size:11px;
-  margin-top:13px;
-  line-height:1.6;
-}
-
-.home-nav{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:7px;
-  margin-top:18px;
-}
-
-.nav-button{
-  background:#15151f;
-  border:1px solid #292936;
-  color:#777789;
-  padding:12px 5px;
-  font-size:11px;
+.mode{
+  padding:14px;
   border-radius:14px;
-}
-
-.nav-button.active{
+  border:1px solid #344762;
+  background:#16243a;
   color:white;
-  border-color:#6657b8;
-  background:#211e36;
 }
 
-.nav-icon{
-  display:block;
-  font-size:20px;
-  margin-bottom:5px;
+.mode.selected{
+  background:#7b3cff;
+  border-color:#a979ff;
 }
 
-#game{
-  display:none;
+.play{
+  width:100%;
+  padding:18px;
+  border:0;
+  border-radius:18px;
+  background:linear-gradient(90deg,#00b7ff,#7b3cff);
+  color:white;
+  font-size:22px;
+  font-weight:900;
 }
 
 .topbar{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-bottom:18px;
+  margin-bottom:15px;
+}
+
+.coins{
+  background:#172941;
+  padding:10px 15px;
+  border-radius:20px;
 }
 
 .room{
-  background:#181822;
-  border:1px solid #30303c;
-  padding:10px 14px;
-  border-radius:12px;
-  font-size:13px;
-  color:#aaaabb;
-}
-
-.room b{
-  color:white;
-}
-
-.players{
-  color:#88889a;
-  font-size:13px;
+  text-align:center;
+  color:#9eb3ce;
+  margin-bottom:10px;
 }
 
 .caller{
+  max-width:500px;
+  margin:10px auto 20px;
   text-align:center;
-  background:linear-gradient(135deg,#171724,#222038);
-  border:1px solid #35334b;
-  border-radius:22px;
-  padding:20px;
-  margin-bottom:18px;
-  transition:.3s;
 }
 
-.caller.winner{
-  border-color:#ffd54a;
-  box-shadow:
-    0 0 20px rgba(255,213,74,.35),
-    0 0 50px rgba(168,85,247,.25);
-}
-
-.caller-title{
-  color:#89899b;
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:2px;
+.called-label{
+  color:#9eb3ce;
+  margin-bottom:5px;
 }
 
 .number{
-  font-size:58px;
-  font-weight:900;
-  margin:8px 0;
-  color:#fff;
-  min-height:70px;
+  min-height:90px;
   display:flex;
   align-items:center;
   justify-content:center;
-  transition:.25s;
+  font-size:50px;
+  font-weight:900;
+  border-radius:25px;
+  background:#172941;
+  transform:scale(.8);
+  opacity:.3;
 }
 
 .number.show{
-  animation:numberPop .45s ease;
-}
-
-.number.number-B{
-  color:#5da9ff;
-  text-shadow:0 0 20px rgba(93,169,255,.55);
-}
-
-.number.number-I{
-  color:#9b7cff;
-  text-shadow:0 0 20px rgba(155,124,255,.55);
-}
-
-.number.number-N{
-  color:#35e0a1;
-  text-shadow:0 0 20px rgba(53,224,161,.55);
-}
-
-.number.number-G{
-  color:#ff9d52;
-  text-shadow:0 0 20px rgba(255,157,82,.55);
-}
-
-.number.number-O{
-  color:#ff6584;
-  text-shadow:0 0 20px rgba(255,101,132,.55);
+  animation:numberPop .45s ease forwards;
 }
 
 @keyframes numberPop{
-  0%{
-    transform:scale(.65);
-    opacity:.2;
-  }
-  60%{
-    transform:scale(1.12);
-    opacity:1;
-  }
-  100%{
-    transform:scale(1);
-  }
+  0%{transform:scale(.7);opacity:.2}
+  70%{transform:scale(1.08);opacity:1}
+  100%{transform:scale(1);opacity:1}
 }
 
-.call{
-  background:linear-gradient(135deg,#7c5cff,#a855f7);
-  color:white;
-}
+.number-B{background:linear-gradient(135deg,#1677ff,#0046b8)}
+.number-I{background:linear-gradient(135deg,#a13cff,#6415b5)}
+.number-N{background:linear-gradient(135deg,#00c77a,#087e51)}
+.number-G{background:linear-gradient(135deg,#ff8a00,#c44d00)}
+.number-O{background:linear-gradient(135deg,#ff315d,#ad1235)}
 
-.call:disabled{
-  opacity:.45;
-  cursor:not-allowed;
-}
-
-.bingo-title{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:7px;
-  margin-bottom:7px;
-}
-
-.bingo-title div{
-  padding:9px 0;
-  border-radius:10px;
-  background:#211e36;
-  color:#a99cff;
-  font-weight:900;
+.message{
   text-align:center;
+  min-height:28px;
+  margin:12px 0;
+  color:#c8d6e8;
+}
+
+.call-btn{
+  width:100%;
+  padding:14px;
+  border:0;
+  border-radius:15px;
+  background:#00a8ff;
+  color:white;
+  font-weight:bold;
+  margin-bottom:15px;
+}
+
+.call-btn:disabled{
+  opacity:.4;
 }
 
 .board{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:7px;
+  max-width:500px;
+  margin:auto;
   transition:.3s;
 }
 
 .board.locked{
   pointer-events:none;
+  opacity:.75;
 }
+
+.bingo-head,
+.bingo-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:6px;
+}
+
+.bingo-head div{
+  text-align:center;
+  padding:10px 0;
+  font-size:22px;
+  font-weight:900;
+}
+
+.head-B{color:#35a7ff}
+.head-I{color:#c16cff}
+.head-N{color:#2ee79b}
+.head-G{color:#ff9c35}
+.head-O{color:#ff5276}
 
 .cell{
   aspect-ratio:1;
+  border:0;
   border-radius:13px;
-  border:1px solid #30303d;
-  background:#15151f;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  background:#edf4ff;
+  color:#142033;
   font-size:18px;
-  font-weight:800;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.cell:hover{
-  background:#222230;
+  font-weight:900;
+  box-shadow:0 5px 12px rgba(0,0,0,.2);
 }
 
 .cell.marked{
-  background:linear-gradient(135deg,#765cff,#a855f7);
-  border-color:#8d7bff;
-  box-shadow:0 5px 15px rgba(118,92,255,.3);
-  transform:scale(.96);
+  color:white;
+  transform:scale(.94);
 }
+
+.cell.marked-B{background:#1677ff}
+.cell.marked-I{background:#8d36d8}
+.cell.marked-N{background:#08a56b}
+.cell.marked-G{background:#e96f00}
+.cell.marked-O{background:#e72e55}
 
 .cell.free{
-  background:#252338;
-  color:#9d91ff;
-  font-size:12px;
+  background:#ffd23f;
+  color:#1b1600;
 }
 
-.board.winner .cell.marked{
-  animation:winnerCell .8s infinite alternate;
+.bottom{
+  max-width:500px;
+  margin:20px auto 0;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
 }
 
-@keyframes winnerCell{
-  from{
-    box-shadow:0 0 8px rgba(168,85,247,.35);
-  }
-  to{
-    box-shadow:0 0 25px rgba(255,213,74,.75);
-  }
+.bottom button{
+  padding:12px 5px;
+  border:0;
+  border-radius:14px;
+  background:#172941;
+  color:#aebed1;
 }
 
-.message{
-  text-align:center;
-  margin-top:18px;
-  min-height:25px;
-  color:#aaaabb;
-  font-size:14px;
+.winner{
+  animation:winnerGlow 1s infinite alternate;
 }
 
-.message.winner-message{
-  color:#ffd54a;
-  font-size:18px;
+@keyframes winnerGlow{
+  from{box-shadow:0 0 10px rgba(255,210,63,.2)}
+  to{box-shadow:0 0 40px rgba(255,210,63,.8)}
+}
+
+.winner-message{
+  color:#ffd23f!important;
+  font-size:22px;
   font-weight:900;
-  animation:messagePulse 1s infinite alternate;
 }
 
-@keyframes messagePulse{
-  from{
-    transform:scale(1);
-  }
-  to{
-    transform:scale(1.08);
-  }
-}
-
-.newgame{
-  margin-top:12px;
-  background:#242431;
-  color:white;
-  border:1px solid #373747;
-}
-
-.profile{
-  display:none;
-  margin-bottom:18px;
-}
-
-.profile h2{
-  margin-bottom:15px;
-}
-
-.profile p{
-  margin:8px 0;
-  color:#aaaabb;
-}
-
-.profile span{
-  color:white;
-  font-weight:700;
-}
-
-.footer{
-  text-align:center;
-  color:#555565;
-  font-size:11px;
-  margin-top:25px;
-}
-
-
-/* =========================
-   WINNER EFFECT
-========================= */
-
-#winnerOverlay{
+.overlay{
   position:fixed;
   inset:0;
+  z-index:1000;
   display:none;
   align-items:center;
   justify-content:center;
-  z-index:9999;
-  background:rgba(5,5,12,.72);
+  background:rgba(0,0,0,.72);
   backdrop-filter:blur(8px);
+  overflow:hidden;
 }
 
-#winnerOverlay.show{
+.overlay.show{
   display:flex;
 }
 
-.winner-box{
-  width:90%;
-  max-width:380px;
-  text-align:center;
+.win-box{
+  position:relative;
+  z-index:2;
+  width:min(90%,400px);
   padding:35px 20px;
   border-radius:30px;
-  background:
-    radial-gradient(circle at top,
-      rgba(255,213,74,.20),
-      rgba(118,92,255,.12) 45%,
-      rgba(20,18,35,.96) 75%);
-  border:1px solid rgba(255,213,74,.45);
-  box-shadow:
-    0 0 30px rgba(255,213,74,.25),
-    0 25px 80px rgba(0,0,0,.65);
-  animation:winnerBoxIn .65s cubic-bezier(.17,.89,.32,1.28);
+  text-align:center;
+  background:linear-gradient(135deg,#111d35,#26164c);
+  border:2px solid #ffd23f;
+  box-shadow:0 0 60px rgba(255,210,63,.55);
+  animation:winBox .7s ease;
 }
 
-@keyframes winnerBoxIn{
-  0%{
-    transform:scale(.45) rotate(-5deg);
-    opacity:0;
-  }
-  70%{
-    transform:scale(1.05) rotate(1deg);
-  }
-  100%{
-    transform:scale(1) rotate(0);
-    opacity:1;
-  }
+@keyframes winBox{
+  0%{transform:scale(.4) rotate(-8deg);opacity:0}
+  70%{transform:scale(1.08) rotate(2deg)}
+  100%{transform:scale(1) rotate(0);opacity:1}
 }
 
-.winner-crown{
-  font-size:70px;
-  animation:crownFloat 1.2s infinite alternate ease-in-out;
+.crown{
+  font-size:80px;
+  animation:crownFloat 1s infinite alternate;
 }
 
 @keyframes crownFloat{
-  from{
-    transform:translateY(0) rotate(-4deg);
-  }
-  to{
-    transform:translateY(-12px) rotate(4deg);
-  }
+  from{transform:translateY(0) rotate(-4deg)}
+  to{transform:translateY(-12px) rotate(4deg)}
 }
 
-#winnerTitle{
-  margin-top:8px;
-  font-size:42px;
-  font-weight:1000;
-  letter-spacing:2px;
-  background:linear-gradient(135deg,#fff,#ffd54a,#a855f7);
-  -webkit-background-clip:text;
-  color:transparent;
+.win-title{
+  color:#ffd23f;
+  font-size:34px;
+  font-weight:900;
+  margin:10px 0;
 }
 
-#winnerName{
-  margin-top:8px;
-  color:#ddd8ff;
-  font-size:17px;
-  font-weight:700;
+.win-sub{
+  color:#d8e2f0;
+  margin-bottom:25px;
 }
 
-#winnerClose{
-  margin-top:25px;
-  background:linear-gradient(135deg,#765cff,#a855f7);
-  color:#fff;
+.new-game{
+  border:0;
+  border-radius:15px;
+  padding:14px 25px;
+  background:linear-gradient(90deg,#ffb300,#ff5c00);
+  color:white;
+  font-weight:900;
 }
-
-
-/* =========================
-   CONFETTI
-========================= */
 
 .confetti{
-  position:fixed;
-  top:-20px;
-  width:9px;
-  height:15px;
-  z-index:10000;
-  pointer-events:none;
-  animation:confettiFall linear forwards;
+  position:absolute;
+  width:10px;
+  height:18px;
+  top:-30px;
+  animation:confettiFall 3s linear forwards;
 }
 
 @keyframes confettiFall{
-  0%{
-    transform:translateY(-20px) rotate(0deg);
-    opacity:1;
-  }
-  100%{
+  to{
     transform:translateY(110vh) rotate(720deg);
-    opacity:0;
   }
 }
-
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<!-- HOME -->
+<section id="homePage" class="page">
 
-<section id="home">
+  <div class="logo">BINGO</div>
 
-  <div class="header">
+  <div class="card-box">
 
-    <div class="logo">
-      BINGO
+    <label>ناوی یاریزان</label>
+    <input id="name" value="Mehvan" maxlength="20">
+
+    <label>نرخی چوونە ژوورەوە</label>
+
+    <div class="fees">
+      <button class="fee selected" data-fee="100">100</button>
+      <button class="fee" data-fee="500">500</button>
+      <button class="fee" data-fee="1000">1,000</button>
+      <button class="fee" data-fee="5000">5,000</button>
+      <button class="fee" data-fee="10000">10,000</button>
+      <button class="fee" data-fee="25000">25,000</button>
+      <button class="fee" data-fee="100000">100,000</button>
     </div>
 
-    <div class="subtitle">
-      Play • Chat • Rewards
+    <div class="modes">
+      <button class="mode selected" data-mode="solo">🎯 Solo</button>
+      <button class="mode" data-mode="friends">👥 With Friends</button>
     </div>
 
-  </div>
+    <button class="play" onclick="playGame()">PLAY</button>
 
-  <div class="card">
-
-    <div class="home-user">
-
-      <div class="home-user-left">
-
-        <div class="avatar">
-          👤
-        </div>
-
-        <div>
-
-          <div
-            class="home-user-name"
-            id="homeUserName"
-          >
-            Mehvan
-          </div>
-
-          <div class="home-user-level">
-            Level 1
-          </div>
-
-        </div>
-
-      </div>
-
-      <div class="coins">
-
-        🪙
-
-        <span id="homeCoins">
-          1000
-        </span>
-
-      </div>
-
-    </div>
-
-    <input
-      id="name"
-      type="text"
-      value="Mehvan"
-      placeholder="Enter your name"
-      maxlength="20"
-    >
-
-    <button
-      class="play-button"
-      onclick="playGame()"
-    >
-
-      🎮 PLAY
-
-      <small>
-        Find players and start Bingo
-      </small>
-
-    </button>
-
-    <div class="section-title">
-      Choose Entry Fee
-    </div>
-
-    <div class="entry-grid">
-
-      <button
-        class="entry-button selected"
-        onclick="selectEntryFee(100,this)"
-      >
-        🪙 100
-      </button>
-
-      <button
-        class="entry-button"
-        onclick="selectEntryFee(500,this)"
-      >
-        🪙 500
-      </button>
-
-      <button
-        class="entry-button"
-        onclick="selectEntryFee(1000,this)"
-      >
-        🪙 1,000
-      </button>
-
-      <button
-        class="entry-button"
-        onclick="selectEntryFee(5000,this)"
-      >
-        🪙 5,000
-      </button>
-
-      <button
-        class="entry-button"
-        onclick="selectEntryFee(10000,this)"
-      >
-        🪙 10,000
-      </button>
-
-      <button
-        class="entry-button"
-        onclick="selectEntryFee(25000,this)"
-      >
-        🪙 25,000
-      </button>
-
-      <button
-        class="entry-button"
-        onclick="selectEntryFee(100000,this)"
-      >
-        🪙 100,000
-      </button>
-
-    </div>
-
-    <div class="section-title">
-      Game Mode
-    </div>
-
-    <div class="mode-grid">
-
-      <button
-        id="soloMode"
-        class="mode-button selected"
-        onclick="selectMode('solo')"
-      >
-        👥 Solo
-
-        <small style="
-          display:block;
-          color:#777789;
-          margin-top:5px;
-          font-size:10px;
-        ">
-          Find players
-        </small>
-
-      </button>
-
-      <button
-        id="friendsMode"
-        class="mode-button"
-        onclick="selectMode('friends')"
-      >
-        👫 With Friends
-
-        <small style="
-          display:block;
-          color:#777789;
-          margin-top:5px;
-          font-size:10px;
-        ">
-          Invite friends
-        </small>
-
-      </button>
-
-    </div>
-
-    <div class="play-info">
-      Choose your entry fee and game mode,
-      then press PLAY.
-    </div>
-
-  </div>
-
-  <div class="home-nav">
-
-    <button
-      class="nav-button active"
-      onclick="homeNavigation('play')"
-    >
-      <span class="nav-icon">🎮</span>
-      Play
-    </button>
-
-    <button
-      class="nav-button"
-      onclick="homeNavigation('chat')"
-    >
-      <span class="nav-icon">💬</span>
-      Chat
-    </button>
-
-    <button
-      class="nav-button"
-      onclick="homeNavigation('reward')"
-    >
-      <span class="nav-icon">🎁</span>
-      Reward
-    </button>
-
-    <button
-      class="nav-button"
-      onclick="homeNavigation('profile')"
-    >
-      <span class="nav-icon">👤</span>
-      Profile
-    </button>
-
-  </div>
-
-  <div class="footer">
-    Bingo • Modern Edition
   </div>
 
 </section>
 
 
-<section id="game">
-
-  <div class="header">
-
-    <div class="logo">
-      BINGO
-    </div>
-
-    <div class="subtitle">
-      Game Room
-    </div>
-
-  </div>
-
-
-  <div
-    id="profileBox"
-    class="card profile"
-  >
-
-    <h2>
-      👤 Player Profile
-    </h2>
-
-    <p>
-      Username:
-      <span id="profileUsername">-</span>
-    </p>
-
-    <p>
-      🆔 ID:
-      <span id="profilePublicId">-</span>
-    </p>
-
-    <p>
-      👑 Status:
-      <span id="profileOwner">-</span>
-    </p>
-
-    <p>
-      Gender:
-      <span id="profileGender">-</span>
-    </p>
-
-    <p>
-      Level:
-      <span id="profileLevel">-</span>
-    </p>
-
-    <p>
-      XP:
-      <span id="profileXP">-</span>
-    </p>
-
-    <p>
-      🪙 Coins:
-      <span id="profileCoin">-</span>
-    </p>
-
-    <p>
-      🎁 Gifts Received:
-      <span id="profileGifts">-</span>
-    </p>
-
-  </div>
-
+<!-- GAME -->
+<section id="gamePage" class="page hidden">
 
   <div class="topbar">
-
-    <div class="room">
-
-      ROOM:
-
-      <b id="roomDisplay">
-        ------
-      </b>
-
-    </div>
-
-    <div class="players">
-
-      👤
-
-      <span id="playerDisplay">
-        1
-      </span>
-
-    </div>
-
+    <strong>BINGO</strong>
+    <div class="coins">🪙 <span id="coinText">0</span></div>
   </div>
 
+  <div class="room">
+    Room: <span id="roomText">------</span>
+  </div>
 
-  <div
-    class="caller"
-    id="callerBox"
-  >
+  <div class="caller">
+    <div class="called-label">ژمارەی بانگکراو</div>
+    <div id="numberDisplay" class="number">---</div>
+    <div id="message" class="message">ئامادە بە...</div>
 
-    <div class="caller-title">
-      Last Number
-    </div>
-
-    <div
-      class="number"
-      id="number"
-    >
-      —
-    </div>
-
-    <button
-      class="call"
-      id="callButton"
-      onclick="callNumber()"
-    >
-      🔢 Call Number
+    <button id="callButton" class="call-btn" onclick="callNumber()">
+      Call Number
     </button>
+  </div>
+
+  <div id="board" class="board">
+
+    <div class="bingo-head">
+      <div class="head-B">B</div>
+      <div class="head-I">I</div>
+      <div class="head-N">N</div>
+      <div class="head-G">G</div>
+      <div class="head-O">O</div>
+    </div>
+
+    <div id="bingoGrid" class="bingo-grid"></div>
 
   </div>
 
-
-  <div class="bingo-title">
-
-    <div>B</div>
-    <div>I</div>
-    <div>N</div>
-    <div>G</div>
-    <div>O</div>
-
+  <div class="bottom">
+    <button>🎮 Play</button>
+    <button>💬 Chat</button>
+    <button>🎁 Reward</button>
+    <button>👤 Profile</button>
   </div>
-
-
-  <div
-    class="board"
-    id="board"
-  ></div>
-
-
-  <div
-    class="message"
-    id="message"
-  >
-    Call a number to start.
-  </div>
-
-
-  <button
-    class="newgame"
-    onclick="newGame()"
-  >
-    🔄 New Game
-  </button>
 
 </section>
 
-</div>
 
+<!-- WINNER -->
+<div id="winnerOverlay" class="overlay">
 
-<!-- WINNER OVERLAY -->
+  <div class="win-box">
 
-<div id="winnerOverlay">
+    <div id="winnerCrown" class="crown">👑</div>
 
-  <div class="winner-box">
-
-    <div class="winner-crown" id="winnerCrown">
-      👑
-    </div>
-
-    <div id="winnerTitle">
+    <div id="winnerTitle" class="win-title">
       YOU ARE KING!
     </div>
 
-    <div id="winnerName">
-      Mehvan
+    <div class="win-sub">
+      🎉 BINGO! YOU WIN! 🎉
     </div>
 
-    <button
-      id="winnerClose"
-      onclick="closeWinner()"
-    >
-      Continue
+    <button class="new-game" onclick="newGame()">
+      NEW GAME
     </button>
 
   </div>
@@ -1023,21 +479,15 @@ button:active{
 </div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <script>
-
 const SUPABASE_URL =
   "https://szmqbywztfgtyoemzgiq.supabase.co";
 
-const SUPABASE_ANON_KEY =
+const SUPABASE_KEY =
   "sb_publishable_UcmJ964uYcedY4lp8iYxRA_PF3TSNNY";
 
 const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
+  supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 
 /* =========================
@@ -1046,10 +496,9 @@ const supabaseClient =
 
 let numbers = [];
 let calledNumbers = [];
-
 let roomCode = "";
-let playerName = "Mehvan";
 
+let playerName = "Mehvan";
 let currentPlayerId = null;
 let currentRoomId = null;
 
@@ -1063,84 +512,257 @@ let currentGender = "";
 
 
 /* =========================
-   DEFAULT USER
+   AUDIO
 ========================= */
 
-window.addEventListener(
-  "DOMContentLoaded",
-  function(){
+let audioContext = null;
 
-    const nameInput =
-      document.getElementById("name");
+function unlockAudio(){
 
-    if(nameInput){
-      nameInput.value = "Mehvan";
+  try{
+
+    if(!audioContext){
+      audioContext =
+        new (window.AudioContext ||
+        window.webkitAudioContext)();
     }
 
-    const homeUserName =
-      document.getElementById("homeUserName");
-
-    if(homeUserName){
-      homeUserName.textContent = "Mehvan";
+    if(audioContext.state === "suspended"){
+      audioContext.resume();
     }
 
+  }catch(error){
+    console.log("Audio unlock:",error);
   }
-);
+
+  try{
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.getVoices();
+  }catch(error){}
+}
 
 
-/* =========================
-   ENTRY FEE
-========================= */
+function playMarkSound(){
 
-function selectEntryFee(
-  fee,
-  button
-){
+  try{
 
-  selectedEntryFee = fee;
+    if(!audioContext){
+      unlockAudio();
+    }
 
-  document
-    .querySelectorAll(".entry-button")
-    .forEach(function(btn){
-      btn.classList.remove("selected");
+    const oscillator =
+      audioContext.createOscillator();
+
+    const gain =
+      audioContext.createGain();
+
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(
+      650,
+      audioContext.currentTime
+    );
+
+    oscillator.frequency.exponentialRampToValueAtTime(
+      950,
+      audioContext.currentTime + .12
+    );
+
+    gain.gain.setValueAtTime(
+      .001,
+      audioContext.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      .22,
+      audioContext.currentTime + .02
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      .001,
+      audioContext.currentTime + .16
+    );
+
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+
+    oscillator.start();
+    oscillator.stop(
+      audioContext.currentTime + .17
+    );
+
+  }catch(error){
+    console.log("Mark sound:",error);
+  }
+}
+
+
+function playWinSound(){
+
+  try{
+
+    if(!audioContext){
+      unlockAudio();
+    }
+
+    const notes = [
+      523.25,
+      659.25,
+      783.99,
+      1046.50
+    ];
+
+    notes.forEach(function(freq,index){
+
+      const oscillator =
+        audioContext.createOscillator();
+
+      const gain =
+        audioContext.createGain();
+
+      oscillator.type = "triangle";
+
+      oscillator.frequency.value = freq;
+
+      const start =
+        audioContext.currentTime + index * .12;
+
+      gain.gain.setValueAtTime(
+        .001,
+        start
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        .25,
+        start + .03
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        .001,
+        start + .28
+      );
+
+      oscillator.connect(gain);
+      gain.connect(audioContext.destination);
+
+      oscillator.start(start);
+      oscillator.stop(start + .3);
+
     });
 
-  button.classList.add("selected");
-
+  }catch(error){
+    console.log("Win sound:",error);
+  }
 }
 
 
 /* =========================
-   GAME MODE
+   VOICE
 ========================= */
 
-function selectMode(mode){
+function speakText(text,type="number"){
 
-  selectedMode = mode;
+  try{
 
-  document
-    .getElementById("soloMode")
-    .classList.remove("selected");
+    if(!("speechSynthesis" in window)){
+      return;
+    }
 
-  document
-    .getElementById("friendsMode")
-    .classList.remove("selected");
+    window.speechSynthesis.cancel();
 
-  if(mode === "solo"){
+    const utterance =
+      new SpeechSynthesisUtterance(text);
 
-    document
-      .getElementById("soloMode")
-      .classList.add("selected");
+    utterance.lang = "en-US";
 
-  }else{
+    const voices =
+      window.speechSynthesis.getVoices();
 
-    document
-      .getElementById("friendsMode")
-      .classList.add("selected");
+    if(type === "female"){
 
+      const femaleVoice =
+        voices.find(v =>
+          /female|samantha|karen|victoria|zira/i
+          .test(v.name)
+        );
+
+      if(femaleVoice){
+        utterance.voice = femaleVoice;
+      }
+
+    }else{
+
+      const maleVoice =
+        voices.find(v =>
+          /male|alex|daniel|fred|aaron/i
+          .test(v.name)
+        );
+
+      if(maleVoice){
+        utterance.voice = maleVoice;
+      }
+
+    }
+
+    utterance.rate =
+      type === "number" ? .85 : .9;
+
+    utterance.pitch =
+      type === "female" ? 1.15 : .85;
+
+    utterance.volume = 1;
+
+    window.speechSynthesis.speak(
+      utterance
+    );
+
+  }catch(error){
+    console.log("Voice:",error);
   }
-
 }
+
+
+/* =========================
+   FEE / MODE
+========================= */
+
+document.querySelectorAll(".fee")
+.forEach(function(button){
+
+  button.addEventListener("click",function(){
+
+    document.querySelectorAll(".fee")
+      .forEach(b =>
+        b.classList.remove("selected")
+      );
+
+    button.classList.add("selected");
+
+    selectedEntryFee =
+      Number(button.dataset.fee);
+
+  });
+
+});
+
+
+document.querySelectorAll(".mode")
+.forEach(function(button){
+
+  button.addEventListener("click",function(){
+
+    document.querySelectorAll(".mode")
+      .forEach(b =>
+        b.classList.remove("selected")
+      );
+
+    button.classList.add("selected");
+
+    selectedMode =
+      button.dataset.mode;
+
+  });
+
+});
 
 
 /* =========================
@@ -1160,18 +782,9 @@ async function playGame(){
       nameInput.value.trim();
 
     if(!playerName){
-
       playerName = "Mehvan";
-
-      nameInput.value =
-        "Mehvan";
-
+      nameInput.value = "Mehvan";
     }
-
-    document.getElementById(
-      "homeUserName"
-    ).textContent =
-      playerName;
 
     console.log(
       "Starting game:",
@@ -1200,271 +813,54 @@ async function playGame(){
 
 
 /* =========================
-   AUDIO UNLOCK
-========================= */
-
-function unlockAudio(){
-
-  try{
-
-    if("speechSynthesis" in window){
-
-      window.speechSynthesis.cancel();
-
-    }
-
-  }catch(error){
-
-    console.log(
-      "Audio unlock:",
-      error
-    );
-
-  }
-
-}
-
-
-/* =========================
-   SPEAK
-========================= */
-
-function speakText(
-  text,
-  type = "number"
-){
-
-  if(
-    !("speechSynthesis" in window)
-  ){
-
-    return;
-
-  }
-
-  try{
-
-    window.speechSynthesis.cancel();
-
-    const utterance =
-      new SpeechSynthesisUtterance(
-        text
-      );
-
-    utterance.rate =
-      type === "winner"
-        ? 0.85
-        : 0.9;
-
-    utterance.pitch =
-      type === "female"
-        ? 1.25
-        : type === "male"
-          ? 0.75
-          : 1;
-
-    utterance.volume = 1;
-
-    const voices =
-      window.speechSynthesis.getVoices();
-
-    let selectedVoice = null;
-
-    if(type === "female"){
-
-      selectedVoice =
-        voices.find(function(voice){
-
-          const name =
-            voice.name.toLowerCase();
-
-          return(
-            name.includes("samantha") ||
-            name.includes("karen") ||
-            name.includes("female") ||
-            name.includes("ava") ||
-            name.includes("susan")
-          );
-
-        });
-
-    }
-
-    if(type === "male"){
-
-      selectedVoice =
-        voices.find(function(voice){
-
-          const name =
-            voice.name.toLowerCase();
-
-          return(
-            name.includes("daniel") ||
-            name.includes("alex") ||
-            name.includes("male") ||
-            name.includes("fred")
-          );
-
-        });
-
-    }
-
-    if(!selectedVoice){
-
-      selectedVoice =
-        voices.find(function(voice){
-
-          return voice.lang &&
-            voice.lang
-              .toLowerCase()
-              .startsWith("en");
-
-        });
-
-    }
-
-    if(selectedVoice){
-
-      utterance.voice =
-        selectedVoice;
-
-    }
-
-    utterance.lang =
-      "en-US";
-
-    window.speechSynthesis.speak(
-      utterance
-    );
-
-  }catch(error){
-
-    console.log(
-      "Speech error:",
-      error
-    );
-
-  }
-
-}
-
-
-/* =========================
-   HOME NAVIGATION
-========================= */
-
-function homeNavigation(section){
-
-  if(section === "play"){
-    return;
-  }
-
-  if(section === "chat"){
-
-    alert(
-      "Chat Room will be added here."
-    );
-
-    return;
-
-  }
-
-  if(section === "reward"){
-
-    alert(
-      "Reward will be added here."
-    );
-
-    return;
-
-  }
-
-  if(section === "profile"){
-
-    alert(
-      "Profile will be added here."
-    );
-
-    return;
-
-  }
-
-}
-
-
-/* =========================
    CREATE ROOM
 ========================= */
 
 async function createRoom(){
 
-  console.log(
-    "Creating room..."
-  );
-
   const {
     data,
     error
-  } =
-    await supabaseClient
-      .from("Room")
-      .insert({
+  } = await supabaseClient
+    .from("Room")
+    .insert({
 
-        entry_fee:
-          selectedEntryFee,
+      entry_fee:
+        selectedEntryFee,
 
-        max_player:
-          25,
+      max_player:
+        25,
 
-        player_count:
-          0,
+      player_count:
+        0,
 
-        status:
-          "waiting",
+      status:
+        "waiting",
 
-        account_id:
-          "8cc0bcb2-144c-4e0b-9da7-902599f0c6e2"
+      account_id:
+        "8cc0bcb2-144c-4e0b-9da7-902599f0c6e2"
 
-      })
-      .select("id, room_code")
-      .single();
+    })
+    .select("id, room_code")
+    .single();
+
 
   if(error){
-
-    console.error(
-      "ROOM ERROR:",
-      error
-    );
-
-    alert(
-      "Room error:\n" +
-      error.message
-    );
-
-    return;
-
+    throw error;
   }
 
-  if(!data){
 
-    alert(
-      "Room دروست نەکرا."
-    );
-
-    return;
-
-  }
-
-  console.log(
-    "Room created:",
-    data
-  );
+  currentRoomId =
+    data.id;
 
   roomCode =
     data.room_code;
 
-  currentRoomId =
-    data.id;
+  document.getElementById(
+    "roomText"
+  ).textContent =
+    roomCode;
+
 
   await createPlayer(
     currentRoomId
@@ -1474,151 +870,48 @@ async function createRoom(){
 
 
 /* =========================
-   CREATE PLAYER
+   CREATE / USE OWNER PLAYER
 ========================= */
 
-async function createPlayer(
-  roomId
-){
-
-  console.log(
-    "Using owner player:",
-    roomId
-  );
+async function createPlayer(roomId){
 
   const {
     data,
     error
-  } =
-    await supabaseClient
-      .rpc(
-        "use_owner_player",
-        {
-          p_room_id:
-            roomId
-        }
-      );
+  } = await supabaseClient
+    .rpc(
+      "use_owner_player",
+      {
+        p_room_id: roomId
+      }
+    );
+
 
   if(error){
-
-    console.error(
-      "PLAYER ERROR:",
-      error
-    );
-
-    alert(
-      "Player error:\n" +
-      error.message
-    );
-
-    return;
-
+    throw error;
   }
 
-  if(!data){
-
-    alert(
-      "Player نەگەڕایەوە لە Supabase."
-    );
-
-    return;
-
-  }
 
   const ownerPlayer =
     Array.isArray(data)
       ? data[0]
       : data;
 
-  if(
-    !ownerPlayer ||
-    !ownerPlayer.id
-  ){
 
-    alert(
-      "Player ID نەدۆزرایەوە."
+  if(!ownerPlayer){
+    throw new Error(
+      "Player دروست نەکرا."
     );
-
-    return;
-
   }
+
 
   currentPlayerId =
     ownerPlayer.id;
 
-  console.log(
-    "Owner player:",
-    ownerPlayer
-  );
 
   await loadProfile();
 
-  startGame();
-
-}
-
-
-/* =========================
-   START GAME
-========================= */
-
-function startGame(){
-
-  console.log(
-    "START GAME"
-  );
-
-  gameFinished = false;
-
-  document.getElementById(
-    "home"
-  ).style.display =
-    "none";
-
-  document.getElementById(
-    "game"
-  ).style.display =
-    "block";
-
-  document.getElementById(
-    "roomDisplay"
-  ).textContent =
-    roomCode || "------";
-
-  document.getElementById(
-    "playerDisplay"
-  ).textContent =
-    currentPlayerId || 1;
-
-  document.getElementById(
-    "callButton"
-  ).disabled =
-    false;
-
-  document.getElementById(
-    "board"
-  ).classList.remove(
-    "locked",
-    "winner"
-  );
-
-  document.getElementById(
-    "callerBox"
-  ).classList.remove(
-    "winner"
-  );
-
-  document.getElementById(
-    "message"
-  ).classList.remove(
-    "winner-message"
-  );
-
-  calledNumbers = [];
-
-  createCard();
-
-  startAutoCall();
+  await startGame();
 
 }
 
@@ -1629,15 +922,12 @@ function startGame(){
 
 async function loadProfile(){
 
-  if(!currentPlayerId){
-    return;
-  }
+  try{
 
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
+    const {
+      data,
+      error
+    } = await supabaseClient
       .rpc(
         "get_player_profile",
         {
@@ -1646,242 +936,201 @@ async function loadProfile(){
         }
       );
 
-  if(error){
 
-    console.error(
-      "PROFILE ERROR:",
+    if(error){
+      console.log(
+        "Profile error:",
+        error
+      );
+      return;
+    }
+
+
+    const profile =
+      Array.isArray(data)
+        ? data[0]
+        : data;
+
+
+    if(!profile){
+      return;
+    }
+
+
+    playerName =
+      profile.username ||
+      playerName;
+
+
+    currentGender =
+      (profile.gender || "")
+      .toLowerCase();
+
+
+    document.getElementById(
+      "coinText"
+    ).textContent =
+      Number(
+        profile.coin || 0
+      ).toLocaleString();
+
+  }catch(error){
+
+    console.log(
+      "Profile load:",
       error
     );
 
-    return;
-
   }
-
-  if(
-    !data ||
-    !data.length
-  ){
-
-    return;
-
-  }
-
-  const profile =
-    data[0];
-
-  currentGender =
-    (
-      profile.gender ||
-      ""
-    ).toLowerCase();
-
-  document.getElementById(
-    "profileUsername"
-  ).textContent =
-    profile.username || "-";
-
-  document.getElementById(
-    "profilePublicId"
-  ).textContent =
-    String(
-      profile.public_id ?? 0
-    ).padStart(
-      6,
-      "0"
-    );
-
-  document.getElementById(
-    "profileOwner"
-  ).textContent =
-    profile.is_owner
-      ? "Owner 👑"
-      : "Player";
-
-  document.getElementById(
-    "profileGender"
-  ).textContent =
-    profile.gender || "-";
-
-  document.getElementById(
-    "profileLevel"
-  ).textContent =
-    profile.level ?? "-";
-
-  document.getElementById(
-    "profileXP"
-  ).textContent =
-    profile.xp ?? "0";
-
-  document.getElementById(
-    "profileCoin"
-  ).textContent =
-    profile.coin ?? "0";
-
-  document.getElementById(
-    "profileGifts"
-  ).textContent =
-    profile.gifts_received ?? "0";
-
-  document.getElementById(
-    "homeCoins"
-  ).textContent =
-    profile.coin ?? "0";
-
-  document.getElementById(
-    "homeUserName"
-  ).textContent =
-    profile.username || "Mehvan";
-
-  document.getElementById(
-    "profileBox"
-  ).style.display =
-    "block";
 
 }
 
 
 /* =========================
-   CREATE BINGO CARD
+   START GAME
 ========================= */
 
-function createCard(){
+async function startGame(){
 
-  const ranges = [
+  gameFinished = false;
 
-    [1,15],
-    [16,30],
-    [31,45],
-    [46,60],
-    [61,75]
+  document.getElementById(
+    "homePage"
+  ).classList.add("hidden");
 
-  ];
+  document.getElementById(
+    "gamePage"
+  ).classList.remove("hidden");
 
-  let card = [];
 
-  for(
-    let column = 0;
-    column < 5;
-    column++
-  ){
-
-    let nums = [];
-
-    for(
-      let n = ranges[column][0];
-      n <= ranges[column][1];
-      n++
-    ){
-
-      nums.push(n);
-
-    }
-
-    nums.sort(
-      function(){
-        return Math.random() - 0.5;
-      }
+  const callButton =
+    document.getElementById(
+      "callButton"
     );
-
-    for(
-      let row = 0;
-      row < 5;
-      row++
-    ){
-
-      if(
-        column === 2 &&
-        row === 2
-      ){
-
-        card.push("FREE");
-
-      }else{
-
-        card.push(
-          nums[row]
-        );
-
-      }
-
-    }
-
-  }
-
-  let board = [];
-
-  for(
-    let row = 0;
-    row < 5;
-    row++
-  ){
-
-    for(
-      let col = 0;
-      col < 5;
-      col++
-    ){
-
-      board.push(
-        card[col * 5 + row]
-      );
-
-    }
-
-  }
-
-  numbers =
-    board;
-
-  renderBoard();
-
-}
-
-
-/* =========================
-   RENDER BOARD
-========================= */
-
-function renderBoard(){
 
   const board =
     document.getElementById(
       "board"
     );
 
-  board.innerHTML = "";
+  const callerBox =
+    document.querySelector(
+      ".caller"
+    );
+
+  const message =
+    document.getElementById(
+      "message"
+    );
+
+
+  callButton.disabled = false;
 
   board.classList.remove(
     "locked",
     "winner"
   );
 
+  callerBox.classList.remove(
+    "winner"
+  );
+
+  message.classList.remove(
+    "winner-message"
+  );
+
+
+  calledNumbers = [];
+
+  document.getElementById(
+    "numberDisplay"
+  ).className = "number";
+
+  document.getElementById(
+    "numberDisplay"
+  ).textContent = "---";
+
+
+  createCard();
+
+  startAutoCall();
+
+}
+
+
+/* =========================
+   BINGO CARD
+========================= */
+
+function createCard(){
+
+  numbers = [];
+
+  numbers.push(
+    ...randomNumbers(1,15,5)
+  );
+
+  numbers.push(
+    ...randomNumbers(16,30,5)
+  );
+
+  numbers.push(
+    ...randomNumbers(31,45,5)
+  );
+
+  numbers.push(
+    ...randomNumbers(46,60,5)
+  );
+
+  numbers.push(
+    ...randomNumbers(61,75,5)
+  );
+
+
+  numbers[12] =
+    "FREE";
+
+
+  const grid =
+    document.getElementById(
+      "bingoGrid"
+    );
+
+  grid.innerHTML = "";
+
+
   numbers.forEach(
-    function(num,index){
+    function(value,index){
 
       const cell =
         document.createElement(
-          "div"
+          "button"
         );
 
       cell.className =
         "cell";
 
-      cell.textContent =
-        num;
 
-      if(num === "FREE"){
+      if(value === "FREE"){
 
         cell.classList.add(
-          "free"
-        );
-
-        cell.classList.add(
+          "free",
           "marked"
         );
 
+        cell.textContent =
+          "FREE";
+
+      }else{
+
+        cell.textContent =
+          value;
+
       }
 
-      cell.onclick =
+
+      cell.addEventListener(
+        "click",
         function(){
 
           markCell(
@@ -1889,14 +1138,88 @@ function renderBoard(){
             index
           );
 
-        };
+        }
+      );
 
-      board.appendChild(
+
+      grid.appendChild(
         cell
       );
 
     }
   );
+
+}
+
+
+function randomNumbers(
+  min,
+  max,
+  count
+){
+
+  const arr = [];
+
+  for(
+    let n = min;
+    n <= max;
+    n++
+  ){
+    arr.push(n);
+  }
+
+
+  for(
+    let i = arr.length - 1;
+    i > 0;
+    i--
+  ){
+
+    const j =
+      Math.floor(
+        Math.random() *
+        (i + 1)
+      );
+
+    [
+      arr[i],
+      arr[j]
+    ] =
+    [
+      arr[j],
+      arr[i]
+    ];
+
+  }
+
+
+  return arr.slice(
+    0,
+    count
+  );
+
+}
+
+
+/* =========================
+   BINGO LETTER
+========================= */
+
+function getBingoLetter(number){
+
+  if(number >= 1 && number <= 15)
+    return "B";
+
+  if(number >= 16 && number <= 30)
+    return "I";
+
+  if(number >= 31 && number <= 45)
+    return "N";
+
+  if(number >= 46 && number <= 60)
+    return "G";
+
+  return "O";
 
 }
 
@@ -1914,18 +1237,17 @@ function markCell(
     return;
   }
 
-  if(
-    numbers[index] === "FREE"
-  ){
 
+  if(numbers[index] === "FREE"){
     return;
-
   }
+
 
   const number =
     Number(
       numbers[index]
     );
+
 
   if(
     !calledNumbers.includes(
@@ -1933,29 +1255,39 @@ function markCell(
     )
   ){
 
+    document.getElementById(
+      "message"
+    ).textContent =
+      "ئەم ژمارەیە هێشتا بانگ نەکراوە.";
+
     return;
 
   }
+
 
   if(
     cell.classList.contains(
       "marked"
     )
   ){
-
     return;
-
   }
 
+
+  const letter =
+    getBingoLetter(
+      number
+    );
+
+
   cell.classList.add(
-    "marked"
+    "marked",
+    "marked-" + letter
   );
 
-  /* MARK SOUND */
 
   playMarkSound();
 
-  /* CHECK BINGO */
 
   checkBingo();
 
@@ -1963,216 +1295,63 @@ function markCell(
 
 
 /* =========================
-   MARK SOUND
+   CHECK BINGO
 ========================= */
 
-function playMarkSound(){
+function checkBingo(){
 
-  try{
-
-    const AudioContext =
-      window.AudioContext ||
-      window.webkitAudioContext;
-
-    if(!AudioContext){
-      return;
-    }
-
-    const ctx =
-      new AudioContext();
-
-    const oscillator =
-      ctx.createOscillator();
-
-    const gain =
-      ctx.createGain();
-
-    oscillator.type =
-      "sine";
-
-    oscillator.frequency.value =
-      620;
-
-    gain.gain.setValueAtTime(
-      0.0001,
-      ctx.currentTime
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-      0.12,
-      ctx.currentTime + 0.01
-    );
-
-    gain.gain.exponentialRampToValueAtTime(
-      0.0001,
-      ctx.currentTime + 0.13
-    );
-
-    oscillator.connect(gain);
-
-    gain.connect(
-      ctx.destination
-    );
-
-    oscillator.start();
-
-    oscillator.stop(
-      ctx.currentTime + 0.14
-    );
-
-  }catch(error){
-
-    console.log(
-      "Mark sound error:",
-      error
-    );
-
-  }
-
-}
-
-
-/* =========================
-   CALL NUMBER
-========================= */
-
-function callNumber(){
-
-  if(gameFinished){
-    return;
-  }
-
-  const available = [];
-
-  for(
-    let i = 1;
-    i <= 75;
-    i++
-  ){
-
-    if(
-      !calledNumbers.includes(i)
-    ){
-
-      available.push(i);
-
-    }
-
-  }
-
-  if(
-    available.length === 0
-  ){
-
-    document.getElementById(
-      "message"
-    ).textContent =
-      "All numbers have been called.";
-
-    stopAutoCall();
-
-    return;
-
-  }
-
-  const random =
-    available[
-      Math.floor(
-        Math.random() *
-        available.length
+  const cells =
+    Array.from(
+      document.querySelectorAll(
+        ".cell"
       )
-    ];
-
-  calledNumbers.push(
-    random
-  );
-
-  showCalledNumber(
-    random
-  );
-
-}
-
-
-/* =========================
-   SHOW NUMBER
-========================= */
-
-function showCalledNumber(
-  random
-){
-
-  const numberElement =
-    document.getElementById(
-      "number"
     );
 
-  numberElement.className =
-    "number";
 
-  const letter =
-    getBingoLetter(
-      random
+  const marked =
+    cells.map(
+      cell =>
+        cell.classList.contains(
+          "marked"
+        )
     );
 
-  numberElement.classList.add(
-    "number-" + letter
-  );
 
-  numberElement.textContent =
-    letter + " " + random;
+  const lines = [
 
-  void numberElement.offsetWidth;
+    [0,1,2,3,4],
+    [5,6,7,8,9],
+    [10,11,12,13,14],
+    [15,16,17,18,19],
+    [20,21,22,23,24],
 
-  numberElement.classList.add(
-    "show"
-  );
+    [0,5,10,15,20],
+    [1,6,11,16,21],
+    [2,7,12,17,22],
+    [3,8,13,18,23],
+    [4,9,14,19,24],
 
-  document.getElementById(
-    "message"
-  ).textContent =
-    letter +
-    " " +
-    random +
-    " was called.";
+    [0,6,12,18,24],
+    [4,8,12,16,20]
 
-  /* NUMBER VOICE */
-
-  speakText(
-    letter +
-    " " +
-    random,
-    "number"
-  );
-
-}
+  ];
 
 
-/* =========================
-   BINGO LETTER
-========================= */
+  const hasBingo =
+    lines.some(
+      line =>
+        line.every(
+          index =>
+            marked[index]
+        )
+    );
 
-function getBingoLetter(
-  number
-){
 
-  if(number >= 1 && number <= 15){
-    return "B";
+  if(hasBingo){
+
+    bingoWin();
+
   }
-
-  if(number >= 16 && number <= 30){
-    return "I";
-  }
-
-  if(number >= 31 && number <= 45){
-    return "N";
-  }
-
-  if(number >= 46 && number <= 60){
-    return "G";
-  }
-
-  return "O";
 
 }
 
@@ -2189,9 +1368,6 @@ function startAutoCall(){
     return;
   }
 
-  /*
-    5 seconds between numbers.
-  */
 
   autoCallTimer =
     setInterval(
@@ -2206,15 +1382,9 @@ function startAutoCall(){
 }
 
 
-/* =========================
-   STOP AUTO CALL
-========================= */
-
 function stopAutoCall(){
 
-  if(
-    autoCallTimer !== null
-  ){
+  if(autoCallTimer){
 
     clearInterval(
       autoCallTimer
@@ -2229,181 +1399,116 @@ function stopAutoCall(){
 
 
 /* =========================
-   CHECK BINGO
+   CALL NUMBER
 ========================= */
 
-function checkBingo(){
+function callNumber(){
 
   if(gameFinished){
     return;
   }
 
-  const cells =
-    document.querySelectorAll(
-      ".cell"
-    );
 
-  let marked = [];
-
-  for(
-    let i = 0;
-    i < 25;
-    i++
+  if(
+    calledNumbers.length >= 75
   ){
 
-    marked[i] =
-      cells[i]
-        .classList
-        .contains(
-          "marked"
-        );
+    stopAutoCall();
 
-  }
-
-
-  /* ROWS */
-
-  for(
-    let row = 0;
-    row < 5;
-    row++
-  ){
-
-    let win = true;
-
-    for(
-      let col = 0;
-      col < 5;
-      col++
-    ){
-
-      if(
-        !marked[
-          row * 5 + col
-        ]
-      ){
-
-        win = false;
-        break;
-
-      }
-
-    }
-
-    if(win){
-
-      bingoWin();
-      return;
-
-    }
-
-  }
-
-
-  /* COLUMNS */
-
-  for(
-    let col = 0;
-    col < 5;
-    col++
-  ){
-
-    let win = true;
-
-    for(
-      let row = 0;
-      row < 5;
-      row++
-    ){
-
-      if(
-        !marked[
-          row * 5 + col
-        ]
-      ){
-
-        win = false;
-        break;
-
-      }
-
-    }
-
-    if(win){
-
-      bingoWin();
-      return;
-
-    }
-
-  }
-
-
-  /* DIAGONAL 1 */
-
-  let diagonal1 = true;
-
-  for(
-    let i = 0;
-    i < 5;
-    i++
-  ){
-
-    if(
-      !marked[
-        i * 5 + i
-      ]
-    ){
-
-      diagonal1 = false;
-      break;
-
-    }
-
-  }
-
-  if(diagonal1){
-
-    bingoWin();
     return;
 
   }
 
 
-  /* DIAGONAL 2 */
+  let random;
 
-  let diagonal2 = true;
 
-  for(
-    let i = 0;
-    i < 5;
-    i++
-  ){
+  do{
 
-    if(
-      !marked[
-        i * 5 + (4 - i)
-      ]
-    ){
+    random =
+      Math.floor(
+        Math.random() * 75
+      ) + 1;
 
-      diagonal2 = false;
-      break;
+  }while(
+    calledNumbers.includes(
+      random
+    )
+  );
 
-    }
 
-  }
+  calledNumbers.push(
+    random
+  );
 
-  if(diagonal2){
 
-    bingoWin();
-
-  }
+  showCalledNumber(
+    random
+  );
 
 }
 
 
 /* =========================
-   BINGO WIN
+   SHOW NUMBER
+========================= */
+
+function showCalledNumber(
+  random
+){
+
+  const letter =
+    getBingoLetter(
+      random
+    );
+
+
+  const numberElement =
+    document.getElementById(
+      "numberDisplay"
+    );
+
+
+  numberElement.className =
+    "number";
+
+
+  numberElement.classList.add(
+    "number-" + letter
+  );
+
+
+  numberElement.textContent =
+    letter + " " + random;
+
+
+  void numberElement.offsetWidth;
+
+
+  numberElement.classList.add(
+    "show"
+  );
+
+
+  document.getElementById(
+    "message"
+  ).textContent =
+    letter +
+    " " +
+    random +
+    " was called.";
+
+
+  speakText(
+    letter + " " + random,
+    "number"
+  );
+
+}
+
+
+/* =========================
+   WINNER
 ========================= */
 
 function bingoWin(){
@@ -2412,109 +1517,80 @@ function bingoWin(){
     return;
   }
 
-  gameFinished = true;
 
-  /* STOP NUMBERS */
+  gameFinished = true;
 
   stopAutoCall();
 
-  /* LOCK CALL BUTTON */
 
   const callButton =
     document.getElementById(
       "callButton"
     );
 
-  callButton.disabled =
-    true;
-
-  /* LOCK BOARD */
-
   const board =
     document.getElementById(
       "board"
     );
 
-  board.classList.add(
-    "locked",
-    "winner"
-  );
-
-  /* WINNER STYLE */
-
-  document.getElementById(
-    "callerBox"
-  ).classList.add(
-    "winner"
-  );
+  const callerBox =
+    document.querySelector(
+      ".caller"
+    );
 
   const message =
     document.getElementById(
       "message"
     );
 
+
+  callButton.disabled = true;
+
+
+  board.classList.add(
+    "locked",
+    "winner"
+  );
+
+
+  callerBox.classList.add(
+    "winner"
+  );
+
+
   message.classList.add(
     "winner-message"
   );
 
+
   message.textContent =
     "🎉 BINGO! YOU WIN!";
 
-  /* WINNER GENDER */
 
   let isFemale =
     currentGender === "female" ||
     currentGender === "f" ||
     currentGender === "girl";
 
-  let isMale =
-    currentGender === "male" ||
-    currentGender === "m" ||
-    currentGender === "boy";
+
+  let crown =
+    "👑";
+
 
   let title =
     "YOU ARE KING!";
 
-  let voiceType =
-    "male";
-
-  let crown =
-    "👑";
 
   if(isFemale){
 
     title =
       "YOU ARE QUEEN!";
 
-    voiceType =
-      "female";
-
     crown =
       "👸";
 
-  }else if(isMale){
-
-    title =
-      "YOU ARE KING!";
-
-    voiceType =
-      "male";
-
-    crown =
-      "👑";
-
   }
 
-
-  document.getElementById(
-    "winnerTitle"
-  ).textContent =
-    title;
-
-  document.getElementById(
-    "winnerName"
-  ).textContent =
-    playerName;
 
   document.getElementById(
     "winnerCrown"
@@ -2522,7 +1598,11 @@ function bingoWin(){
     crown;
 
 
-  /* SHOW EFFECT */
+  document.getElementById(
+    "winnerTitle"
+  ).textContent =
+    title;
+
 
   document.getElementById(
     "winnerOverlay"
@@ -2531,59 +1611,34 @@ function bingoWin(){
   );
 
 
-  /* CONFETTI */
+  playWinSound();
+
 
   createConfetti();
 
 
-  /* WINNER VOICE */
-
   setTimeout(
     function(){
 
-      speakText(
-        title,
-        "winner"
-      );
-
-    },
-    250
-  );
-
-
-  /* SECOND VOICE WITH PITCH */
-
-  if(
-    voiceType === "female"
-  ){
-
-    setTimeout(
-      function(){
+      if(isFemale){
 
         speakText(
           "You are Queen",
           "female"
         );
 
-      },
-      900
-    );
-
-  }else{
-
-    setTimeout(
-      function(){
+      }else{
 
         speakText(
           "You are King",
           "male"
         );
 
-      },
-      900
-    );
+      }
 
-  }
+    },
+    700
+  );
 
 }
 
@@ -2594,11 +1649,15 @@ function bingoWin(){
 
 function createConfetti(){
 
-  const amount = 90;
+  const overlay =
+    document.getElementById(
+      "winnerOverlay"
+    );
+
 
   for(
     let i = 0;
-    i < amount;
+    i < 80;
     i++
   ){
 
@@ -2607,53 +1666,46 @@ function createConfetti(){
         "div"
       );
 
+
     piece.className =
       "confetti";
 
+
     piece.style.left =
       Math.random() * 100 +
-      "vw";
+      "%";
 
-    piece.style.animationDuration =
-      (2.2 + Math.random() * 2.5) +
-      "s";
+
+    piece.style.background =
+      [
+        "#ff3b30",
+        "#ffd23f",
+        "#00d9ff",
+        "#7b3cff",
+        "#35e88a",
+        "#ff5ca8"
+      ][
+        Math.floor(
+          Math.random() * 6
+        )
+      ];
+
 
     piece.style.animationDelay =
-      Math.random() * 0.8 +
+      Math.random() * 1.5 +
       "s";
+
 
     piece.style.transform =
       "rotate(" +
       Math.random() * 360 +
       "deg)";
 
-    /*
-      Different shapes/sizes.
-    */
 
-    piece.style.width =
-      (6 + Math.random() * 7) +
-      "px";
-
-    piece.style.height =
-      (8 + Math.random() * 12) +
-      "px";
-
-    /*
-      Confetti uses random HSL
-      so no fixed color is required.
-    */
-
-    piece.style.background =
-      "hsl(" +
-      Math.floor(
-        Math.random() * 360
-      ) +
-      ",90%,60%)";
-
-    document.body.appendChild(
+    overlay.appendChild(
       piece
     );
+
 
     setTimeout(
       function(){
@@ -2661,25 +1713,10 @@ function createConfetti(){
         piece.remove();
 
       },
-      5500
+      5000
     );
 
   }
-
-}
-
-
-/* =========================
-   CLOSE WINNER
-========================= */
-
-function closeWinner(){
-
-  document.getElementById(
-    "winnerOverlay"
-  ).classList.remove(
-    "show"
-  );
 
 }
 
@@ -2692,39 +1729,18 @@ function newGame(){
 
   stopAutoCall();
 
-  gameFinished =
-    false;
+
+  gameFinished = false;
 
   calledNumbers = [];
 
-  currentGender =
-    currentGender || "";
 
   document.getElementById(
-    "number"
-  ).className =
-    "number";
-
-  document.getElementById(
-    "number"
-  ).textContent =
-    "—";
-
-  document.getElementById(
-    "message"
+    "winnerOverlay"
   ).classList.remove(
-    "winner-message"
+    "show"
   );
 
-  document.getElementById(
-    "message"
-  ).textContent =
-    "New game started.";
-
-  document.getElementById(
-    "callButton"
-  ).disabled =
-    false;
 
   document.getElementById(
     "board"
@@ -2733,17 +1749,43 @@ function newGame(){
     "winner"
   );
 
-  document.getElementById(
-    "callerBox"
+
+  document.querySelector(
+    ".caller"
   ).classList.remove(
     "winner"
   );
 
+
   document.getElementById(
-    "winnerOverlay"
+    "message"
   ).classList.remove(
-    "show"
+    "winner-message"
   );
+
+
+  document.getElementById(
+    "callButton"
+  ).disabled = false;
+
+
+  document.getElementById(
+    "numberDisplay"
+  ).className =
+    "number";
+
+
+  document.getElementById(
+    "numberDisplay"
+  ).textContent =
+    "---";
+
+
+  document.getElementById(
+    "message"
+  ).textContent =
+    "ئامادە بە...";
+
 
   createCard();
 
@@ -2751,6 +1793,25 @@ function newGame(){
 
 }
 
+
+/* =========================
+   LOAD SPEECH VOICES
+========================= */
+
+if(
+  "speechSynthesis" in window
+){
+
+  window.speechSynthesis
+    .onvoiceschanged =
+    function(){
+
+      window.speechSynthesis
+        .getVoices();
+
+    };
+
+}
 </script>
 
 </body>
