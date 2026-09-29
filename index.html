@@ -1229,91 +1229,162 @@ input{
 
 <!-- HOME -->
 
-<section id="homePage" class="page">
+<section id="homePage" class="page premium-home">
 
-  <div class="logo">BINGO</div>
+  <div class="home-top">
 
-  <div class="card-box">
+    <div class="profile-mini">
+      <div class="avatar">
+        👤
+      </div>
 
-    <label>ناوی یاریزان</label>
+      <div class="profile-info">
+        <strong id="homePlayerName">Mehvan</strong>
+        <span>⭐ Level 12</span>
+        <small>🟢 Online</small>
+      </div>
+    </div>
 
-    <input
-      id="name"
-      value="Mehvan"
-      maxlength="20"
-    >
+    <div class="home-actions">
+      <div class="coin-box">
+        <span>🪙</span>
+        <strong id="homeCoins">25,000</strong>
+      </div>
 
-    <label>نرخی چوونە ژوورەوە</label>
+      <button class="notify-btn">🔔</button>
+    </div>
 
-    <div class="fees">
+  </div>
 
-      <button class="fee selected" data-fee="100">
-        100
+
+  <div class="bingo-brand">
+
+    <div class="brand-glow"></div>
+
+    <div class="logo-premium">
+      BINGO
+    </div>
+
+    <p>LET'S PLAY & WIN</p>
+
+  </div>
+
+
+  <div class="play-area">
+
+    <button class="premium-play" onclick="playGame()">
+
+      <span class="play-icon">🎮</span>
+
+      <span class="play-text">
+        <strong>PLAY NOW</strong>
+        <small>Find a game</small>
+      </span>
+
+      <span class="play-arrow">›</span>
+
+    </button>
+
+
+    <button class="friends-play" onclick="openFriendGame()">
+
+      <span>👥</span>
+
+      <div>
+        <strong>PLAY WITH FRIENDS</strong>
+        <small>Create a private room</small>
+      </div>
+
+      <b>›</b>
+
+    </button>
+
+  </div>
+
+
+  <div class="lobby-section">
+
+    <div class="section-title">
+      <strong>Quick Access</strong>
+      <span>View All ›</span>
+    </div>
+
+
+    <div class="quick-grid">
+
+      <button class="quick-card">
+        <div class="quick-icon winner-icon">🏆</div>
+        <strong>Winners</strong>
+        <small>Top players</small>
       </button>
 
-      <button class="fee" data-fee="500">
-        500
+      <button class="quick-card">
+        <div class="quick-icon players-icon">👥</div>
+        <strong>Players</strong>
+        <small>Online now</small>
       </button>
 
-      <button class="fee" data-fee="1000">
-        1,000
+      <button class="quick-card">
+        <div class="quick-icon reward-icon">🎁</div>
+        <strong>Rewards</strong>
+        <small>Daily gifts</small>
       </button>
 
-      <button class="fee" data-fee="5000">
-        5,000
-      </button>
-
-      <button class="fee" data-fee="10000">
-        10,000
-      </button>
-
-      <button class="fee" data-fee="25000">
-        25,000
-      </button>
-
-      <button class="fee" data-fee="100000">
-        100,000
+      <button class="quick-card">
+        <div class="quick-icon chat-icon">💬</div>
+        <strong>Chat</strong>
+        <small>Meet players</small>
       </button>
 
     </div>
 
-    <div class="modes">
+  </div>
 
-      <button class="mode selected" data-mode="solo">
-        🎯 Solo
-      </button>
 
-      <button class="mode" data-mode="friends">
-        👥 With Friends
-      </button>
+  <div class="online-bar">
 
+    <div class="online-avatars">
+      <span>👨🏻</span>
+      <span>👩🏻</span>
+      <span>🧑🏻</span>
+      <span>👨🏽</span>
     </div>
 
-    <label>ژمارەی کارت</label>
-
-    <div class="card-count">
-
-      <button
-        class="count-btn selected"
-        data-count="1"
-      >
-        🃏 ١ کارت
-      </button>
-
-      <button
-        class="count-btn"
-        data-count="2"
-      >
-        🃏🃏 ٢ کارت
-      </button>
-
+    <div>
+      <strong>1,248 Players Online</strong>
+      <small>Players are waiting for a game</small>
     </div>
 
-    <button
-      class="play"
-      onclick="playGame()"
-    >
-      PLAY
+    <span class="online-dot">●</span>
+
+  </div>
+
+
+  <div class="bottom premium-bottom">
+
+    <button class="active">
+      <span>🏠</span>
+      <small>Home</small>
+    </button>
+
+    <button>
+      <span>👥</span>
+      <small>Friends</small>
+    </button>
+
+    <button>
+      <span>💬</span>
+      <small>Chat</small>
+    </button>
+
+    <button>
+      <span>🎁</span>
+      <small>Rewards</small>
+    </button>
+
+    <button>
+      <span>👤</span>
+      <small>Profile</small>
     </button>
 
   </div>
