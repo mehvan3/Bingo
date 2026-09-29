@@ -532,34 +532,43 @@ function unlockAudio(){
 function playMarkSound(){
   try{
     if(!audioContext){
-      audioContext=new (window.AudioContext||window.webkitAudioContext)();
+      audioContext=new(
+        window.AudioContext ||
+        window.webkitAudioContext
+      )();
     }
+
+    const play=()=>{
+      const now=audioContext.currentTime;
+
+      const osc=audioContext.createOscillator();
+      const gain=audioContext.createGain();
+
+      osc.type="sine";
+      osc.frequency.setValueAtTime(800,now);
+      osc.frequency.setValueAtTime(1100,now+0.08);
+
+      gain.gain.setValueAtTime(0.2,now);
+      gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        now+0.15
+      );
+
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+
+      osc.start(now);
+      osc.stop(now+0.15);
+    };
 
     if(audioContext.state==="suspended"){
-      audioContext.resume();
+      audioContext.resume().then(play);
+    }else{
+      play();
     }
 
-    const now=audioContext.currentTime;
-
-    const osc=audioContext.createOscillator();
-    const gain=audioContext.createGain();
-
-    osc.type="sine";
-    osc.frequency.setValueAtTime(700,now);
-    osc.frequency.exponentialRampToValueAtTime(1100,now+0.10);
-
-    gain.gain.setValueAtTime(0.001,now);
-    gain.gain.exponentialRampToValueAtTime(0.25,now+0.02);
-    gain.gain.exponentialRampToValueAtTime(0.001,now+0.15);
-
-    osc.connect(gain);
-    gain.connect(audioContext.destination);
-
-    osc.start(now);
-    osc.stop(now+0.16);
-
   }catch(error){
-    console.log("Mark sound error:",error);
+    console.log("Mark sound:",error);
   }
 }
 /* =========================
