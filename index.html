@@ -375,15 +375,23 @@ async function joinRoom() {
   startGame();
 }
 /* START GAME */
-function startGame(){
-  document.getElementById("home").style.display="none";
-  document.getElementById("game").style.display="block";
-  document.getElementById("roomDisplay").textContent =
-    roomCode;
-  document.getElementById("playerDisplay").textContent =
-    playerName;
-  createCard();
+const { data: player, error: playerError } = await supabaseClient
+  .from("Player")
+  .insert({
+    room_id: data.id
+  })
+  .select()
+  .single();
+
+if (playerError) {
+  console.error(playerError);
+  alert(playerError.message);
+  return;
 }
+
+console.log("Player created:", player);
+
+startGame();
 /* CREATE BINGO CARD */
 function createCard(){
   const ranges = [
