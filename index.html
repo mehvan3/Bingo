@@ -1088,7 +1088,7 @@ async function createPlayer(
   } =
     await supabaseClient
       .rpc(
-        "create_player",
+        "use_owner_player",
         {
           p_room_id:
             roomId
@@ -1114,11 +1114,13 @@ async function createPlayer(
     data.id;
 
   console.log(
-    "Player created:",
+    "Owner player:",
     data
   );
 
-  await createProfile();
+  await loadProfile();
+
+  startGame();
 
 }
 
