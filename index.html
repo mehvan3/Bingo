@@ -344,20 +344,34 @@ async function createRoom() {
   startGame();
 }
 /* JOIN ROOM */
-function joinRoom(){
-  playerName =
-    document.getElementById("name").value.trim();
-  const code =
-    document.getElementById("room").value.trim();
-  if(!playerName){
+async function joinRoom() {
+  playerName = document.getElementById("name").value.trim();
+  const code = document.getElementById("roomCode").value.trim();
+
+  if (!playerName) {
     alert("Please enter your name.");
     return;
   }
-  if(!/^[0-9]{6}$/.test(code)){
-    alert("Enter a valid 6-digit room code.");
+
+  if (!/^\d{6}$/.test(code)) {
+    alert("Please enter a 6-digit room code.");
     return;
   }
-  roomCode = code;
+
+  const { data, error } = await supabaseClient
+    .from("Room")
+    .select("*")
+    .eq("room_code", code)
+    .single();
+
+  if (error || !data) {
+    alert("Room not found.");
+    console.error(error);
+    return;
+  }
+
+  roomCode = data.room_code;
+
   startGame();
 }
 /* START GAME */
