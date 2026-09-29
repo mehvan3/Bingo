@@ -814,6 +814,21 @@ let currentPlayerId = null;
 
 let currentRoomId = null;
 
+  let autoCallTimer = null;
+
+function startAutoCall(){
+
+  if(autoCallTimer){
+    return;
+  }
+
+  autoCallTimer = setInterval(
+    callNumber,
+    3000
+  );
+
+}
+  
 
 /* =========================
    HOME STATE
