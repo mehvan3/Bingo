@@ -1458,6 +1458,7 @@ function startGame(){
    LOAD PROFILE
 ========================= */
 
+
 async function loadProfile(){
 
   if(!currentPlayerId){
@@ -1493,6 +1494,23 @@ async function loadProfile(){
     "profileUsername"
   ).textContent =
     profile.username || "-";
+
+  document.getElementById(
+    "profilePublicId"
+  ).textContent =
+    String(
+      profile.public_id ?? 0
+    ).padStart(
+      6,
+      "0"
+    );
+
+  document.getElementById(
+    "profileOwner"
+  ).textContent =
+    profile.is_owner
+      ? "Owner 👑"
+      : "Player";
 
   document.getElementById(
     "profileGender"
@@ -1535,6 +1553,7 @@ async function loadProfile(){
     "block";
 
 }
+
 
 
 /* =========================
