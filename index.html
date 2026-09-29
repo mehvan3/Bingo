@@ -313,16 +313,34 @@ let calledNumbers = [];
 let roomCode = "";
 let playerName = "";
 /* CREATE ROOM */
-function createRoom(){
-  playerName =
-    document.getElementById("name").value.trim();
-  if(!playerName){
+async function createRoom() {
+  playerName = document.getElementById("name").value.trim();
+
+  if (!playerName) {
     alert("Please enter your name.");
     return;
   }
-  roomCode =
-    Math.floor(100000 + Math.random() * 900000)
-    .toString();
+
+  const { data, error } = await supabaseClient
+    .from("Room")
+    .insert({
+      entry_fee: 0,
+      max_player: 25,
+      player_count: 0,
+      status: "waiting",
+      account_id: "8cc0bcb2-144c-4e0b-9da7-902599f0c6e2"
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error);
+    alert(error.message);
+    return;
+  }
+
+  roomCode = data.room_code;
+
   startGame();
 }
 /* JOIN ROOM */
