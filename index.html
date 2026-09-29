@@ -1389,6 +1389,7 @@ let currentRoomId=null;
 let currentPlayerId=null;
 let playerName="Mehvan";
 let currentGender="";
+let currentProfilePicture="";
 let selectedEntryFee=100;
 let selectedMode="solo";
 let selectedCardCount=1;
@@ -1903,8 +1904,12 @@ async function loadProfile(){
       playerName;
 
     currentGender =
-      (profile.gender||"")
-        .toLowerCase();
+  (profile.gender||"")
+    .toLowerCase();
+
+currentProfilePicture =
+  profile.profile_picture ||
+  makeAvatar(profile.username || playerName);
 
     document
       .getElementById("coinText")
