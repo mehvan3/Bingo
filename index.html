@@ -7,6 +7,7 @@
 <title>Bingo</title>
 
 <style>
+
 *{
   box-sizing:border-box;
   margin:0;
@@ -29,6 +30,10 @@ body{
   padding:15px 0 40px;
 }
 
+/* =========================
+   HEADER
+========================= */
+
 .header{
   text-align:center;
   margin:20px 0 25px;
@@ -49,6 +54,10 @@ body{
   font-size:14px;
 }
 
+/* =========================
+   CARD
+========================= */
+
 .card{
   background:rgba(255,255,255,.055);
   border:1px solid rgba(255,255,255,.09);
@@ -57,6 +66,10 @@ body{
   box-shadow:0 25px 70px rgba(0,0,0,.4);
   backdrop-filter:blur(18px);
 }
+
+/* =========================
+   INPUT
+========================= */
 
 input{
   width:100%;
@@ -75,6 +88,10 @@ input:focus{
   box-shadow:0 0 0 3px rgba(128,108,255,.12);
 }
 
+/* =========================
+   BUTTON
+========================= */
+
 button{
   width:100%;
   border:0;
@@ -90,18 +107,138 @@ button:active{
   transform:scale(.97);
 }
 
-.create{
-  color:white;
-  background:linear-gradient(135deg,#765cff,#a855f7);
-  box-shadow:0 10px 25px rgba(118,92,255,.25);
+/* =========================
+   HOME
+========================= */
+
+#home{
+  padding-bottom:20px;
 }
 
-.join{
-  margin-top:10px;
-  color:white;
-  background:#242431;
-  border:1px solid #373747;
+.home-user{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:15px;
 }
+
+.home-user-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.avatar{
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#765cff,#a855f7);
+  font-size:23px;
+}
+
+.home-user-name{
+  font-size:15px;
+  font-weight:800;
+}
+
+.home-user-level{
+  color:#88889a;
+  font-size:11px;
+  margin-top:3px;
+}
+
+.coins{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  background:#171722;
+  border:1px solid #30303e;
+  padding:10px 13px;
+  border-radius:13px;
+  font-weight:800;
+}
+
+.play-button{
+  color:white;
+  background:linear-gradient(135deg,#765cff,#a855f7);
+  box-shadow:0 12px 30px rgba(118,92,255,.28);
+  font-size:20px;
+  padding:19px;
+}
+
+.play-button small{
+  display:block;
+  margin-top:4px;
+  font-size:11px;
+  font-weight:500;
+  color:#ddd8ff;
+}
+
+.section-title{
+  text-align:center;
+  color:#88889a;
+  font-size:11px;
+  letter-spacing:1.5px;
+  margin:24px 0 12px;
+  text-transform:uppercase;
+}
+
+.entry-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.entry-button{
+  background:#181822;
+  color:#fff;
+  border:1px solid #30303e;
+  padding:15px 8px;
+  font-size:15px;
+}
+
+.entry-button.selected{
+  background:linear-gradient(135deg,#765cff,#a855f7);
+  border-color:#9d8cff;
+  box-shadow:0 8px 20px rgba(118,92,255,.25);
+}
+
+.entry-button:last-child{
+  grid-column:1 / -1;
+}
+
+.mode-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.mode-button{
+  background:#181822;
+  color:white;
+  border:1px solid #30303e;
+  padding:15px 8px;
+}
+
+.mode-button.selected{
+  background:#25213d;
+  border-color:#806cff;
+}
+
+.play-info{
+  text-align:center;
+  color:#777789;
+  font-size:11px;
+  margin-top:13px;
+  line-height:1.6;
+}
+
+/* =========================
+   DIVIDER
+========================= */
 
 .divider{
   display:flex;
@@ -120,7 +257,41 @@ button:active{
   background:#30303c;
 }
 
-/* GAME */
+/* =========================
+   HOME NAV
+========================= */
+
+.home-nav{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:7px;
+  margin-top:18px;
+}
+
+.nav-button{
+  background:#15151f;
+  border:1px solid #292936;
+  color:#777789;
+  padding:12px 5px;
+  font-size:11px;
+  border-radius:14px;
+}
+
+.nav-button.active{
+  color:white;
+  border-color:#6657b8;
+  background:#211e36;
+}
+
+.nav-icon{
+  display:block;
+  font-size:20px;
+  margin-bottom:5px;
+}
+
+/* =========================
+   GAME
+========================= */
 
 #game{
   display:none;
@@ -246,7 +417,9 @@ button:active{
   border:1px solid #373747;
 }
 
-/* PROFILE */
+/* =========================
+   PROFILE
+========================= */
 
 .profile{
   display:none;
@@ -267,12 +440,17 @@ button:active{
   font-weight:700;
 }
 
+/* =========================
+   FOOTER
+========================= */
+
 .footer{
   text-align:center;
   color:#555565;
   font-size:11px;
   margin-top:25px;
 }
+
 </style>
 </head>
 
@@ -280,197 +458,420 @@ button:active{
 
 <div class="app">
 
-  <!-- HOME -->
+<!-- =========================
+     HOME
+========================= -->
 
-  <section id="home">
+<section id="home">
 
-    <div class="header">
-      <div class="logo">BINGO</div>
-      <div class="subtitle">
-        Play Bingo online with friends
-      </div>
+  <div class="header">
+
+    <div class="logo">
+      BINGO
     </div>
 
-    <div class="card">
-
-      <input
-        id="name"
-        type="text"
-        placeholder="Enter your name"
-        maxlength="20"
-      >
-
-      <button
-        class="create"
-        onclick="createRoom()"
-      >
-        🎮 Create Room
-      </button>
-
-      <div class="divider">
-        OR
-      </div>
-
-      <input
-        id="roomCode"
-        type="text"
-        placeholder="Enter room code"
-        maxlength="6"
-        inputmode="numeric"
-      >
-
-      <button
-        class="join"
-        onclick="joinRoom()"
-      >
-        🔑 Join Room
-      </button>
-
+    <div class="subtitle">
+      Play • Chat • Rewards
     </div>
 
-    <div class="footer">
-      Bingo • Modern Edition
-    </div>
-
-  </section>
+  </div>
 
 
-  <!-- GAME -->
+  <div class="card">
 
-  <section id="game">
+    <!-- USER -->
 
-    <div class="header">
-      <div class="logo">BINGO</div>
-      <div class="subtitle">
-        Game Room
-      </div>
-    </div>
+    <div class="home-user">
 
+      <div class="home-user-left">
 
-    <!-- PROFILE -->
+        <div class="avatar">
+          👤
+        </div>
 
-    <div
-      id="profileBox"
-      class="card profile"
-    >
+        <div>
 
-      <h2>
-        👤 Player Profile
-      </h2>
+          <div
+            class="home-user-name"
+            id="homeUserName"
+          >
+            Player
+          </div>
 
-      <p>
-        Username:
-        <span id="profileUsername">-</span>
-      </p>
+          <div class="home-user-level">
+            Level 1
+          </div>
 
-      <p>
-        Gender:
-        <span id="profileGender">-</span>
-      </p>
+        </div>
 
-      <p>
-        Level:
-        <span id="profileLevel">-</span>
-      </p>
-
-      <p>
-        XP:
-        <span id="profileXP">-</span>
-      </p>
-
-      <p>
-        🪙 Coins:
-        <span id="profileCoin">-</span>
-      </p>
-
-      <p>
-        🎁 Gifts Received:
-        <span id="profileGifts">-</span>
-      </p>
-
-    </div>
-
-
-    <div class="topbar">
-
-      <div class="room">
-        ROOM:
-        <b id="roomDisplay">
-          ------
-        </b>
       </div>
 
-      <div class="players">
-        👤
-        <span id="playerDisplay">
-          1
+
+      <div class="coins">
+
+        🪙
+
+        <span id="homeCoins">
+          1000
         </span>
+
       </div>
 
     </div>
 
 
-    <div class="caller">
+    <!-- NAME -->
 
-      <div class="caller-title">
-        Last Number
-      </div>
+    <input
+      id="name"
+      type="text"
+      placeholder="Enter your name"
+      maxlength="20"
+    >
 
-      <div
-        class="number"
-        id="number"
-      >
-        —
-      </div>
+
+    <!-- PLAY -->
+
+    <button
+      class="play-button"
+      onclick="playGame()"
+    >
+
+      🎮 PLAY
+
+      <small>
+        Find players and start Bingo
+      </small>
+
+    </button>
+
+
+    <!-- ENTRY FEE -->
+
+    <div class="section-title">
+      Choose Entry Fee
+    </div>
+
+
+    <div class="entry-grid">
 
       <button
-        class="call"
-        onclick="callNumber()"
+        class="entry-button selected"
+        data-fee="100"
+        onclick="selectEntryFee(100,this)"
       >
-        🔢 Call Number
+        🪙 100
+      </button>
+
+      <button
+        class="entry-button"
+        data-fee="500"
+        onclick="selectEntryFee(500,this)"
+      >
+        🪙 500
+      </button>
+
+      <button
+        class="entry-button"
+        data-fee="1000"
+        onclick="selectEntryFee(1000,this)"
+      >
+        🪙 1,000
+      </button>
+
+      <button
+        class="entry-button"
+        data-fee="5000"
+        onclick="selectEntryFee(5000,this)"
+      >
+        🪙 5,000
+      </button>
+
+      <button
+        class="entry-button"
+        data-fee="10000"
+        onclick="selectEntryFee(10000,this)"
+      >
+        🪙 10,000
+      </button>
+
+      <button
+        class="entry-button"
+        data-fee="25000"
+        onclick="selectEntryFee(25000,this)"
+      >
+        🪙 25,000
+      </button>
+
+      <button
+        class="entry-button"
+        data-fee="100000"
+        onclick="selectEntryFee(100000,this)"
+      >
+        🪙 100,000
       </button>
 
     </div>
 
 
-    <div class="bingo-title">
+    <!-- MODE -->
 
-      <div>B</div>
-      <div>I</div>
-      <div>N</div>
-      <div>G</div>
-      <div>O</div>
+    <div class="section-title">
+      Game Mode
+    </div>
+
+
+    <div class="mode-grid">
+
+      <button
+        id="soloMode"
+        class="mode-button selected"
+        onclick="selectMode('solo')"
+      >
+        👥 Solo
+        <small style="
+          display:block;
+          color:#777789;
+          margin-top:5px;
+          font-size:10px;
+        ">
+          Find players
+        </small>
+      </button>
+
+
+      <button
+        id="friendsMode"
+        class="mode-button"
+        onclick="selectMode('friends')"
+      >
+        👫 With Friends
+        <small style="
+          display:block;
+          color:#777789;
+          margin-top:5px;
+          font-size:10px;
+        ">
+          Invite friends
+        </small>
+      </button>
 
     </div>
 
 
-    <div
-      class="board"
-      id="board"
-    ></div>
+    <div class="play-info">
+
+      Choose your entry fee and game mode,
+      then press PLAY.
+
+    </div>
+
+  </div>
 
 
-    <div
-      class="message"
-      id="message"
+  <!-- NAVIGATION -->
+
+  <div class="home-nav">
+
+    <button
+      class="nav-button active"
+      onclick="homeNavigation('play')"
     >
-      Call a number to start.
+      <span class="nav-icon">🎮</span>
+      Play
+    </button>
+
+
+    <button
+      class="nav-button"
+      onclick="homeNavigation('chat')"
+    >
+      <span class="nav-icon">💬</span>
+      Chat
+    </button>
+
+
+    <button
+      class="nav-button"
+      onclick="homeNavigation('reward')"
+    >
+      <span class="nav-icon">🎁</span>
+      Reward
+    </button>
+
+
+    <button
+      class="nav-button"
+      onclick="homeNavigation('profile')"
+    >
+      <span class="nav-icon">👤</span>
+      Profile
+    </button>
+
+  </div>
+
+
+  <div class="footer">
+    Bingo • Modern Edition
+  </div>
+
+</section>
+
+
+<!-- =========================
+     GAME
+========================= -->
+
+<section id="game">
+
+  <div class="header">
+
+    <div class="logo">
+      BINGO
+    </div>
+
+    <div class="subtitle">
+      Game Room
+    </div>
+
+  </div>
+
+
+  <!-- PROFILE -->
+
+  <div
+    id="profileBox"
+    class="card profile"
+  >
+
+    <h2>
+      👤 Player Profile
+    </h2>
+
+    <p>
+      Username:
+      <span id="profileUsername">-</span>
+    </p>
+
+    <p>
+      Gender:
+      <span id="profileGender">-</span>
+    </p>
+
+    <p>
+      Level:
+      <span id="profileLevel">-</span>
+    </p>
+
+    <p>
+      XP:
+      <span id="profileXP">-</span>
+    </p>
+
+    <p>
+      🪙 Coins:
+      <span id="profileCoin">-</span>
+    </p>
+
+    <p>
+      🎁 Gifts Received:
+      <span id="profileGifts">-</span>
+    </p>
+
+  </div>
+
+
+  <div class="topbar">
+
+    <div class="room">
+
+      ROOM:
+
+      <b id="roomDisplay">
+        ------
+      </b>
+
+    </div>
+
+
+    <div class="players">
+
+      👤
+
+      <span id="playerDisplay">
+        1
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <div class="caller">
+
+    <div class="caller-title">
+      Last Number
+    </div>
+
+
+    <div
+      class="number"
+      id="number"
+    >
+      —
     </div>
 
 
     <button
-      class="newgame"
-      onclick="newGame()"
+      class="call"
+      onclick="callNumber()"
     >
-      🔄 New Game
+      🔢 Call Number
     </button>
 
-  </section>
+  </div>
+
+
+  <div class="bingo-title">
+
+    <div>B</div>
+    <div>I</div>
+    <div>N</div>
+    <div>G</div>
+    <div>O</div>
+
+  </div>
+
+
+  <div
+    class="board"
+    id="board"
+  ></div>
+
+
+  <div
+    class="message"
+    id="message"
+  >
+    Call a number to start.
+  </div>
+
+
+  <button
+    class="newgame"
+    onclick="newGame()"
+  >
+    🔄 New Game
+  </button>
+
+</section>
 
 </div>
 
 
-<!-- SUPABASE -->
+<!-- =========================
+     SUPABASE
+========================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -481,6 +882,7 @@ const SUPABASE_URL =
 
 const SUPABASE_ANON_KEY =
   "sb_publishable_UcmJ964uYcedY4lp8iYxRA_PF3TSNNY";
+
 
 const supabaseClient =
   window.supabase.createClient(
@@ -494,6 +896,10 @@ console.log(
   !!supabaseClient
 );
 
+
+/* =========================
+   GAME STATE
+========================= */
 
 let numbers = [];
 
@@ -509,10 +915,114 @@ let currentRoomId = null;
 
 
 /* =========================
-   CREATE ROOM
+   HOME STATE
 ========================= */
 
-async function createRoom(){
+let selectedEntryFee = 100;
+
+let selectedMode = "solo";
+
+
+/* =========================
+   SELECT ENTRY FEE
+========================= */
+
+function selectEntryFee(
+  fee,
+  button
+){
+
+  selectedEntryFee = fee;
+
+
+  document
+    .querySelectorAll(
+      ".entry-button"
+    )
+    .forEach(
+      btn =>
+        btn.classList.remove(
+          "selected"
+        )
+    );
+
+
+  button.classList.add(
+    "selected"
+  );
+
+
+  console.log(
+    "Selected entry fee:",
+    fee
+  );
+
+}
+
+
+/* =========================
+   SELECT GAME MODE
+========================= */
+
+function selectMode(mode){
+
+  selectedMode = mode;
+
+
+  document
+    .getElementById(
+      "soloMode"
+    )
+    .classList.remove(
+      "selected"
+    );
+
+
+  document
+    .getElementById(
+      "friendsMode"
+    )
+    .classList.remove(
+      "selected"
+    );
+
+
+  if(mode === "solo"){
+
+    document
+      .getElementById(
+        "soloMode"
+      )
+      .classList.add(
+        "selected"
+      );
+
+  }else{
+
+    document
+      .getElementById(
+        "friendsMode"
+      )
+      .classList.add(
+        "selected"
+      );
+
+  }
+
+
+  console.log(
+    "Selected mode:",
+    mode
+  );
+
+}
+
+
+/* =========================
+   PLAY
+========================= */
+
+async function playGame(){
 
   playerName =
     document
@@ -523,9 +1033,110 @@ async function createRoom(){
 
   if(!playerName){
 
-    alert("Please enter your name.");
+    alert(
+      "Please enter your name."
+    );
 
     return;
+  }
+
+
+  document
+    .getElementById(
+      "homeUserName"
+    )
+    .textContent =
+      playerName;
+
+
+  console.log(
+    "Starting game:",
+    {
+      playerName,
+      selectedEntryFee,
+      selectedMode
+    }
+  );
+
+
+  await createRoom();
+
+}
+
+
+/* =========================
+   HOME NAVIGATION
+========================= */
+
+function homeNavigation(section){
+
+  if(section === "play"){
+
+    return;
+
+  }
+
+
+  if(section === "chat"){
+
+    alert(
+      "Chat Room will be added here."
+    );
+
+    return;
+
+  }
+
+
+  if(section === "reward"){
+
+    alert(
+      "Reward will be added here."
+    );
+
+    return;
+
+  }
+
+
+  if(section === "profile"){
+
+    alert(
+      "Profile will be added here."
+    );
+
+    return;
+
+  }
+
+}
+
+
+/* =========================
+   CREATE ROOM
+========================= */
+
+async function createRoom(){
+
+  if(!playerName){
+
+    playerName =
+      document
+        .getElementById("name")
+        .value
+        .trim();
+
+  }
+
+
+  if(!playerName){
+
+    alert(
+      "Please enter your name."
+    );
+
+    return;
+
   }
 
 
@@ -539,13 +1150,17 @@ async function createRoom(){
 
       .insert({
 
-        entry_fee: 0,
+        entry_fee:
+          selectedEntryFee,
 
-        max_player: 25,
+        max_player:
+          25,
 
-        player_count: 0,
+        player_count:
+          0,
 
-        status: "waiting",
+        status:
+          "waiting",
 
         account_id:
           "8cc0bcb2-144c-4e0b-9da7-902599f0c6e2"
@@ -559,16 +1174,23 @@ async function createRoom(){
 
   if(error){
 
-    console.error(error);
+    console.error(
+      "Room error:",
+      error
+    );
 
-    alert(error.message);
+    alert(
+      error.message
+    );
 
     return;
+
   }
 
 
   roomCode =
     data.room_code;
+
 
   currentRoomId =
     data.id;
@@ -603,9 +1225,12 @@ async function joinRoom(){
 
   if(!playerName){
 
-    alert("Please enter your name.");
+    alert(
+      "Please enter your name."
+    );
 
     return;
+
   }
 
 
@@ -616,6 +1241,7 @@ async function joinRoom(){
     );
 
     return;
+
   }
 
 
@@ -639,16 +1265,22 @@ async function joinRoom(){
 
   if(error || !data){
 
-    alert("Room not found.");
+    alert(
+      "Room not found."
+    );
 
-    console.error(error);
+    console.error(
+      error
+    );
 
     return;
+
   }
 
 
   roomCode =
     data.room_code;
+
 
   currentRoomId =
     data.id;
@@ -665,28 +1297,54 @@ async function joinRoom(){
    CREATE PLAYER
 ========================= */
 
-async function createPlayer(roomId){
+async function createPlayer(
+  roomId
+){
 
   const {
     data,
     error
-  } = await supabaseClient
-    .rpc("create_player", {
-      p_room_id: roomId
-    });
+  } =
+    await supabaseClient
+      .rpc(
+        "create_player",
+        {
+          p_room_id:
+            roomId
+        }
+      );
+
 
   if(error){
-    console.error(error);
-    alert(error.message);
+
+    console.error(
+      "Player error:",
+      error
+    );
+
+    alert(
+      error.message
+    );
+
     return;
+
   }
 
-  currentPlayerId = data.id;
 
-  console.log("Player created:", data);
+  currentPlayerId =
+    data.id;
+
+
+  console.log(
+    "Player created:",
+    data
+  );
+
 
   await createProfile();
+
 }
+
 
 /* =========================
    CREATE PROFILE
@@ -710,11 +1368,14 @@ async function createProfile(){
         username:
           playerName,
 
-        level: 1,
+        level:
+          1,
 
-        xp: 0,
+        xp:
+          0,
 
-        coin: 1000
+        coin:
+          1000
 
       })
 
@@ -745,23 +1406,33 @@ async function createProfile(){
 function startGame(){
 
   document
-    .getElementById("home")
-    .style.display = "none";
+    .getElementById(
+      "home"
+    )
+    .style.display =
+      "none";
 
 
   document
-    .getElementById("game")
-    .style.display = "block";
+    .getElementById(
+      "game"
+    )
+    .style.display =
+      "block";
 
 
   document
-    .getElementById("roomDisplay")
+    .getElementById(
+      "roomDisplay"
+    )
     .textContent =
       roomCode;
 
 
   document
-    .getElementById("playerDisplay")
+    .getElementById(
+      "playerDisplay"
+    )
     .textContent =
       currentPlayerId || 1;
 
@@ -782,6 +1453,7 @@ async function loadProfile(){
   if(!currentPlayerId){
 
     return;
+
   }
 
 
@@ -808,12 +1480,17 @@ async function loadProfile(){
     );
 
     return;
+
   }
 
 
-  if(!data || !data.length){
+  if(
+    !data ||
+    !data.length
+  ){
 
     return;
+
   }
 
 
@@ -875,6 +1552,14 @@ async function loadProfile(){
     )
     .style.display =
       "block";
+
+
+  document
+    .getElementById(
+      "homeCoins"
+    )
+    .textContent =
+      profile.coin;
 
 }
 
@@ -945,7 +1630,9 @@ function createCard(){
         row === 2
       ){
 
-        card.push("FREE");
+        card.push(
+          "FREE"
+        );
 
       }else{
 
@@ -1037,6 +1724,7 @@ function renderBoard(){
           "free"
         );
 
+
         cell.classList.add(
           "marked"
         );
@@ -1078,6 +1766,7 @@ function markCell(
   ){
 
     return;
+
   }
 
 
@@ -1094,6 +1783,7 @@ function markCell(
   ){
 
     return;
+
   }
 
 
@@ -1123,7 +1813,9 @@ function callNumber(){
   ){
 
     if(
-      !calledNumbers.includes(i)
+      !calledNumbers.includes(
+        i
+      )
     ){
 
       available.push(i);
@@ -1145,6 +1837,7 @@ function callNumber(){
         "All numbers have been called.";
 
     return;
+
   }
 
 
