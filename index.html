@@ -1586,6 +1586,21 @@ function callNumber(){
     " was called.";
 
 }
+  let autoCallTimer = null;
+
+function startAutoCall(){
+
+  if(autoCallTimer){
+    return;
+  }
+
+  autoCallTimer =
+    setInterval(
+      callNumber,
+      3000
+    );
+
+}
 
 
 /* =========================
