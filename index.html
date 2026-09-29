@@ -547,6 +547,54 @@ input{
   color:#1b1600
 }
 /* =========================
+   BINGO COLUMN COLORS
+========================= */
+
+.cell.col-B{
+  background:linear-gradient(
+    145deg,
+    #e8f3ff,
+    #cfe6ff
+  );
+  color:#0759c9;
+}
+
+.cell.col-I{
+  background:linear-gradient(
+    145deg,
+    #f2e6ff,
+    #dfc7ff
+  );
+  color:#7926b8;
+}
+
+.cell.col-N{
+  background:linear-gradient(
+    145deg,
+    #e2fff3,
+    #c5f6df
+  );
+  color:#08794e;
+}
+
+.cell.col-G{
+  background:linear-gradient(
+    145deg,
+    #fff0df,
+    #ffd9b0
+  );
+  color:#b95300;
+}
+
+.cell.col-O{
+  background:linear-gradient(
+    145deg,
+    #ffe5eb,
+    #ffcbd6
+  );
+  color:#c51c42;
+}
+/* =========================
    GOLD BINGO MARK
 ========================= */
 
@@ -2128,10 +2176,19 @@ function renderCardSelection(){
 
           }else{
 
-            cell.textContent=
-              value;
+  cell.textContent =
+    value;
 
-          }
+  const letter =
+    getBingoLetter(
+      Number(value)
+    );
+
+  cell.classList.add(
+    "col-"+letter
+  );
+
+}
 
           grid.appendChild(
             cell
