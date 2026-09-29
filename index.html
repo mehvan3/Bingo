@@ -423,6 +423,7 @@ input{
 }
 
 .board{
+  position:relative;
   transition:.3s;
   padding:7px;
   border-radius:18px;
@@ -507,6 +508,8 @@ input{
 
 .cell{
   aspect-ratio:1;
+  position:relative;
+  overflow:hidden;
   border:0;
   border-radius:7px;
   background:#edf4ff;
@@ -546,6 +549,7 @@ input{
   background:#ffd23f;
   color:#1b1600
 }
+
 /* =========================
    BINGO COLUMN COLORS
 ========================= */
@@ -594,14 +598,10 @@ input{
   );
   color:#c51c42;
 }
+
 /* =========================
    GOLD BINGO MARK
 ========================= */
-
-.cell{
-  position:relative;
-  overflow:hidden;
-}
 
 .cell.gold-mark{
   background:
@@ -612,12 +612,15 @@ input{
       #d99a00 62%,
       #8a5600 100%
     );
+
   color:transparent;
+
   box-shadow:
     0 0 8px rgba(255,210,63,.8),
     0 0 18px rgba(255,180,0,.55),
     inset 0 2px 5px rgba(255,255,255,.7),
     inset 0 -4px 7px rgba(120,70,0,.5);
+
   transform:scale(.94);
   border:2px solid #ffe98a;
 }
@@ -664,14 +667,144 @@ input{
   }
 }
 
-@media(max-width:430px){
+/* =========================
+   LARGE BINGO LOGO
+========================= */
 
-  .cell.gold-mark .gold-bingo{
-    font-size:7px;
-    letter-spacing:0;
+.board-bingo-logo{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  z-index:20;
+  width:86%;
+  padding:18px 8px;
+  text-align:center;
+  font-size:clamp(24px,8vw,48px);
+  font-weight:1000;
+  letter-spacing:3px;
+  color:#fff8b0;
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,224,77,.96),
+      rgba(185,113,0,.94)
+    );
+  border:4px solid #fff0a0;
+  border-radius:22px;
+  text-shadow:
+    0 3px 4px #704300,
+    0 0 12px #fff;
+  box-shadow:
+    0 0 15px #ffd23f,
+    0 0 40px rgba(255,180,0,.8),
+    inset 0 3px 8px rgba(255,255,255,.7);
+  animation:bingoLogoPop .55s ease-out;
+}
+
+@keyframes bingoLogoPop{
+  0%{
+    opacity:0;
+    transform:
+      translate(-50%,-50%)
+      scale(.2)
+      rotate(-10deg);
   }
 
+  70%{
+    transform:
+      translate(-50%,-50%)
+      scale(1.12)
+      rotate(2deg);
+  }
+
+  100%{
+    opacity:1;
+    transform:
+      translate(-50%,-50%)
+      scale(1)
+      rotate(0);
+  }
 }
+
+/* =========================
+   LIVE WINNERS
+========================= */
+
+.live-winners-section{
+  max-width:600px;
+  margin:18px auto 8px;
+  padding:12px;
+  border-radius:20px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,210,63,.08),
+      rgba(123,60,255,.08)
+    );
+  border:1px solid rgba(255,210,63,.18)
+}
+
+.live-winners-title{
+  text-align:center;
+  font-size:18px;
+  font-weight:1000;
+  color:#ffd23f;
+  margin-bottom:10px
+}
+
+.live-winner-list{
+  display:flex;
+  flex-direction:column;
+  gap:7px
+}
+
+.live-winner-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 10px;
+  border-radius:15px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08)
+}
+
+.live-winner-place{
+  width:35px;
+  text-align:center;
+  font-size:25px;
+  flex-shrink:0
+}
+
+.live-winner-avatar{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid rgba(255,210,63,.7);
+  flex-shrink:0
+}
+
+.live-winner-name{
+  flex:1;
+  font-weight:900;
+  text-align:right
+}
+
+.live-winner-rank{
+  display:block;
+  margin-top:3px;
+  color:#9eb3ce;
+  font-size:11px
+}
+
+.no-winners{
+  text-align:center;
+  color:#71849d;
+  padding:8px;
+  font-size:12px
+}
+
 /* =========================
    IPHONE
 ========================= */
@@ -722,6 +855,29 @@ input{
     min-width:40px;
     height:40px
   }
+
+  .cell.gold-mark .gold-bingo{
+    font-size:7px;
+    letter-spacing:0;
+  }
+
+  .board-bingo-logo{
+    width:90%;
+    padding:13px 5px;
+    font-size:clamp(22px,9vw,38px);
+    border-width:3px;
+  }
+
+  .live-winners-section{
+    margin-top:15px;
+    padding:10px
+  }
+
+  .live-winner-avatar{
+    width:42px;
+    height:42px
+  }
+
 }
 
 /* =========================
@@ -912,7 +1068,9 @@ input{
 }
 
 /* =========================
-   WINNER
+   WINNER POPUP
+   Kept for compatibility,
+   but no longer opened.
 ========================= */
 
 .overlay{
@@ -1218,6 +1376,29 @@ input{
     class="boards"
   ></div>
 
+  <!-- LIVE WINNERS -->
+
+  <div class="live-winners-section">
+
+    <div class="live-winners-title">
+      🏆 براوەکان
+    </div>
+
+    <div
+      id="liveWinnerList"
+      class="live-winner-list"
+    >
+
+      <div class="no-winners">
+        چاوەڕوانی یەکەم براوە...
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- PLAYERS -->
+
   <div class="players-section">
 
     <div class="section-title">
@@ -1355,7 +1536,10 @@ input{
 </div>
 
 
-<!-- WINNER -->
+<!-- WINNER OVERLAY
+     Kept in HTML for compatibility,
+     but showMyWinner() no longer opens it.
+-->
 
 <div
   id="winnerOverlay"
@@ -1952,12 +2136,15 @@ async function loadProfile(){
       playerName;
 
     currentGender =
-  (profile.gender||"")
-    .toLowerCase();
+      (profile.gender||"")
+        .toLowerCase();
 
-currentProfilePicture =
-  profile.profile_picture ||
-  makeAvatar(profile.username || playerName);
+    currentProfilePicture =
+      profile.profile_picture ||
+      makeAvatar(
+        profile.username ||
+        playerName
+      );
 
     document
       .getElementById("coinText")
@@ -2176,19 +2363,19 @@ function renderCardSelection(){
 
           }else{
 
-  cell.textContent =
-    value;
+            cell.textContent =
+              value;
 
-  const letter =
-    getBingoLetter(
-      Number(value)
-    );
+            const letter =
+              getBingoLetter(
+                Number(value)
+              );
 
-  cell.classList.add(
-    "col-"+letter
-  );
+            cell.classList.add(
+              "col-"+letter
+            );
 
-}
+          }
 
           grid.appendChild(
             cell
@@ -2417,6 +2604,8 @@ async function startGame(){
 
   renderCalledNumbers();
 
+  updateWinnerDisplay();
+
   await loadRoomPlayers();
 
   startPlayersRefresh();
@@ -2563,6 +2752,15 @@ function renderBoards(){
             cell.textContent=
               value;
 
+            const letter =
+              getBingoLetter(
+                Number(value)
+              );
+
+            cell.classList.add(
+              "col-"+letter
+            );
+
           }
 
           cell.addEventListener(
@@ -2606,7 +2804,6 @@ function markCell(
 ){
 
   if(
-    gameFinished &&
     winningCardIds.has(cardId)
   ){
     return;
@@ -2662,18 +2859,13 @@ function markCell(
   const cell =
     grid.children[index];
 
-  const letter =
-    getBingoLetter(
-      number
-    );
-
   cell.classList.add(
-  "marked",
-  "gold-mark"
-);
+    "marked",
+    "gold-mark"
+  );
 
-cell.innerHTML =
-  '<span class="gold-bingo">BINGO</span>';
+  cell.innerHTML =
+    '<span class="gold-bingo">BINGO</span>';
 
   playMarkSound();
 
@@ -2868,6 +3060,9 @@ async function claimWinner(
     gender:
       currentGender,
 
+    profile_picture:
+      currentProfilePicture,
+
     bingo_card_id:
       cardId,
 
@@ -3015,7 +3210,7 @@ function handleWinnerClaim(
         "message"
       )
       .textContent=
-        "🏆 سێ کارتی براوە دیاریکران.";
+        "🏆 سێ براوە دیاریکران.";
 
   }
 
@@ -3052,7 +3247,30 @@ function lockCard(
   if(status){
 
     status.textContent=
-      "🏆 WINNER";
+      "🏆 BINGO";
+
+  }
+
+  if(
+    !board.querySelector(
+      ".board-bingo-logo"
+    )
+  ){
+
+    const logo =
+      document.createElement(
+        "div"
+      );
+
+    logo.className=
+      "board-bingo-logo";
+
+    logo.textContent=
+      "BINGO";
+
+    board.appendChild(
+      logo
+    );
 
   }
 
@@ -3060,7 +3278,8 @@ function lockCard(
 
 
 /* =========================
-   WINNER POPUP
+   WINNER SOUND / VOICE
+   No popup
 ========================= */
 
 function showMyWinner(
@@ -3075,62 +3294,6 @@ function showMyWinner(
     currentGender==="female" ||
     currentGender==="f" ||
     currentGender==="girl";
-
-  let crown="👑";
-
-  let title=
-    "YOU ARE KING!";
-
-  if(isFemale){
-
-    crown="👸";
-
-    title=
-      "YOU ARE QUEEN!";
-
-  }
-
-  if(rank===2){
-    crown="🥈";
-  }
-
-  if(rank===3){
-    crown="🥉";
-  }
-
-  document
-    .getElementById(
-      "winnerCrown"
-    )
-    .textContent=
-      crown;
-
-  document
-    .getElementById(
-      "winnerTitle"
-    )
-    .textContent=
-      title;
-
-  document
-    .getElementById(
-      "winnerSub"
-    )
-    .textContent=
-      "🎉 Card "+
-      cardSlot+
-      " — "+
-      reason;
-
-  document
-    .getElementById(
-      "winnerOverlay"
-    )
-    .classList.add(
-      "show"
-    );
-
-  createConfetti();
 
   setTimeout(
     ()=>{
@@ -3164,24 +3327,40 @@ function showMyWinner(
       }
 
     },
-    600
+    300
   );
 
 }
 
 
 /* =========================
-   WINNER LIST
+   LIVE WINNER LIST
 ========================= */
 
 function updateWinnerDisplay(){
 
   const list =
     document.getElementById(
-      "winnerList"
+      "liveWinnerList"
     );
 
+  if(!list){
+    return;
+  }
+
   list.innerHTML="";
+
+  if(!winners.length){
+
+    list.innerHTML=`
+      <div class="no-winners">
+        چاوەڕوانی یەکەم براوە...
+      </div>
+    `;
+
+    return;
+
+  }
 
   winners.forEach(
     winner=>{
@@ -3206,37 +3385,48 @@ function updateWinnerDisplay(){
         );
 
       row.className=
-        "winner-row";
+        "live-winner-row";
+
+      const avatar =
+        winner.profile_picture ||
+        makeAvatar(
+          winner.username ||
+          "Player"
+        );
 
       row.innerHTML=`
 
-        <div class="winner-place">
+        <div class="live-winner-place">
           ${medal}
         </div>
 
         <img
-          class="winner-avatar"
-          src="${makeAvatar(
-            winner.username
-          )}"
+          class="live-winner-avatar"
+          src="${avatar}"
+          alt=""
         >
 
-        <div class="winner-name">
+        <div class="live-winner-name">
 
           ${escapeHtml(
-            winner.username||
+            winner.username ||
             "Player"
           )}
 
-          <div class="rank-badge">
-            Card ${winner.card_slot}
-            ·
-            ${getWinnerReason(
-              winner.reason
-            )}
-          </div>
+          <span class="live-winner-rank">
+
+            ${
+              winner.rank===1
+                ?"یەکەم براوە"
+                :winner.rank===2
+                  ?"دووەم براوە"
+                  :"سێیەم براوە"
+            }
+
+          </span>
 
         </div>
+
       `;
 
       list.appendChild(
@@ -3250,7 +3440,8 @@ function updateWinnerDisplay(){
 
 
 /* =========================
-   REASON
+   OLD WINNER REASON
+   Kept for compatibility
 ========================= */
 
 function getWinnerReason(
@@ -3612,13 +3803,9 @@ function renderCalledNumbers(){
 
   list.innerHTML="";
 
-  /*
-    newest -> oldest
-    direction:rtl
-    newest stays on the right
-  */
-
-  [...calledNumbers]
+  [
+    ...calledNumbers
+  ]
     .reverse()
     .forEach(
       (number,index)=>{
@@ -4341,6 +4528,21 @@ function newGame(){
       "calledList"
     )
     .innerHTML="";
+
+  const winnerList =
+    document.getElementById(
+      "liveWinnerList"
+    );
+
+  if(winnerList){
+
+    winnerList.innerHTML=`
+      <div class="no-winners">
+        چاوەڕوانی یەکەم براوە...
+      </div>
+    `;
+
+  }
 
   selectedCards=[];
 
