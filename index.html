@@ -978,11 +978,17 @@ function markCell(cardId,index){
 function checkBingo(cardId){
   if(winningCardIds.has(cardId)) return;
   if(winners.length>=3) return;
-  const card=
+
+  const card =
     selectedCards.find(c=>c.id===cardId);
+
   if(!card) return;
-  const winMarked=[...marked];
-winMarked[12]=true;
+
+  const winMarked=[...card.marked];
+
+  // FREE ـی ناوەڕاست خۆکارانە ژمێردەکرێت
+  winMarked[12]=true;
+
   const rows=[
     [0,1,2,3,4],
     [5,6,7,8,9],
@@ -990,6 +996,7 @@ winMarked[12]=true;
     [15,16,17,18,19],
     [20,21,22,23,24]
   ];
+
   const columns=[
     [0,5,10,15,20],
     [1,6,11,16,21],
@@ -997,40 +1004,66 @@ winMarked[12]=true;
     [3,8,13,18,23],
     [4,9,14,19,24]
   ];
+
   const diagonals=[
     [0,6,12,18,24],
     [4,8,12,16,20]
   ];
-  const cardCorners=[0,4,20,24];
-  const freeCorners=[6,8,16,18];
 
-const freeLine=[
-  [10,11,12,13,14],
-  [2,7,12,17,22]
-];
-  const rowWin=rows.some(line=>line.every(i=>winmarked[i]));
-  const columnWin=columns.some(line=>line.every(i=>marked[i]));
-  const diagonalWin=diagonals.some(line=>line.every(i=>winmarked[i]));
-  const cornerWin=cardCorners.every(i=>winmarked[i]);
-  const freeCornerWin=freeCorners.every(i=>winmarked[i]);
+  const cardCorners=[
+    0,4,20,24
+  ];
 
-const freeLineWin=freeLine.some(
-  line=>line.every(i=>winmarked[i])
-);
+  const freeCorners=[
+    6,8,16,18
+  ];
+
+  const rowWin=
+    rows.some(line=>
+      line.every(i=>winMarked[i])
+    );
+
+  const columnWin=
+    columns.some(line=>
+      line.every(i=>winMarked[i])
+    );
+
+  const diagonalWin=
+    diagonals.some(line=>
+      line.every(i=>winMarked[i])
+    );
+
+  const cornerWin=
+    cardCorners.every(i=>
+      winMarked[i]
+    );
+
+  const freeCornerWin=
+    freeCorners.every(i=>
+      winMarked[i]
+    );
+
   if(
     rowWin ||
     columnWin ||
     diagonalWin ||
     cornerWin ||
-    freeCornerWin ||
-    freeLineWin
+    freeCornerWin
   ){
     let reason="BINGO";
-    if(rowWin) reason="ڕیز";
-    else if(columnWin) reason="ستوون";
-    else if(diagonalWin) reason="دیاگۆناڵ";
-    else if(cornerWin) reason="٤ گۆشە";
-    else if(freeCornerWin) reason="٤ گۆشەی FREE";
+
+    if(rowWin){
+      reason="ڕیز";
+    }else if(columnWin){
+      reason="ستوون";
+    }else if(diagonalWin){
+      reason="دیاگۆناڵ";
+    }else if(cornerWin){
+      reason="٤ گۆشە";
+    }else if(freeCornerWin){
+      reason="٤ گۆشەی FREE";
+    }
+
     claimWinner(cardId,reason);
   }
 }
