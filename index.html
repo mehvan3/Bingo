@@ -665,49 +665,28 @@ async function joinRoom(){
    CREATE PLAYER
 ========================= */
 
-async function createPlayer(
-  roomId
-){
+async function createPlayer(roomId){
 
   const {
     data,
     error
-  } =
-    await supabaseClient
-
-const {
-  data,
-  error
-} = await supabaseClient
-  .rpc("create_player", {
-    p_room_id: roomId
-  });
-
+  } = await supabaseClient
+    .rpc("create_player", {
+      p_room_id: roomId
+    });
 
   if(error){
-
     console.error(error);
-
     alert(error.message);
-
     return;
   }
 
+  currentPlayerId = data.id;
 
-  currentPlayerId =
-    data.id;
-
-
-  console.log(
-    "Player created:",
-    data
-  );
-
+  console.log("Player created:", data);
 
   await createProfile();
-
 }
-
 
 /* =========================
    CREATE PROFILE
