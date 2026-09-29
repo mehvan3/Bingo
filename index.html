@@ -2008,55 +2008,31 @@ async function playGame(){
 /* =========================
    CREATE ROOM
 ========================= */
-
 async function createRoom(){
 
   const {data,error} =
-    await supabaseClient
-      .from("Room")
-      .insert({
-        entry_fee:
-          selectedEntryFee,
+    await supabaseClient.rpc(
+      "find_or_create_bingo_room",
+      {
+        p_entry_fee: selectedEntryFee
+      }
+    );
 
-        max_player:
-          25,
+  if(error) throw error;
 
-        player_count:
-          0,
+  const room = Array.isArray(data) ? data[0] : data;
 
-        status:
-          "waiting",
-
-        account_id:
-          "8cc0bcb2-144c-4e0b-9da7-902599f0c6e2"
-      })
-      .select(
-        "id,room_code"
-      )
-      .single();
-
-  if(error){
-    throw error;
+  if(!room){
+    throw new Error("Game Room دروست نەکرا.");
   }
 
-  currentRoomId=
-    data.id;
+  currentRoomId = room.id;
+  roomCode = room.room_code;
 
-  roomCode=
-    data.room_code;
+  document.getElementById("roomText").textContent = roomCode;
 
-  document
-    .getElementById("roomText")
-    .textContent=
-      roomCode;
-
-  await createPlayer(
-    currentRoomId
-  );
-
+  await createPlayer(currentRoomId);
 }
-
-
 /* =========================
    CREATE PLAYER
 ========================= */
