@@ -280,6 +280,14 @@ button:active{
   border-radius:22px;
   padding:20px;
   margin-bottom:18px;
+  transition:.3s;
+}
+
+.caller.winner{
+  border-color:#ffd54a;
+  box-shadow:
+    0 0 20px rgba(255,213,74,.35),
+    0 0 50px rgba(168,85,247,.25);
 }
 
 .caller-title{
@@ -294,11 +302,64 @@ button:active{
   font-weight:900;
   margin:8px 0;
   color:#fff;
+  min-height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:.25s;
+}
+
+.number.show{
+  animation:numberPop .45s ease;
+}
+
+.number.number-B{
+  color:#5da9ff;
+  text-shadow:0 0 20px rgba(93,169,255,.55);
+}
+
+.number.number-I{
+  color:#9b7cff;
+  text-shadow:0 0 20px rgba(155,124,255,.55);
+}
+
+.number.number-N{
+  color:#35e0a1;
+  text-shadow:0 0 20px rgba(53,224,161,.55);
+}
+
+.number.number-G{
+  color:#ff9d52;
+  text-shadow:0 0 20px rgba(255,157,82,.55);
+}
+
+.number.number-O{
+  color:#ff6584;
+  text-shadow:0 0 20px rgba(255,101,132,.55);
+}
+
+@keyframes numberPop{
+  0%{
+    transform:scale(.65);
+    opacity:.2;
+  }
+  60%{
+    transform:scale(1.12);
+    opacity:1;
+  }
+  100%{
+    transform:scale(1);
+  }
 }
 
 .call{
   background:linear-gradient(135deg,#7c5cff,#a855f7);
   color:white;
+}
+
+.call:disabled{
+  opacity:.45;
+  cursor:not-allowed;
 }
 
 .bingo-title{
@@ -321,6 +382,11 @@ button:active{
   display:grid;
   grid-template-columns:repeat(5,1fr);
   gap:7px;
+  transition:.3s;
+}
+
+.board.locked{
+  pointer-events:none;
 }
 
 .cell{
@@ -345,6 +411,7 @@ button:active{
   background:linear-gradient(135deg,#765cff,#a855f7);
   border-color:#8d7bff;
   box-shadow:0 5px 15px rgba(118,92,255,.3);
+  transform:scale(.96);
 }
 
 .cell.free{
@@ -353,12 +420,41 @@ button:active{
   font-size:12px;
 }
 
+.board.winner .cell.marked{
+  animation:winnerCell .8s infinite alternate;
+}
+
+@keyframes winnerCell{
+  from{
+    box-shadow:0 0 8px rgba(168,85,247,.35);
+  }
+  to{
+    box-shadow:0 0 25px rgba(255,213,74,.75);
+  }
+}
+
 .message{
   text-align:center;
   margin-top:18px;
   min-height:25px;
   color:#aaaabb;
   font-size:14px;
+}
+
+.message.winner-message{
+  color:#ffd54a;
+  font-size:18px;
+  font-weight:900;
+  animation:messagePulse 1s infinite alternate;
+}
+
+@keyframes messagePulse{
+  from{
+    transform:scale(1);
+  }
+  to{
+    transform:scale(1.08);
+  }
 }
 
 .newgame{
@@ -392,6 +488,121 @@ button:active{
   color:#555565;
   font-size:11px;
   margin-top:25px;
+}
+
+
+/* =========================
+   WINNER EFFECT
+========================= */
+
+#winnerOverlay{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  background:rgba(5,5,12,.72);
+  backdrop-filter:blur(8px);
+}
+
+#winnerOverlay.show{
+  display:flex;
+}
+
+.winner-box{
+  width:90%;
+  max-width:380px;
+  text-align:center;
+  padding:35px 20px;
+  border-radius:30px;
+  background:
+    radial-gradient(circle at top,
+      rgba(255,213,74,.20),
+      rgba(118,92,255,.12) 45%,
+      rgba(20,18,35,.96) 75%);
+  border:1px solid rgba(255,213,74,.45);
+  box-shadow:
+    0 0 30px rgba(255,213,74,.25),
+    0 25px 80px rgba(0,0,0,.65);
+  animation:winnerBoxIn .65s cubic-bezier(.17,.89,.32,1.28);
+}
+
+@keyframes winnerBoxIn{
+  0%{
+    transform:scale(.45) rotate(-5deg);
+    opacity:0;
+  }
+  70%{
+    transform:scale(1.05) rotate(1deg);
+  }
+  100%{
+    transform:scale(1) rotate(0);
+    opacity:1;
+  }
+}
+
+.winner-crown{
+  font-size:70px;
+  animation:crownFloat 1.2s infinite alternate ease-in-out;
+}
+
+@keyframes crownFloat{
+  from{
+    transform:translateY(0) rotate(-4deg);
+  }
+  to{
+    transform:translateY(-12px) rotate(4deg);
+  }
+}
+
+#winnerTitle{
+  margin-top:8px;
+  font-size:42px;
+  font-weight:1000;
+  letter-spacing:2px;
+  background:linear-gradient(135deg,#fff,#ffd54a,#a855f7);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+#winnerName{
+  margin-top:8px;
+  color:#ddd8ff;
+  font-size:17px;
+  font-weight:700;
+}
+
+#winnerClose{
+  margin-top:25px;
+  background:linear-gradient(135deg,#765cff,#a855f7);
+  color:#fff;
+}
+
+
+/* =========================
+   CONFETTI
+========================= */
+
+.confetti{
+  position:fixed;
+  top:-20px;
+  width:9px;
+  height:15px;
+  z-index:10000;
+  pointer-events:none;
+  animation:confettiFall linear forwards;
+}
+
+@keyframes confettiFall{
+  0%{
+    transform:translateY(-20px) rotate(0deg);
+    opacity:1;
+  }
+  100%{
+    transform:translateY(110vh) rotate(720deg);
+    opacity:0;
+  }
 }
 
 </style>
@@ -718,7 +929,10 @@ button:active{
   </div>
 
 
-  <div class="caller">
+  <div
+    class="caller"
+    id="callerBox"
+  >
 
     <div class="caller-title">
       Last Number
@@ -733,6 +947,7 @@ button:active{
 
     <button
       class="call"
+      id="callButton"
       onclick="callNumber()"
     >
       🔢 Call Number
@@ -778,6 +993,36 @@ button:active{
 </div>
 
 
+<!-- WINNER OVERLAY -->
+
+<div id="winnerOverlay">
+
+  <div class="winner-box">
+
+    <div class="winner-crown" id="winnerCrown">
+      👑
+    </div>
+
+    <div id="winnerTitle">
+      YOU ARE KING!
+    </div>
+
+    <div id="winnerName">
+      Mehvan
+    </div>
+
+    <button
+      id="winnerClose"
+      onclick="closeWinner()"
+    >
+      Continue
+    </button>
+
+  </div>
+
+</div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
@@ -801,14 +1046,20 @@ const supabaseClient =
 
 let numbers = [];
 let calledNumbers = [];
+
 let roomCode = "";
 let playerName = "Mehvan";
+
 let currentPlayerId = null;
 let currentRoomId = null;
+
 let autoCallTimer = null;
 
 let selectedEntryFee = 100;
 let selectedMode = "solo";
+
+let gameFinished = false;
+let currentGender = "";
 
 
 /* =========================
@@ -851,9 +1102,7 @@ function selectEntryFee(
   document
     .querySelectorAll(".entry-button")
     .forEach(function(btn){
-
       btn.classList.remove("selected");
-
     });
 
   button.classList.add("selected");
@@ -902,6 +1151,8 @@ async function playGame(){
 
   try{
 
+    unlockAudio();
+
     const nameInput =
       document.getElementById("name");
 
@@ -941,6 +1192,156 @@ async function playGame(){
     alert(
       "کێشەیەک ڕوویدا:\n" +
       error.message
+    );
+
+  }
+
+}
+
+
+/* =========================
+   AUDIO UNLOCK
+========================= */
+
+function unlockAudio(){
+
+  try{
+
+    if("speechSynthesis" in window){
+
+      window.speechSynthesis.cancel();
+
+    }
+
+  }catch(error){
+
+    console.log(
+      "Audio unlock:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================
+   SPEAK
+========================= */
+
+function speakText(
+  text,
+  type = "number"
+){
+
+  if(
+    !("speechSynthesis" in window)
+  ){
+
+    return;
+
+  }
+
+  try{
+
+    window.speechSynthesis.cancel();
+
+    const utterance =
+      new SpeechSynthesisUtterance(
+        text
+      );
+
+    utterance.rate =
+      type === "winner"
+        ? 0.85
+        : 0.9;
+
+    utterance.pitch =
+      type === "female"
+        ? 1.25
+        : type === "male"
+          ? 0.75
+          : 1;
+
+    utterance.volume = 1;
+
+    const voices =
+      window.speechSynthesis.getVoices();
+
+    let selectedVoice = null;
+
+    if(type === "female"){
+
+      selectedVoice =
+        voices.find(function(voice){
+
+          const name =
+            voice.name.toLowerCase();
+
+          return(
+            name.includes("samantha") ||
+            name.includes("karen") ||
+            name.includes("female") ||
+            name.includes("ava") ||
+            name.includes("susan")
+          );
+
+        });
+
+    }
+
+    if(type === "male"){
+
+      selectedVoice =
+        voices.find(function(voice){
+
+          const name =
+            voice.name.toLowerCase();
+
+          return(
+            name.includes("daniel") ||
+            name.includes("alex") ||
+            name.includes("male") ||
+            name.includes("fred")
+          );
+
+        });
+
+    }
+
+    if(!selectedVoice){
+
+      selectedVoice =
+        voices.find(function(voice){
+
+          return voice.lang &&
+            voice.lang
+              .toLowerCase()
+              .startsWith("en");
+
+        });
+
+    }
+
+    if(selectedVoice){
+
+      utterance.voice =
+        selectedVoice;
+
+    }
+
+    utterance.lang =
+      "en-US";
+
+    window.speechSynthesis.speak(
+      utterance
+    );
+
+  }catch(error){
+
+    console.log(
+      "Speech error:",
+      error
     );
 
   }
@@ -1124,12 +1525,30 @@ async function createPlayer(
 
   }
 
+  const ownerPlayer =
+    Array.isArray(data)
+      ? data[0]
+      : data;
+
+  if(
+    !ownerPlayer ||
+    !ownerPlayer.id
+  ){
+
+    alert(
+      "Player ID نەدۆزرایەوە."
+    );
+
+    return;
+
+  }
+
   currentPlayerId =
-    data.id;
+    ownerPlayer.id;
 
   console.log(
     "Owner player:",
-    data
+    ownerPlayer
   );
 
   await loadProfile();
@@ -1148,6 +1567,8 @@ function startGame(){
   console.log(
     "START GAME"
   );
+
+  gameFinished = false;
 
   document.getElementById(
     "home"
@@ -1168,6 +1589,30 @@ function startGame(){
     "playerDisplay"
   ).textContent =
     currentPlayerId || 1;
+
+  document.getElementById(
+    "callButton"
+  ).disabled =
+    false;
+
+  document.getElementById(
+    "board"
+  ).classList.remove(
+    "locked",
+    "winner"
+  );
+
+  document.getElementById(
+    "callerBox"
+  ).classList.remove(
+    "winner"
+  );
+
+  document.getElementById(
+    "message"
+  ).classList.remove(
+    "winner-message"
+  );
 
   calledNumbers = [];
 
@@ -1223,6 +1668,12 @@ async function loadProfile(){
 
   const profile =
     data[0];
+
+  currentGender =
+    (
+      profile.gender ||
+      ""
+    ).toLowerCase();
 
   document.getElementById(
     "profileUsername"
@@ -1393,15 +1844,24 @@ function createCard(){
 function renderBoard(){
 
   const board =
-    document.getElementById("board");
+    document.getElementById(
+      "board"
+    );
 
   board.innerHTML = "";
+
+  board.classList.remove(
+    "locked",
+    "winner"
+  );
 
   numbers.forEach(
     function(num,index){
 
       const cell =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       cell.className =
         "cell";
@@ -1411,8 +1871,13 @@ function renderBoard(){
 
       if(num === "FREE"){
 
-        cell.classList.add("free");
-        cell.classList.add("marked");
+        cell.classList.add(
+          "free"
+        );
+
+        cell.classList.add(
+          "marked"
+        );
 
       }
 
@@ -1445,6 +1910,10 @@ function markCell(
   index
 ){
 
+  if(gameFinished){
+    return;
+  }
+
   if(
     numbers[index] === "FREE"
   ){
@@ -1459,16 +1928,106 @@ function markCell(
     );
 
   if(
-    !calledNumbers.includes(number)
+    !calledNumbers.includes(
+      number
+    )
   ){
 
     return;
 
   }
 
-  cell.classList.add("marked");
+  if(
+    cell.classList.contains(
+      "marked"
+    )
+  ){
+
+    return;
+
+  }
+
+  cell.classList.add(
+    "marked"
+  );
+
+  /* MARK SOUND */
+
+  playMarkSound();
+
+  /* CHECK BINGO */
 
   checkBingo();
+
+}
+
+
+/* =========================
+   MARK SOUND
+========================= */
+
+function playMarkSound(){
+
+  try{
+
+    const AudioContext =
+      window.AudioContext ||
+      window.webkitAudioContext;
+
+    if(!AudioContext){
+      return;
+    }
+
+    const ctx =
+      new AudioContext();
+
+    const oscillator =
+      ctx.createOscillator();
+
+    const gain =
+      ctx.createGain();
+
+    oscillator.type =
+      "sine";
+
+    oscillator.frequency.value =
+      620;
+
+    gain.gain.setValueAtTime(
+      0.0001,
+      ctx.currentTime
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.12,
+      ctx.currentTime + 0.01
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.0001,
+      ctx.currentTime + 0.13
+    );
+
+    oscillator.connect(gain);
+
+    gain.connect(
+      ctx.destination
+    );
+
+    oscillator.start();
+
+    oscillator.stop(
+      ctx.currentTime + 0.14
+    );
+
+  }catch(error){
+
+    console.log(
+      "Mark sound error:",
+      error
+    );
+
+  }
 
 }
 
@@ -1478,6 +2037,10 @@ function markCell(
 ========================= */
 
 function callNumber(){
+
+  if(gameFinished){
+    return;
+  }
 
   const available = [];
 
@@ -1506,15 +2069,7 @@ function callNumber(){
     ).textContent =
       "All numbers have been called.";
 
-    if(autoCallTimer !== null){
-
-      clearInterval(
-        autoCallTimer
-      );
-
-      autoCallTimer = null;
-
-    }
+    stopAutoCall();
 
     return;
 
@@ -1532,17 +2087,92 @@ function callNumber(){
     random
   );
 
-  document.getElementById(
-    "number"
-  ).textContent =
-    random;
+  showCalledNumber(
+    random
+  );
+
+}
+
+
+/* =========================
+   SHOW NUMBER
+========================= */
+
+function showCalledNumber(
+  random
+){
+
+  const numberElement =
+    document.getElementById(
+      "number"
+    );
+
+  numberElement.className =
+    "number";
+
+  const letter =
+    getBingoLetter(
+      random
+    );
+
+  numberElement.classList.add(
+    "number-" + letter
+  );
+
+  numberElement.textContent =
+    letter + " " + random;
+
+  void numberElement.offsetWidth;
+
+  numberElement.classList.add(
+    "show"
+  );
 
   document.getElementById(
     "message"
   ).textContent =
-    "Number " +
+    letter +
+    " " +
     random +
     " was called.";
+
+  /* NUMBER VOICE */
+
+  speakText(
+    letter +
+    " " +
+    random,
+    "number"
+  );
+
+}
+
+
+/* =========================
+   BINGO LETTER
+========================= */
+
+function getBingoLetter(
+  number
+){
+
+  if(number >= 1 && number <= 15){
+    return "B";
+  }
+
+  if(number >= 16 && number <= 30){
+    return "I";
+  }
+
+  if(number >= 31 && number <= 45){
+    return "N";
+  }
+
+  if(number >= 46 && number <= 60){
+    return "G";
+  }
+
+  return "O";
 
 }
 
@@ -1553,9 +2183,15 @@ function callNumber(){
 
 function startAutoCall(){
 
-  if(autoCallTimer !== null){
+  stopAutoCall();
+
+  if(gameFinished){
     return;
   }
+
+  /*
+    5 seconds between numbers.
+  */
 
   autoCallTimer =
     setInterval(
@@ -1564,8 +2200,30 @@ function startAutoCall(){
         callNumber();
 
       },
-      3000
+      5000
     );
+
+}
+
+
+/* =========================
+   STOP AUTO CALL
+========================= */
+
+function stopAutoCall(){
+
+  if(
+    autoCallTimer !== null
+  ){
+
+    clearInterval(
+      autoCallTimer
+    );
+
+    autoCallTimer =
+      null;
+
+  }
 
 }
 
@@ -1576,8 +2234,14 @@ function startAutoCall(){
 
 function checkBingo(){
 
+  if(gameFinished){
+    return;
+  }
+
   const cells =
-    document.querySelectorAll(".cell");
+    document.querySelectorAll(
+      ".cell"
+    );
 
   let marked = [];
 
@@ -1590,9 +2254,14 @@ function checkBingo(){
     marked[i] =
       cells[i]
         .classList
-        .contains("marked");
+        .contains(
+          "marked"
+        );
 
   }
+
+
+  /* ROWS */
 
   for(
     let row = 0;
@@ -1630,6 +2299,9 @@ function checkBingo(){
 
   }
 
+
+  /* COLUMNS */
+
   for(
     let col = 0;
     col < 5;
@@ -1666,6 +2338,9 @@ function checkBingo(){
 
   }
 
+
+  /* DIAGONAL 1 */
+
   let diagonal1 = true;
 
   for(
@@ -1693,6 +2368,9 @@ function checkBingo(){
     return;
 
   }
+
+
+  /* DIAGONAL 2 */
 
   let diagonal2 = true;
 
@@ -1730,10 +2408,278 @@ function checkBingo(){
 
 function bingoWin(){
 
+  if(gameFinished){
+    return;
+  }
+
+  gameFinished = true;
+
+  /* STOP NUMBERS */
+
+  stopAutoCall();
+
+  /* LOCK CALL BUTTON */
+
+  const callButton =
+    document.getElementById(
+      "callButton"
+    );
+
+  callButton.disabled =
+    true;
+
+  /* LOCK BOARD */
+
+  const board =
+    document.getElementById(
+      "board"
+    );
+
+  board.classList.add(
+    "locked",
+    "winner"
+  );
+
+  /* WINNER STYLE */
+
   document.getElementById(
-    "message"
+    "callerBox"
+  ).classList.add(
+    "winner"
+  );
+
+  const message =
+    document.getElementById(
+      "message"
+    );
+
+  message.classList.add(
+    "winner-message"
+  );
+
+  message.textContent =
+    "🎉 BINGO! YOU WIN!";
+
+  /* WINNER GENDER */
+
+  let isFemale =
+    currentGender === "female" ||
+    currentGender === "f" ||
+    currentGender === "girl";
+
+  let isMale =
+    currentGender === "male" ||
+    currentGender === "m" ||
+    currentGender === "boy";
+
+  let title =
+    "YOU ARE KING!";
+
+  let voiceType =
+    "male";
+
+  let crown =
+    "👑";
+
+  if(isFemale){
+
+    title =
+      "YOU ARE QUEEN!";
+
+    voiceType =
+      "female";
+
+    crown =
+      "👸";
+
+  }else if(isMale){
+
+    title =
+      "YOU ARE KING!";
+
+    voiceType =
+      "male";
+
+    crown =
+      "👑";
+
+  }
+
+
+  document.getElementById(
+    "winnerTitle"
   ).textContent =
-    "🎉 BINGO! You win!";
+    title;
+
+  document.getElementById(
+    "winnerName"
+  ).textContent =
+    playerName;
+
+  document.getElementById(
+    "winnerCrown"
+  ).textContent =
+    crown;
+
+
+  /* SHOW EFFECT */
+
+  document.getElementById(
+    "winnerOverlay"
+  ).classList.add(
+    "show"
+  );
+
+
+  /* CONFETTI */
+
+  createConfetti();
+
+
+  /* WINNER VOICE */
+
+  setTimeout(
+    function(){
+
+      speakText(
+        title,
+        "winner"
+      );
+
+    },
+    250
+  );
+
+
+  /* SECOND VOICE WITH PITCH */
+
+  if(
+    voiceType === "female"
+  ){
+
+    setTimeout(
+      function(){
+
+        speakText(
+          "You are Queen",
+          "female"
+        );
+
+      },
+      900
+    );
+
+  }else{
+
+    setTimeout(
+      function(){
+
+        speakText(
+          "You are King",
+          "male"
+        );
+
+      },
+      900
+    );
+
+  }
+
+}
+
+
+/* =========================
+   CONFETTI
+========================= */
+
+function createConfetti(){
+
+  const amount = 90;
+
+  for(
+    let i = 0;
+    i < amount;
+    i++
+  ){
+
+    const piece =
+      document.createElement(
+        "div"
+      );
+
+    piece.className =
+      "confetti";
+
+    piece.style.left =
+      Math.random() * 100 +
+      "vw";
+
+    piece.style.animationDuration =
+      (2.2 + Math.random() * 2.5) +
+      "s";
+
+    piece.style.animationDelay =
+      Math.random() * 0.8 +
+      "s";
+
+    piece.style.transform =
+      "rotate(" +
+      Math.random() * 360 +
+      "deg)";
+
+    /*
+      Different shapes/sizes.
+    */
+
+    piece.style.width =
+      (6 + Math.random() * 7) +
+      "px";
+
+    piece.style.height =
+      (8 + Math.random() * 12) +
+      "px";
+
+    /*
+      Confetti uses random HSL
+      so no fixed color is required.
+    */
+
+    piece.style.background =
+      "hsl(" +
+      Math.floor(
+        Math.random() * 360
+      ) +
+      ",90%,60%)";
+
+    document.body.appendChild(
+      piece
+    );
+
+    setTimeout(
+      function(){
+
+        piece.remove();
+
+      },
+      5500
+    );
+
+  }
+
+}
+
+
+/* =========================
+   CLOSE WINNER
+========================= */
+
+function closeWinner(){
+
+  document.getElementById(
+    "winnerOverlay"
+  ).classList.remove(
+    "show"
+  );
 
 }
 
@@ -1744,17 +2690,20 @@ function bingoWin(){
 
 function newGame(){
 
-  if(autoCallTimer !== null){
+  stopAutoCall();
 
-    clearInterval(
-      autoCallTimer
-    );
-
-    autoCallTimer = null;
-
-  }
+  gameFinished =
+    false;
 
   calledNumbers = [];
+
+  currentGender =
+    currentGender || "";
+
+  document.getElementById(
+    "number"
+  ).className =
+    "number";
 
   document.getElementById(
     "number"
@@ -1763,8 +2712,38 @@ function newGame(){
 
   document.getElementById(
     "message"
+  ).classList.remove(
+    "winner-message"
+  );
+
+  document.getElementById(
+    "message"
   ).textContent =
     "New game started.";
+
+  document.getElementById(
+    "callButton"
+  ).disabled =
+    false;
+
+  document.getElementById(
+    "board"
+  ).classList.remove(
+    "locked",
+    "winner"
+  );
+
+  document.getElementById(
+    "callerBox"
+  ).classList.remove(
+    "winner"
+  );
+
+  document.getElementById(
+    "winnerOverlay"
+  ).classList.remove(
+    "show"
+  );
 
   createCard();
 
