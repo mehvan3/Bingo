@@ -813,10 +813,38 @@ async function confirmCardSelection(){
     );
     return;
   }
-  document
-    .getElementById("cardSelectPanel")
-    .classList.remove("show");
-  await startGame();
+
+  try{
+    for(let i=0;i<selectedCards.length;i++){
+      const card=selectedCards[i];
+
+      const {error}=await supabaseClient.rpc(
+        "save_bingo_card",
+        {
+          p_card_id:card.id,
+          p_room_id:currentRoomId,
+          p_player_id:currentPlayerId,
+          p_card_slot:i+1,
+          p_numbers:card.numbers
+        }
+      );
+
+      if(error) throw error;
+    }
+
+    document
+      .getElementById("cardSelectPanel")
+      .classList.remove("show");
+
+    await startGame();
+
+  }catch(error){
+    console.error(error);
+    alert(
+      "کێشەی پاشەکەوتکردنی کارت ڕوویدا:\n"+
+      error.message
+    );
+  }
 }
 /* =========================
    START GAME
