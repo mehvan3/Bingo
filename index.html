@@ -1134,27 +1134,16 @@ async function createProfile(){
     error
   } =
     await supabaseClient
-      .from("PlayerProfile")
-      .insert({
+      .rpc(
+        "create_player_profile",
+        {
+          p_player_id:
+            currentPlayerId,
 
-        player_id:
-          currentPlayerId,
-
-        username:
-          playerName,
-
-        level:
-          1,
-
-        xp:
-          0,
-
-        coin:
-          1000
-
-      })
-      .select()
-      .single();
+          p_username:
+            playerName
+        }
+      );
 
   if(error){
 
