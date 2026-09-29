@@ -567,50 +567,31 @@ function playWinSound(){
    VOICE
 ========================= */
 function speakText(text,type="number"){
-  try{
-    if(!("speechSynthesis" in window)) return;
-    const speak=()=>{
-      try{
-        window.speechSynthesis.cancel();
-        const utterance=new SpeechSynthesisUtterance(text);
-        utterance.lang="en-US";
-        utterance.volume=1;
-        const voices=window.speechSynthesis.getVoices();
-        if(type==="number"){
-          const voice=voices.find(v=>
-            /Daniel|Alex|Samantha|Karen|Google US English/i.test(v.name)
-          );
-          if(voice) utterance.voice=voice;
-          utterance.rate=.72;
-          utterance.pitch=.95;
-        }
-        if(type==="male"){
-          const voice=voices.find(v=>
-            /Daniel|Alex|Fred|Aaron|Tom|Arthur/i.test(v.name)
-          );
-          if(voice) utterance.voice=voice;
-          utterance.rate=.68;
-          utterance.pitch=.48;
-        }
-        if(type==="female"){
-          const voice=voices.find(v=>
-            /Samantha|Karen|Victoria|Zira|Ava/i.test(v.name)
-          );
-          if(voice) utterance.voice=voice;
-          utterance.rate=.78;
-          utterance.pitch=1.25;
-        }
-        window.speechSynthesis.speak(utterance);
-      }catch(error){
-        console.log("Voice:",error);
-      }
-    };
-    if(window.speechSynthesis.getVoices().length){
-      speak();
-    }else{
-      setTimeout(speak,300);
-    }
-  }catch(error){}
+  if(!("speechSynthesis" in window)) return;
+
+  window.speechSynthesis.cancel();
+
+  const utterance=new SpeechSynthesisUtterance(String(text));
+
+  utterance.lang="en-US";
+  utterance.volume=1;
+
+  if(type==="number"){
+    utterance.rate=.72;
+    utterance.pitch=.95;
+  }
+
+  if(type==="male"){
+    utterance.rate=.68;
+    utterance.pitch=.48;
+  }
+
+  if(type==="female"){
+    utterance.rate=.78;
+    utterance.pitch=1.25;
+  }
+
+  window.speechSynthesis.speak(utterance);
 }
 /* =========================
    PLAY
