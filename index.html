@@ -816,14 +816,18 @@ let currentRoomId = null;
 
   let autoCallTimer = null;
 
+let autoCallTimer = null;
+
 function startAutoCall(){
 
-  if(autoCallTimer){
-    return;
+  if(autoCallTimer !== null){
+    clearInterval(autoCallTimer);
   }
 
   autoCallTimer = setInterval(
-    callNumber,
+    function(){
+      callNumber();
+    },
     3000
   );
 
