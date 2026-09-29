@@ -1451,115 +1451,78 @@ function startGame(){
 async function loadProfile(){
 
   if(!currentPlayerId){
-
     return;
-
   }
-
 
   const {
     data,
     error
-  } =
-    await supabaseClient
-
-      .rpc(
-        "get_player_profile",
-        {
-          p_player_id:
-            currentPlayerId
-        }
-      );
-
+  } = await supabaseClient
+    .rpc(
+      "get_player_profile",
+      {
+        p_player_id: currentPlayerId
+      }
+    );
 
   if(error){
-
     console.error(
       "Profile load error:",
       error
     );
-
     return;
-
   }
 
-
-  if(
-    !data ||
-    !data.length
-  ){
-
+  if(!data || !data.length){
     return;
-
   }
 
+  const profile = data[0];
 
-  const profile =
-    data[0];
+  document.getElementById(
+    "profileUsername"
+  ).textContent =
+    profile.username || "-";
 
+  document.getElementById(
+    "profileGender"
+  ).textContent =
+    profile.gender || "-";
 
-  document
-    .getElementById(
-      "profileUsername"
-    )
-    .textContent =
-      profile.username || "-";
+  document.getElementById(
+    "profileLevel"
+  ).textContent =
+    profile.level;
 
+  document.getElementById(
+    "profileXP"
+  ).textContent =
+    profile.xp;
 
-  document
-    .getElementById(
-      "profileGender"
-    )
-    .textContent =
-      profile.gender || "-";
+  document.getElementById(
+    "profileCoin"
+  ).textContent =
+    profile.coin;
 
+  document.getElementById(
+    "profileGifts"
+  ).textContent =
+    profile.gifts_received;
 
-  document
-    .getElementById(
-      "profileLevel"
-    )
-    .textContent =
-      profile.level;
+  document.getElementById(
+    "homeCoins"
+  ).textContent =
+    profile.coin;
 
+  document.getElementById(
+    "homeUserName"
+  ).textContent =
+    profile.username || "Player";
 
-  document
-    .getElementById(
-      "profileXP"
-    )
-    .textContent =
-      profile.xp;
-
-
-  document
-    .getElementById(
-      "profileCoin"
-    )
-    .textContent =
-      profile.coin;
-
-
-  document
-    .getElementById(
-      "profileGifts"
-    )
-    .textContent =
-      profile.gifts_received;
-
-
-  document
-    .getElementById(
-      "profileBox"
-    )
-    .style.display =
-      "block";
-
-
-  document
-    .getElementById(
-      "homeCoins"
-    )
-    .textContent =
-      profile.coin;
+  document.getElementById(
+    "profileBox"
+  ).style.display =
+    "block";
 
 }
 
