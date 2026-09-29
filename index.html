@@ -531,44 +531,36 @@ function unlockAudio(){
 ========================= */
 function playMarkSound(){
   try{
-    if(!audioContext){
-      audioContext=new(
-        window.AudioContext ||
-        window.webkitAudioContext
-      )();
-    }
+    const AudioCtx =
+      window.AudioContext ||
+      window.webkitAudioContext;
 
-    const play=()=>{
-      const now=audioContext.currentTime;
+    const ctx = new AudioCtx();
 
-      const osc=audioContext.createOscillator();
-      const gain=audioContext.createGain();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
 
-      osc.type="sine";
-      osc.frequency.setValueAtTime(800,now);
-      osc.frequency.setValueAtTime(1100,now+0.08);
+    osc.type = "sine";
+    osc.frequency.value = 900;
 
-      gain.gain.setValueAtTime(0.2,now);
-      gain.gain.exponentialRampToValueAtTime(
-        0.001,
-        now+0.15
-      );
+    gain.gain.setValueAtTime(0.25, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(
+      0.001,
+      ctx.currentTime + 0.12
+    );
 
-      osc.connect(gain);
-      gain.connect(audioContext.destination);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
 
-      osc.start(now);
-      osc.stop(now+0.15);
-    };
+    osc.start();
+    osc.stop(ctx.currentTime + 0.12);
 
-    if(audioContext.state==="suspended"){
-      audioContext.resume().then(play);
-    }else{
-      play();
-    }
+    setTimeout(()=>{
+      try{ ctx.close(); }catch(e){}
+    },200);
 
   }catch(error){
-    console.log("Mark sound:",error);
+    console.log("Mark sound error:",error);
   }
 }
 /* =========================
