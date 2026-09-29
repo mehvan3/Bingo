@@ -3,13 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <title>Bingo</title>
+
 <style>
 *{
   box-sizing:border-box;
   margin:0;
   padding:0;
 }
+
 body{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
   min-height:100vh;
@@ -18,16 +21,19 @@ body{
   color:#fff;
   padding:20px;
 }
+
 .app{
   width:100%;
   max-width:520px;
   margin:auto;
   padding:15px 0 40px;
 }
+
 .header{
   text-align:center;
   margin:20px 0 25px;
 }
+
 .logo{
   font-size:48px;
   font-weight:900;
@@ -36,11 +42,13 @@ body{
   -webkit-background-clip:text;
   color:transparent;
 }
+
 .subtitle{
   color:#88889a;
   margin-top:6px;
   font-size:14px;
 }
+
 .card{
   background:rgba(255,255,255,.055);
   border:1px solid rgba(255,255,255,.09);
@@ -49,6 +57,7 @@ body{
   box-shadow:0 25px 70px rgba(0,0,0,.4);
   backdrop-filter:blur(18px);
 }
+
 input{
   width:100%;
   padding:17px;
@@ -60,10 +69,12 @@ input{
   font-size:16px;
   outline:none;
 }
+
 input:focus{
   border-color:#806cff;
   box-shadow:0 0 0 3px rgba(128,108,255,.12);
 }
+
 button{
   width:100%;
   border:0;
@@ -74,20 +85,24 @@ button{
   cursor:pointer;
   transition:.2s;
 }
+
 button:active{
   transform:scale(.97);
 }
+
 .create{
   color:white;
   background:linear-gradient(135deg,#765cff,#a855f7);
   box-shadow:0 10px 25px rgba(118,92,255,.25);
 }
+
 .join{
   margin-top:10px;
   color:white;
   background:#242431;
   border:1px solid #373747;
 }
+
 .divider{
   display:flex;
   align-items:center;
@@ -96,6 +111,7 @@ button:active{
   color:#666676;
   font-size:12px;
 }
+
 .divider:before,
 .divider:after{
   content:"";
@@ -103,16 +119,20 @@ button:active{
   flex:1;
   background:#30303c;
 }
+
 /* GAME */
+
 #game{
   display:none;
 }
+
 .topbar{
   display:flex;
   justify-content:space-between;
   align-items:center;
   margin-bottom:18px;
 }
+
 .room{
   background:#181822;
   border:1px solid #30303c;
@@ -121,13 +141,16 @@ button:active{
   font-size:13px;
   color:#aaaabb;
 }
+
 .room b{
   color:white;
 }
+
 .players{
   color:#88889a;
   font-size:13px;
 }
+
 .caller{
   text-align:center;
   background:linear-gradient(135deg,#171724,#222038);
@@ -136,28 +159,33 @@ button:active{
   padding:20px;
   margin-bottom:18px;
 }
+
 .caller-title{
   color:#89899b;
   font-size:12px;
   text-transform:uppercase;
   letter-spacing:2px;
 }
+
 .number{
   font-size:58px;
   font-weight:900;
   margin:8px 0;
   color:#fff;
 }
+
 .call{
   background:linear-gradient(135deg,#7c5cff,#a855f7);
   color:white;
 }
+
 .bingo-title{
   display:grid;
   grid-template-columns:repeat(5,1fr);
   gap:7px;
   margin-bottom:7px;
 }
+
 .bingo-title div{
   padding:9px 0;
   border-radius:10px;
@@ -166,11 +194,13 @@ button:active{
   font-weight:900;
   text-align:center;
 }
+
 .board{
   display:grid;
   grid-template-columns:repeat(5,1fr);
   gap:7px;
 }
+
 .cell{
   aspect-ratio:1;
   border-radius:13px;
@@ -184,19 +214,23 @@ button:active{
   cursor:pointer;
   transition:.2s;
 }
+
 .cell:hover{
   background:#222230;
 }
+
 .cell.marked{
   background:linear-gradient(135deg,#765cff,#a855f7);
   border-color:#8d7bff;
   box-shadow:0 5px 15px rgba(118,92,255,.3);
 }
+
 .cell.free{
   background:#252338;
   color:#9d91ff;
   font-size:12px;
 }
+
 .message{
   text-align:center;
   margin-top:18px;
@@ -204,12 +238,35 @@ button:active{
   color:#aaaabb;
   font-size:14px;
 }
+
 .newgame{
   margin-top:12px;
   background:#242431;
   color:white;
   border:1px solid #373747;
 }
+
+/* PROFILE */
+
+.profile{
+  display:none;
+  margin-bottom:18px;
+}
+
+.profile h2{
+  margin-bottom:15px;
+}
+
+.profile p{
+  margin:8px 0;
+  color:#aaaabb;
+}
+
+.profile span{
+  color:white;
+  font-weight:700;
+}
+
 .footer{
   text-align:center;
   color:#555565;
@@ -218,371 +275,1155 @@ button:active{
 }
 </style>
 </head>
+
 <body>
+
 <div class="app">
+
   <!-- HOME -->
+
   <section id="home">
+
     <div class="header">
       <div class="logo">BINGO</div>
-      <div class="subtitle">Play Bingo online with friends</div>
+      <div class="subtitle">
+        Play Bingo online with friends
+      </div>
     </div>
+
     <div class="card">
+
       <input
         id="name"
         type="text"
         placeholder="Enter your name"
         maxlength="20"
       >
-      <button class="create" onclick="createRoom()">
+
+      <button
+        class="create"
+        onclick="createRoom()"
+      >
         🎮 Create Room
       </button>
-      <div class="divider">OR</div>
+
+      <div class="divider">
+        OR
+      </div>
+
       <input
-        id="room"
+        id="roomCode"
         type="text"
         placeholder="Enter room code"
         maxlength="6"
         inputmode="numeric"
       >
-      <button class="join" onclick="joinRoom()">
+
+      <button
+        class="join"
+        onclick="joinRoom()"
+      >
         🔑 Join Room
       </button>
+
     </div>
-    <div class="footer">Bingo • Modern Edition</div>
+
+    <div class="footer">
+      Bingo • Modern Edition
+    </div>
+
   </section>
+
+
   <!-- GAME -->
+
   <section id="game">
+
     <div class="header">
       <div class="logo">BINGO</div>
-      <div class="subtitle">Game Room</div>
+      <div class="subtitle">
+        Game Room
+      </div>
     </div>
+
+
+    <!-- PROFILE -->
+
+    <div
+      id="profileBox"
+      class="card profile"
+    >
+
+      <h2>
+        👤 Player Profile
+      </h2>
+
+      <p>
+        Username:
+        <span id="profileUsername">-</span>
+      </p>
+
+      <p>
+        Gender:
+        <span id="profileGender">-</span>
+      </p>
+
+      <p>
+        Level:
+        <span id="profileLevel">-</span>
+      </p>
+
+      <p>
+        XP:
+        <span id="profileXP">-</span>
+      </p>
+
+      <p>
+        🪙 Coins:
+        <span id="profileCoin">-</span>
+      </p>
+
+      <p>
+        🎁 Gifts Received:
+        <span id="profileGifts">-</span>
+      </p>
+
+    </div>
+
+
     <div class="topbar">
+
       <div class="room">
         ROOM:
-        <b id="roomDisplay">------</b>
+        <b id="roomDisplay">
+          ------
+        </b>
       </div>
+
       <div class="players">
-        👤 <span id="playerDisplay">1</span>
+        👤
+        <span id="playerDisplay">
+          1
+        </span>
       </div>
+
     </div>
+
+
     <div class="caller">
+
       <div class="caller-title">
         Last Number
       </div>
-      <div class="number" id="number">
+
+      <div
+        class="number"
+        id="number"
+      >
         —
       </div>
-      <button class="call" onclick="callNumber()">
+
+      <button
+        class="call"
+        onclick="callNumber()"
+      >
         🔢 Call Number
       </button>
+
     </div>
+
+
     <div class="bingo-title">
+
       <div>B</div>
       <div>I</div>
       <div>N</div>
       <div>G</div>
       <div>O</div>
+
     </div>
-    <div class="board" id="board"></div>
-    <div class="message" id="message">
+
+
+    <div
+      class="board"
+      id="board"
+    ></div>
+
+
+    <div
+      class="message"
+      id="message"
+    >
       Call a number to start.
     </div>
-    <button class="newgame" onclick="newGame()">
+
+
+    <button
+      class="newgame"
+      onclick="newGame()"
+    >
       🔄 New Game
     </button>
+
   </section>
+
 </div>
+
+
 <!-- SUPABASE -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+
 const SUPABASE_URL =
   "https://szmqbywztfgtyoemzgiq.supabase.co";
+
 const SUPABASE_ANON_KEY =
   "sb_publishable_UcmJ964uYcedY4lp8iYxRA_PF3TSNNY";
+
 const supabaseClient =
   window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
   );
+
+
 console.log(
   "Supabase connected:",
   !!supabaseClient
 );
+
+
 let numbers = [];
+
 let calledNumbers = [];
+
 let roomCode = "";
+
 let playerName = "";
-/* CREATE ROOM */
-async function createRoom() {
-  playerName = document.getElementById("name").value.trim();
 
-  if (!playerName) {
+let currentPlayerId = null;
+
+let currentRoomId = null;
+
+
+/* =========================
+   CREATE ROOM
+========================= */
+
+async function createRoom(){
+
+  playerName =
+    document
+      .getElementById("name")
+      .value
+      .trim();
+
+
+  if(!playerName){
+
     alert("Please enter your name.");
+
     return;
   }
 
-  const { data, error } = await supabaseClient
-    .from("Room")
-    .insert({
-      entry_fee: 0,
-      max_player: 25,
-      player_count: 0,
-      status: "waiting",
-      account_id: "8cc0bcb2-144c-4e0b-9da7-902599f0c6e2"
-    })
-    .select()
-    .single();
 
-  if (error) {
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+
+      .from("Room")
+
+      .insert({
+
+        entry_fee: 0,
+
+        max_player: 25,
+
+        player_count: 0,
+
+        status: "waiting",
+
+        account_id:
+          "8cc0bcb2-144c-4e0b-9da7-902599f0c6e2"
+
+      })
+
+      .select()
+
+      .single();
+
+
+  if(error){
+
     console.error(error);
+
     alert(error.message);
+
     return;
   }
 
-  roomCode = data.room_code;
 
-  startGame();
+  roomCode =
+    data.room_code;
+
+  currentRoomId =
+    data.id;
+
+
+  await createPlayer(
+    currentRoomId
+  );
+
 }
-/* JOIN ROOM */
-async function joinRoom() {
-  playerName = document.getElementById("name").value.trim();
-  const code = document.getElementById("roomCode").value.trim();
 
-  if (!playerName) {
+
+/* =========================
+   JOIN ROOM
+========================= */
+
+async function joinRoom(){
+
+  playerName =
+    document
+      .getElementById("name")
+      .value
+      .trim();
+
+
+  const code =
+    document
+      .getElementById("roomCode")
+      .value
+      .trim();
+
+
+  if(!playerName){
+
     alert("Please enter your name.");
+
     return;
   }
 
-  if (!/^\d{6}$/.test(code)) {
-    alert("Please enter a 6-digit room code.");
+
+  if(!/^\d{6}$/.test(code)){
+
+    alert(
+      "Please enter a 6-digit room code."
+    );
+
     return;
   }
 
-  const { data, error } = await supabaseClient
-    .from("Room")
-    .select("*")
-    .eq("room_code", code)
-    .single();
 
-  if (error || !data) {
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+
+      .from("Room")
+
+      .select("*")
+
+      .eq(
+        "room_code",
+        code
+      )
+
+      .single();
+
+
+  if(error || !data){
+
     alert("Room not found.");
+
     console.error(error);
+
     return;
   }
 
-  roomCode = data.room_code;
+
+  roomCode =
+    data.room_code;
+
+  currentRoomId =
+    data.id;
+
+
+  await createPlayer(
+    currentRoomId
+  );
+
+}
+
+
+/* =========================
+   CREATE PLAYER
+========================= */
+
+async function createPlayer(
+  roomId
+){
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+
+      .from("Player")
+
+      .insert({
+
+        room_id: roomId
+
+      })
+
+      .select()
+
+      .single();
+
+
+  if(error){
+
+    console.error(error);
+
+    alert(error.message);
+
+    return;
+  }
+
+
+  currentPlayerId =
+    data.id;
+
+
+  console.log(
+    "Player created:",
+    data
+  );
+
+
+  await createProfile();
+
+}
+
+
+/* =========================
+   CREATE PROFILE
+========================= */
+
+async function createProfile(){
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+
+      .from("PlayerProfile")
+
+      .insert({
+
+        player_id:
+          currentPlayerId,
+
+        username:
+          playerName,
+
+        level: 1,
+
+        xp: 0,
+
+        coin: 1000
+
+      })
+
+      .select()
+
+      .single();
+
+
+  if(error){
+
+    console.error(
+      "Profile error:",
+      error
+    );
+
+  }
+
 
   startGame();
-}
-/* START GAME */
-const { data: player, error: playerError } = await supabaseClient
-  .from("Player")
-  .insert({
-    room_id: data.id
-  })
-  .select()
-  .single();
 
-if (playerError) {
-  console.error(playerError);
-  alert(playerError.message);
-  return;
 }
 
-console.log("Player created:", player);
 
-startGame();
-/* CREATE BINGO CARD */
+/* =========================
+   START GAME
+========================= */
+
+function startGame(){
+
+  document
+    .getElementById("home")
+    .style.display = "none";
+
+
+  document
+    .getElementById("game")
+    .style.display = "block";
+
+
+  document
+    .getElementById("roomDisplay")
+    .textContent =
+      roomCode;
+
+
+  document
+    .getElementById("playerDisplay")
+    .textContent =
+      currentPlayerId || 1;
+
+
+  createCard();
+
+  loadProfile();
+
+}
+
+
+/* =========================
+   LOAD PROFILE
+========================= */
+
+async function loadProfile(){
+
+  if(!currentPlayerId){
+
+    return;
+  }
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+
+      .rpc(
+        "get_player_profile",
+        {
+          p_player_id:
+            currentPlayerId
+        }
+      );
+
+
+  if(error){
+
+    console.error(
+      "Profile load error:",
+      error
+    );
+
+    return;
+  }
+
+
+  if(!data || !data.length){
+
+    return;
+  }
+
+
+  const profile =
+    data[0];
+
+
+  document
+    .getElementById(
+      "profileUsername"
+    )
+    .textContent =
+      profile.username || "-";
+
+
+  document
+    .getElementById(
+      "profileGender"
+    )
+    .textContent =
+      profile.gender || "-";
+
+
+  document
+    .getElementById(
+      "profileLevel"
+    )
+    .textContent =
+      profile.level;
+
+
+  document
+    .getElementById(
+      "profileXP"
+    )
+    .textContent =
+      profile.xp;
+
+
+  document
+    .getElementById(
+      "profileCoin"
+    )
+    .textContent =
+      profile.coin;
+
+
+  document
+    .getElementById(
+      "profileGifts"
+    )
+    .textContent =
+      profile.gifts_received;
+
+
+  document
+    .getElementById(
+      "profileBox"
+    )
+    .style.display =
+      "block";
+
+}
+
+
+/* =========================
+   CREATE BINGO CARD
+========================= */
+
 function createCard(){
+
   const ranges = [
+
     [1,15],
+
     [16,30],
+
     [31,45],
+
     [46,60],
+
     [61,75]
+
   ];
+
+
   let card = [];
-  for(let column=0; column<5; column++){
-    let nums=[];
+
+
+  for(
+    let column = 0;
+    column < 5;
+    column++
+  ){
+
+    let nums = [];
+
+
     for(
-      let n=ranges[column][0];
-      n<=ranges[column][1];
+      let n =
+        ranges[column][0];
+
+      n <=
+        ranges[column][1];
+
       n++
     ){
+
       nums.push(n);
+
     }
+
+
     nums.sort(
-      ()=>Math.random()-0.5
+      () =>
+        Math.random() -
+        0.5
     );
-    for(let row=0; row<5; row++){
-      if(column===2 && row===2){
+
+
+    for(
+      let row = 0;
+      row < 5;
+      row++
+    ){
+
+      if(
+        column === 2 &&
+        row === 2
+      ){
+
         card.push("FREE");
+
       }else{
-        card.push(nums[row]);
+
+        card.push(
+          nums[row]
+        );
+
       }
+
     }
+
   }
-  /* Convert column order to row order */
-  let board=[];
-  for(let row=0; row<5; row++){
-    for(let col=0; col<5; col++){
+
+
+  let board = [];
+
+
+  for(
+    let row = 0;
+    row < 5;
+    row++
+  ){
+
+    for(
+      let col = 0;
+      col < 5;
+      col++
+    ){
+
       board.push(
-        card[col*5+row]
+        card[
+          col * 5 + row
+        ]
       );
+
     }
+
   }
-  numbers=board;
+
+
+  numbers =
+    board;
+
+
   renderBoard();
+
 }
-/* DRAW BOARD */
+
+
+/* =========================
+   DRAW BOARD
+========================= */
+
 function renderBoard(){
+
   const board =
-    document.getElementById("board");
-  board.innerHTML="";
+    document
+      .getElementById(
+        "board"
+      );
+
+
+  board.innerHTML = "";
+
+
   numbers.forEach(
     (num,index)=>{
+
       const cell =
-        document.createElement("div");
-      cell.className="cell";
-      cell.textContent=num;
-      if(num==="FREE"){
-        cell.classList.add("free");
-        cell.classList.add("marked");
+        document
+          .createElement(
+            "div"
+          );
+
+
+      cell.className =
+        "cell";
+
+
+      cell.textContent =
+        num;
+
+
+      if(
+        num === "FREE"
+      ){
+
+        cell.classList.add(
+          "free"
+        );
+
+        cell.classList.add(
+          "marked"
+        );
+
       }
-      cell.onclick=()=>{
-        markCell(cell,index);
-      };
-      board.appendChild(cell);
+
+
+      cell.onclick =
+        ()=>{
+          markCell(
+            cell,
+            index
+          );
+        };
+
+
+      board.appendChild(
+        cell
+      );
+
     }
   );
+
 }
-/* MARK NUMBER */
-function markCell(cell,index){
-  if(numbers[index]==="FREE"){
+
+
+/* =========================
+   MARK NUMBER
+========================= */
+
+function markCell(
+  cell,
+  index
+){
+
+  if(
+    numbers[index] ===
+    "FREE"
+  ){
+
     return;
   }
+
+
   const number =
-    Number(numbers[index]);
-  if(!calledNumbers.includes(number)){
+    Number(
+      numbers[index]
+    );
+
+
+  if(
+    !calledNumbers.includes(
+      number
+    )
+  ){
+
     return;
   }
-  cell.classList.toggle("marked");
+
+
+  cell.classList.add(
+    "marked"
+  );
+
+
   checkBingo();
+
 }
-/* CALL NUMBER */
+
+
+/* =========================
+   CALL NUMBER
+========================= */
+
 function callNumber(){
-  const available=[];
-  for(let i=1;i<=75;i++){
-    if(!calledNumbers.includes(i)){
+
+  const available = [];
+
+
+  for(
+    let i = 1;
+    i <= 75;
+    i++
+  ){
+
+    if(
+      !calledNumbers.includes(i)
+    ){
+
       available.push(i);
+
     }
+
   }
-  if(available.length===0){
-    document.getElementById("message").textContent =
-      "All numbers have been called.";
+
+
+  if(
+    available.length === 0
+  ){
+
+    document
+      .getElementById(
+        "message"
+      )
+      .textContent =
+        "All numbers have been called.";
+
     return;
   }
+
+
   const random =
     available[
       Math.floor(
-        Math.random()*available.length
+        Math.random() *
+        available.length
       )
     ];
-  calledNumbers.push(random);
-  document.getElementById("number").textContent =
-    random;
-  document.getElementById("message").textContent =
-    "Number " + random + " was called.";
-  autoMark(random);
-}
-/* AUTO MARK */
-function autoMark(number){
-  const cells =
-    document.querySelectorAll(".cell");
-  numbers.forEach(
-    (num,index)=>{
-      if(num===number){
-        cells[index]
-          .classList
-          .add("marked");
-      }
-    }
+
+
+  calledNumbers.push(
+    random
   );
-  checkBingo();
+
+
+  document
+    .getElementById(
+      "number"
+    )
+    .textContent =
+      random;
+
+
+  document
+    .getElementById(
+      "message"
+    )
+    .textContent =
+      "Number " +
+      random +
+      " was called.";
+
 }
-/* CHECK BINGO */
+
+
+/* =========================
+   CHECK BINGO
+========================= */
+
 function checkBingo(){
+
   const cells =
-    document.querySelectorAll(".cell");
-  let marked=[];
-  for(let i=0;i<25;i++){
+    document.querySelectorAll(
+      ".cell"
+    );
+
+
+  let marked = [];
+
+
+  for(
+    let i = 0;
+    i < 25;
+    i++
+  ){
+
     marked[i] =
       cells[i]
         .classList
-        .contains("marked");
+        .contains(
+          "marked"
+        );
+
   }
-  /* ROWS */
-  for(let row=0;row<5;row++){
-    let win=true;
-    for(let col=0;col<5;col++){
-      if(!marked[row*5+col]){
-        win=false;
+
+
+  for(
+    let row = 0;
+    row < 5;
+    row++
+  ){
+
+    let win = true;
+
+
+    for(
+      let col = 0;
+      col < 5;
+      col++
+    ){
+
+      if(
+        !marked[
+          row * 5 + col
+        ]
+      ){
+
+        win = false;
+
       }
+
     }
+
+
     if(win){
+
       bingoWin();
+
       return;
+
     }
+
   }
-  /* COLUMNS */
-  for(let col=0;col<5;col++){
-    let win=true;
-    for(let row=0;row<5;row++){
-      if(!marked[row*5+col]){
-        win=false;
+
+
+  for(
+    let col = 0;
+    col < 5;
+    col++
+  ){
+
+    let win = true;
+
+
+    for(
+      let row = 0;
+      row < 5;
+      row++
+    ){
+
+      if(
+        !marked[
+          row * 5 + col
+        ]
+      ){
+
+        win = false;
+
       }
+
     }
+
+
     if(win){
+
       bingoWin();
+
       return;
+
     }
+
   }
-  /* DIAGONAL */
-  let diagonal1=true;
-  for(let i=0;i<5;i++){
-    if(!marked[i*5+i]){
-      diagonal1=false;
+
+
+  let diagonal1 = true;
+
+
+  for(
+    let i = 0;
+    i < 5;
+    i++
+  ){
+
+    if(
+      !marked[
+        i * 5 + i
+      ]
+    ){
+
+      diagonal1 = false;
+
     }
+
   }
+
+
   if(diagonal1){
+
     bingoWin();
+
     return;
+
   }
-  /* OTHER DIAGONAL */
-  let diagonal2=true;
-  for(let i=0;i<5;i++){
-    if(!marked[i*5+(4-i)]){
-      diagonal2=false;
+
+
+  let diagonal2 = true;
+
+
+  for(
+    let i = 0;
+    i < 5;
+    i++
+  ){
+
+    if(
+      !marked[
+        i * 5 + (4-i)
+      ]
+    ){
+
+      diagonal2 = false;
+
     }
+
   }
+
+
   if(diagonal2){
+
     bingoWin();
+
   }
+
 }
-/* WIN */
+
+
+/* =========================
+   WIN
+========================= */
+
 function bingoWin(){
-  document.getElementById("message").textContent =
-    "🎉 BINGO! You win!";
+
+  document
+    .getElementById(
+      "message"
+    )
+    .textContent =
+      "🎉 BINGO! You win!";
+
 }
-/* NEW GAME */
+
+
+/* =========================
+   NEW GAME
+========================= */
+
 function newGame(){
-  calledNumbers=[];
-  document.getElementById("number").textContent =
-    "—";
-  document.getElementById("message").textContent =
-    "New game started.";
+
+  calledNumbers = [];
+
+
+  document
+    .getElementById(
+      "number"
+    )
+    .textContent =
+      "—";
+
+
+  document
+    .getElementById(
+      "message"
+    )
+    .textContent =
+      "New game started.";
+
+
   createCard();
+
 }
+
 </script>
+
 </body>
 </html>
