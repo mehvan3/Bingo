@@ -1034,12 +1034,30 @@ function selectMode(mode){
 
 async function playGame(){
 
-  playerName =
-    document
-      .getElementById("name")
-      .value
-      .trim();
+  const nameInput =
+    document.getElementById("name");
 
+  playerName =
+    nameInput.value.trim();
+
+  if(!playerName){
+
+    const homeName =
+      document.getElementById(
+        "homeUserName"
+      ).textContent.trim();
+
+    if(
+      homeName &&
+      homeName !== "Player"
+    ){
+
+      playerName =
+        homeName;
+
+    }
+
+  }
 
   if(!playerName){
 
@@ -1050,14 +1068,10 @@ async function playGame(){
     return;
   }
 
-
-  document
-    .getElementById(
-      "homeUserName"
-    )
-    .textContent =
-      playerName;
-
+  document.getElementById(
+    "homeUserName"
+  ).textContent =
+    playerName;
 
   console.log(
     "Starting game:",
@@ -1067,7 +1081,6 @@ async function playGame(){
       selectedMode
     }
   );
-
 
   await createRoom();
 
