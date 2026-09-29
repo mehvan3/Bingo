@@ -1002,11 +1002,20 @@ function checkBingo(cardId){
   ];
   const cardCorners=[0,4,20,24];
   const freeCorners=[6,8,16,18];
+
+const freeLine=[
+  [10,11,12,13,14],
+  [2,7,12,17,22]
+];
   const rowWin=rows.some(line=>line.every(i=>marked[i]));
   const columnWin=columns.some(line=>line.every(i=>marked[i]));
   const diagonalWin=diagonals.some(line=>line.every(i=>marked[i]));
   const cornerWin=cardCorners.every(i=>marked[i]);
   const freeCornerWin=freeCorners.every(i=>marked[i]);
+
+const freeLineWin=freeLine.some(
+  line=>line.every(i=>marked[i])
+);
   if(
     rowWin ||
     columnWin ||
