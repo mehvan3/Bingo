@@ -194,7 +194,7 @@ input{
 }
 .board.locked{
   pointer-events:none;
-  opacity:.75;
+  opacity:.72;
 }
 .cell{
   aspect-ratio:1;
@@ -362,12 +362,17 @@ input{
   background:#172941;
   color:#aebed1;
 }
+/* WINNER */
 .winner{
   animation:winnerGlow 1s infinite alternate;
 }
 @keyframes winnerGlow{
-  from{box-shadow:0 0 10px rgba(255,210,63,.2)}
-  to{box-shadow:0 0 40px rgba(255,210,63,.8)}
+  from{
+    box-shadow:0 0 10px rgba(255,210,63,.2);
+  }
+  to{
+    box-shadow:0 0 40px rgba(255,210,63,.8);
+  }
 }
 .winner-message{
   color:#ffd23f!important;
@@ -381,8 +386,8 @@ input{
   display:none;
   align-items:center;
   justify-content:center;
-  background:rgba(0,0,0,.72);
-  backdrop-filter:blur(8px);
+  background:rgba(0,0,0,.78);
+  backdrop-filter:blur(10px);
   overflow:hidden;
 }
 .overlay.show{
@@ -391,45 +396,103 @@ input{
 .win-box{
   position:relative;
   z-index:2;
-  width:min(90%,400px);
-  padding:35px 20px;
+  width:min(92%,420px);
+  padding:28px 20px;
   border-radius:30px;
   text-align:center;
-  background:linear-gradient(135deg,#111d35,#26164c);
+  background:
+    linear-gradient(
+      145deg,
+      #101c34,
+      #281550,
+      #111b32
+    );
   border:2px solid #ffd23f;
-  box-shadow:0 0 60px rgba(255,210,63,.55);
+  box-shadow:
+    0 0 25px rgba(255,210,63,.35),
+    0 0 80px rgba(123,60,255,.25);
   animation:winBox .7s ease;
 }
 @keyframes winBox{
-  0%{transform:scale(.4) rotate(-8deg);opacity:0}
-  70%{transform:scale(1.08) rotate(2deg)}
-  100%{transform:scale(1) rotate(0);opacity:1}
+  0%{
+    transform:scale(.4) rotate(-8deg);
+    opacity:0;
+  }
+  70%{
+    transform:scale(1.08) rotate(2deg);
+  }
+  100%{
+    transform:scale(1) rotate(0);
+    opacity:1;
+  }
 }
 .crown{
-  font-size:80px;
+  font-size:72px;
   animation:crownFloat 1s infinite alternate;
 }
 @keyframes crownFloat{
-  from{transform:translateY(0) rotate(-4deg)}
-  to{transform:translateY(-12px) rotate(4deg)}
+  from{
+    transform:translateY(0) rotate(-4deg);
+  }
+  to{
+    transform:translateY(-12px) rotate(4deg);
+  }
 }
 .win-title{
   color:#ffd23f;
-  font-size:34px;
+  font-size:30px;
   font-weight:900;
-  margin:10px 0;
+  margin:8px 0;
 }
 .win-sub{
   color:#d8e2f0;
-  margin-bottom:25px;
+  margin-bottom:18px;
 }
+.winner-list{
+  margin:18px 0;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.winner-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:11px;
+  border-radius:15px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.08);
+}
+.winner-place{
+  width:42px;
+  font-size:25px;
+}
+.winner-avatar{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  object-fit:cover;
+}
+.winner-name{
+  flex:1;
+  text-align:left;
+  font-weight:900;
+}
+.watch-button,
 .new-game{
+  width:100%;
   border:0;
   border-radius:15px;
-  padding:14px 25px;
-  background:linear-gradient(90deg,#ffb300,#ff5c00);
+  padding:14px 20px;
   color:white;
   font-weight:900;
+  margin-top:7px;
+}
+.watch-button{
+  background:linear-gradient(90deg,#7b3cff,#00a8ff);
+}
+.new-game{
+  background:linear-gradient(90deg,#ffb300,#ff5c00);
 }
 .confetti{
   position:absolute;
@@ -443,6 +506,16 @@ input{
     transform:translateY(110vh) rotate(720deg);
   }
 }
+.rank-badge{
+  display:inline-block;
+  margin-top:5px;
+  padding:5px 10px;
+  border-radius:12px;
+  background:rgba(255,210,63,.12);
+  color:#ffd23f;
+  font-size:12px;
+  font-weight:900;
+}
 </style>
 </head>
 <body>
@@ -450,33 +523,58 @@ input{
   <div class="logo">BINGO</div>
   <div class="card-box">
 <label>ناوی یاریزان</label>
-<input id="name" value="Mehvan" maxlength="20">
+<input
+  id="name"
+  value="Mehvan"
+  maxlength="20"
+>
 <label>نرخی چوونە ژوورەوە</label>
 <div class="fees">
-  <button class="fee selected" data-fee="100">100</button>
-  <button class="fee" data-fee="500">500</button>
-  <button class="fee" data-fee="1000">1,000</button>
-  <button class="fee" data-fee="5000">5,000</button>
-  <button class="fee" data-fee="10000">10,000</button>
-  <button class="fee" data-fee="25000">25,000</button>
-  <button class="fee" data-fee="100000">100,000</button>
+  <button class="fee selected" data-fee="100">
+    100
+  </button>
+  <button class="fee" data-fee="500">
+    500
+  </button>
+  <button class="fee" data-fee="1000">
+    1,000
+  </button>
+  <button class="fee" data-fee="5000">
+    5,000
+  </button>
+  <button class="fee" data-fee="10000">
+    10,000
+  </button>
+  <button class="fee" data-fee="25000">
+    25,000
+  </button>
+  <button class="fee" data-fee="100000">
+    100,000
+  </button>
 </div>
 <div class="modes">
-  <button class="mode selected" data-mode="solo">🎯 Solo</button>
-  <button class="mode" data-mode="friends">👥 With Friends</button>
+  <button class="mode selected" data-mode="solo">
+    🎯 Solo
+  </button>
+  <button class="mode" data-mode="friends">
+    👥 With Friends
+  </button>
 </div>
-<button class="play" onclick="playGame()">PLAY</button>
+<button class="play" onclick="playGame()">
+  PLAY
+</button>
   </div>
 </section>
 <section id="gamePage" class="page hidden">
   <div class="topbar">
-    <strong>BINGO</strong>
+<strong>BINGO</strong>
 <div class="coins">
   🪙 <span id="coinText">0</span>
 </div>
   </div>
   <div class="room">
-    Room: <span id="roomText">------</span>
+    Room:
+    <span id="roomText">------</span>
   </div>
   <div class="caller">
 <div id="numberDisplay" class="number">
@@ -513,12 +611,13 @@ input{
 </button>
   </div>
   <div class="bottom">
-    <button>🎮 Play</button>
-    <button>💬 Chat</button>
-    <button>🎁 Reward</button>
-    <button>👤 Profile</button>
+<button>🎮 Play</button>
+<button>💬 Chat</button>
+<button>🎁 Reward</button>
+<button>👤 Profile</button>
   </div>
 </section>
+<!-- FRIEND GAME -->
 <div id="friendGamePanel" class="friend-game-panel">
   <div class="friend-game-box">
 <div class="friend-game-top">
@@ -561,6 +660,7 @@ input{
 ></div>
   </div>
 </div>
+<!-- WINNER -->
 <div id="winnerOverlay" class="overlay">
   <div class="win-box">
 <div id="winnerCrown" class="crown">
@@ -569,10 +669,23 @@ input{
 <div id="winnerTitle" class="win-title">
   YOU ARE KING!
 </div>
-<div class="win-sub">
-  🎉 BINGO! YOU WIN! 🎉
+<div id="winnerSub" class="win-sub">
+  🎉 BINGO! 🎉
 </div>
-<button class="new-game" onclick="newGame()">
+<div
+  id="winnerList"
+  class="winner-list"
+></div>
+<button
+  class="watch-button"
+  onclick="watchWinnerGame()"
+>
+  👀 سەیری یاری بکە
+</button>
+<button
+  class="new-game"
+  onclick="newGame()"
+>
   NEW GAME
 </button>
   </div>
@@ -587,38 +700,51 @@ const supabaseClient =
     SUPABASE_URL,
     SUPABASE_KEY
   );
-let numbers = [];
-let calledNumbers = [];
-let roomCode = "";
-let playerName = "Mehvan";
-let currentPlayerId = null;
-let currentRoomId = null;
-let autoCallTimer = null;
-let selectedEntryFee = 100;
-let selectedMode = "solo";
-let gameFinished = false;
-let currentGender = "";
-let audioContext = null;
-let playersRefreshTimer = null;
+let numbers=[];
+let calledNumbers=[];
+let roomCode="";
+let playerName="Mehvan";
+let currentPlayerId=null;
+let currentRoomId=null;
+let autoCallTimer=null;
+let playersRefreshTimer=null;
+let selectedEntryFee=100;
+let selectedMode="solo";
+let gameFinished=false;
+let currentGender="";
+let audioContext=null;
+let roomChannel=null;
+let sessionId=
+  crypto.randomUUID
+    ? crypto.randomUUID()
+    : (
+        Date.now()+"-"+Math.random()
+      );
+let winners=[];
+let myWinnerRank=null;
+let myCardState=[];
 /* =========================
    AUDIO
 ========================= */
 function unlockAudio(){
   try{
     if(!audioContext){
-      audioContext =
-        new (
+      audioContext=
+        new(
           window.AudioContext ||
           window.webkitAudioContext
         )();
     }
     if(
-      audioContext.state === "suspended"
+      audioContext.state==="suspended"
     ){
       audioContext.resume();
     }
   }catch(error){
-    console.log("Audio:",error);
+    console.log(
+      "Audio:",
+      error
+    );
   }
   try{
     window.speechSynthesis.cancel();
@@ -630,9 +756,9 @@ function playMarkSound(){
     if(!audioContext){
       unlockAudio();
     }
-    const oscillator =
+    const oscillator=
       audioContext.createOscillator();
-    const gain =
+    const gain=
       audioContext.createGain();
     oscillator.type="sine";
     oscillator.frequency.setValueAtTime(
@@ -641,7 +767,7 @@ function playMarkSound(){
     );
     oscillator.frequency.exponentialRampToValueAtTime(
       950,
-      audioContext.currentTime + .12
+      audioContext.currentTime+.12
     );
     gain.gain.setValueAtTime(
       .001,
@@ -649,20 +775,23 @@ function playMarkSound(){
     );
     gain.gain.exponentialRampToValueAtTime(
       .22,
-      audioContext.currentTime + .02
+      audioContext.currentTime+.02
     );
     gain.gain.exponentialRampToValueAtTime(
       .001,
-      audioContext.currentTime + .16
+      audioContext.currentTime+.16
     );
     oscillator.connect(gain);
     gain.connect(audioContext.destination);
     oscillator.start();
     oscillator.stop(
-      audioContext.currentTime + .17
+      audioContext.currentTime+.17
     );
   }catch(error){
-    console.log("Mark sound:",error);
+    console.log(
+      "Mark sound:",
+      error
+    );
   }
 }
 function playWinSound(){
@@ -671,32 +800,32 @@ function playWinSound(){
       unlockAudio();
     }
     const notes=[
-      392.00,
+      392,
       523.25,
       659.25,
       783.99,
-      1046.50
+      1046.5
     ];
     notes.forEach(
       function(freq,index){
-        const oscillator =
+        const oscillator=
           audioContext.createOscillator();
-        const gain =
+        const gain=
           audioContext.createGain();
-        oscillator.type =
-          index < 2
-            ? "sine"
-            : "triangle";
+        oscillator.type=
+          index<2
+            ?"sine"
+            :"triangle";
         oscillator.frequency.value=freq;
-        const start =
-          audioContext.currentTime +
+        const start=
+          audioContext.currentTime+
           index*.13;
         gain.gain.setValueAtTime(
           .001,
           start
         );
         gain.gain.exponentialRampToValueAtTime(
-          .30,
+          .3,
           start+.035
         );
         gain.gain.exponentialRampToValueAtTime(
@@ -706,11 +835,14 @@ function playWinSound(){
         oscillator.connect(gain);
         gain.connect(audioContext.destination);
         oscillator.start(start);
-        oscillator.stop(start+.40);
+        oscillator.stop(start+.4);
       }
     );
   }catch(error){
-    console.log("Win sound:",error);
+    console.log(
+      "Win sound:",
+      error
+    );
   }
 }
 /* =========================
@@ -727,58 +859,59 @@ function speakText(
       return;
     }
     window.speechSynthesis.cancel();
-    const utterance =
+    const utterance=
       new SpeechSynthesisUtterance(text);
     utterance.lang="en-US";
-    const voices =
+    const voices=
       window.speechSynthesis.getVoices();
     if(type==="number"){
-      const clearVoice =
+      const voice=
         voices.find(
           v =>
-            /Samantha|Karen|Daniel|Alex|Google US English/i
+            /Daniel|Alex|Samantha|Karen|Google US English/i
               .test(v.name)
         );
-      if(clearVoice){
-        utterance.voice=clearVoice;
+      if(voice){
+        utterance.voice=voice;
       }
       utterance.rate=.72;
       utterance.pitch=.95;
-      utterance.volume=1;
     }
-    else if(type==="male"){
-      const maleVoice =
+    if(type==="male"){
+      const voice=
         voices.find(
           v =>
-            /Daniel|Alex|Fred|Aaron|Tom|Arthur|Google US English/i
+            /Daniel|Alex|Fred|Aaron|Tom|Arthur/i
               .test(v.name)
         );
-      if(maleVoice){
-        utterance.voice=maleVoice;
+      if(voice){
+        utterance.voice=voice;
       }
       utterance.rate=.68;
-      utterance.pitch=.45;
-      utterance.volume=1;
+      utterance.pitch=.48;
     }
-    else if(type==="female"){
-      const femaleVoice =
+    if(type==="female"){
+      const voice=
         voices.find(
           v =>
-            /Samantha|Karen|Victoria|Zira|Ava|Google US English/i
+            /Samantha|Karen|Victoria|Zira|Ava/i
               .test(v.name)
         );
-      if(femaleVoice){
-        utterance.voice=femaleVoice;
+      if(voice){
+        utterance.voice=voice;
       }
       utterance.rate=.78;
-      utterance.pitch=1.28;
-      utterance.volume=1;
+      utterance.pitch=1.25;
     }
+    utterance.volume=1;
     window.speechSynthesis.speak(
       utterance
     );
   }catch(error){
-    console.log("Voice:",error);
+    console.log(
+      "Voice:",
+      error
+    );
   }
 }
 /* =========================
@@ -795,11 +928,17 @@ document
         .querySelectorAll(".fee")
         .forEach(
           b =>
-            b.classList.remove("selected")
+            b.classList.remove(
+              "selected"
+            )
         );
-        button.classList.add("selected");
-        selectedEntryFee =
-          Number(button.dataset.fee);
+        button.classList.add(
+          "selected"
+        );
+        selectedEntryFee=
+          Number(
+            button.dataset.fee
+          );
       }
     );
   }
@@ -818,10 +957,14 @@ document
         .querySelectorAll(".mode")
         .forEach(
           b =>
-            b.classList.remove("selected")
+            b.classList.remove(
+              "selected"
+            )
         );
-        button.classList.add("selected");
-        selectedMode =
+        button.classList.add(
+          "selected"
+        );
+        selectedMode=
           button.dataset.mode;
       }
     );
@@ -833,13 +976,13 @@ document
 async function playGame(){
   try{
     unlockAudio();
-    const nameInput =
-      document.getElementById("name");
-    playerName =
-      nameInput.value.trim();
+    playerName=
+      document
+      .getElementById("name")
+      .value
+      .trim();
     if(!playerName){
       playerName="Mehvan";
-      nameInput.value="Mehvan";
     }
     await createRoom();
   }catch(error){
@@ -857,10 +1000,10 @@ async function playGame(){
    CREATE ROOM
 ========================= */
 async function createRoom(){
-  const {
+  const{
     data,
     error
-  } =
+  }=
     await supabaseClient
     .from("Room")
     .insert({
@@ -871,7 +1014,9 @@ async function createRoom(){
       account_id:
         "8cc0bcb2-144c-4e0b-9da7-902599f0c6e2"
     })
-    .select("id, room_code")
+    .select(
+      "id, room_code"
+    )
     .single();
   if(error){
     throw error;
@@ -880,17 +1025,22 @@ async function createRoom(){
   roomCode=data.room_code;
   document.getElementById(
     "roomText"
-  ).textContent=roomCode;
-  await createPlayer(currentRoomId);
+  ).textContent=
+    roomCode;
+  await createPlayer(
+    currentRoomId
+  );
 }
 /* =========================
    CREATE PLAYER
 ========================= */
-async function createPlayer(roomId){
-  const {
+async function createPlayer(
+  roomId
+){
+  const{
     data,
     error
-  } =
+  }=
     await supabaseClient
     .rpc(
       "use_owner_player",
@@ -901,16 +1051,16 @@ async function createPlayer(roomId){
   if(error){
     throw error;
   }
-  const ownerPlayer =
+  const ownerPlayer=
     Array.isArray(data)
-      ? data[0]
-      : data;
+      ?data[0]
+      :data;
   if(!ownerPlayer){
     throw new Error(
       "Player دروست نەکرا."
     );
   }
-  currentPlayerId =
+  currentPlayerId=
     ownerPlayer.id;
   await loadProfile();
   await startGame();
@@ -920,40 +1070,41 @@ async function createPlayer(roomId){
 ========================= */
 async function loadProfile(){
   try{
-    const {
+    const{
       data,
       error
-    } =
+    }=
       await supabaseClient
       .rpc(
         "get_player_profile",
         {
-          p_player_id:currentPlayerId
+          p_player_id:
+            currentPlayerId
         }
       );
     if(error){
       return;
     }
-    const profile =
+    const profile=
       Array.isArray(data)
-        ? data[0]
-        : data;
+        ?data[0]
+        :data;
     if(!profile){
       return;
     }
-    playerName =
+    playerName=
       profile.username ||
       playerName;
-    currentGender =
+    currentGender=
       (
         profile.gender ||
         ""
       ).toLowerCase();
     document.getElementById(
       "coinText"
-    ).textContent =
+    ).textContent=
       Number(
-        profile.coin || 0
+        profile.coin||0
       ).toLocaleString();
   }catch(error){
     console.log(
@@ -967,6 +1118,8 @@ async function loadProfile(){
 ========================= */
 async function startGame(){
   gameFinished=false;
+  winners=[];
+  myWinnerRank=null;
   document
   .getElementById("homePage")
   .classList.add("hidden");
@@ -982,45 +1135,146 @@ async function startGame(){
   ).textContent="---";
   document.getElementById(
     "message"
-  ).textContent="ئامادە بە...";
+  ).textContent=
+    "ئامادە بە...";
   document.getElementById(
     "board"
   ).classList.remove(
     "locked",
     "winner"
   );
-  document
-  .querySelector(".caller")
-  .classList.remove("winner");
-  document.getElementById(
-    "message"
-  ).classList.remove(
-    "winner-message"
-  );
   createCard();
+  await setupRoomChannel();
   await loadRoomPlayers();
   startPlayersRefresh();
   startAutoCall();
 }
 /* =========================
-   CREATE BINGO CARD
+   REALTIME ROOM
+========================= */
+async function setupRoomChannel(){
+  if(roomChannel){
+    try{
+      await supabaseClient
+        .removeChannel(
+          roomChannel
+        );
+    }catch(error){}
+  }
+  roomChannel=
+    supabaseClient.channel(
+      "bingo-room-"+currentRoomId,
+      {
+        config:{
+          broadcast:{
+            self:true
+          }
+        }
+      }
+    );
+  roomChannel.on(
+    "broadcast",
+    {
+      event:"winner_claim"
+    },
+    function(message){
+      if(
+        message &&
+        message.payload
+      ){
+        handleWinnerClaim(
+          message.payload
+        );
+      }
+    }
+  );
+  roomChannel.on(
+    "broadcast",
+    {
+      event:"card_state"
+    },
+    function(message){
+      if(
+        message &&
+        message.payload
+      ){
+        receiveCardState(
+          message.payload
+        );
+      }
+    }
+  );
+  roomChannel.on(
+    "broadcast",
+    {
+      event:"watch_request"
+    },
+    function(message){
+      if(
+        message &&
+        message.payload
+      ){
+        receiveWatchRequest(
+          message.payload
+        );
+      }
+    }
+  );
+  await new Promise(
+    function(resolve){
+      roomChannel.subscribe(
+        function(status){
+          if(
+            status==="SUBSCRIBED"
+          ){
+            resolve();
+          }
+        }
+      );
+    }
+  );
+}
+/* =========================
+   CARD
 ========================= */
 function createCard(){
   const columns=[
-    randomNumbers(1,15,5),
-    randomNumbers(16,30,5),
-    randomNumbers(31,45,5),
-    randomNumbers(46,60,5),
-    randomNumbers(61,75,5)
+    randomNumbers(
+      1,
+      15,
+      5
+    ),
+    randomNumbers(
+      16,
+      30,
+      5
+    ),
+    randomNumbers(
+      31,
+      45,
+      5
+    ),
+    randomNumbers(
+      46,
+      60,
+      5
+    ),
+    randomNumbers(
+      61,
+      75,
+      5
+    )
   ];
   numbers=[];
   /*
-   * B I N G O
-   * B I N G O
-   * B I N G O
-   * B I N G O
-   * B I N G O
-   */
+    ئەم شێوەیە:
+    B   I   N   G   O
+    1   18  43  53  62
+    6   19  37  55  68
+    7   30  FREE 51 75
+    4   22  44  46 67
+    9   17  31  60 63
+  */
   for(
     let row=0;
     row<5;
@@ -1035,7 +1289,9 @@ function createCard(){
         row===2 &&
         col===2
       ){
-        numbers.push("FREE");
+        numbers.push(
+          "FREE"
+        );
       }else{
         numbers.push(
           columns[col][row]
@@ -1043,24 +1299,36 @@ function createCard(){
       }
     }
   }
-  const grid =
+  renderCard();
+  broadcastCardState();
+}
+/* =========================
+   RENDER CARD
+========================= */
+function renderCard(){
+  const grid=
     document.getElementById(
       "bingoGrid"
     );
   grid.innerHTML="";
   numbers.forEach(
     function(value,index){
-      const cell =
-        document.createElement("button");
+      const cell=
+        document.createElement(
+          "button"
+        );
       cell.className="cell";
-      if(value==="FREE"){
+      if(
+        value==="FREE"
+      ){
         cell.classList.add(
           "free",
           "marked"
         );
         cell.textContent="FREE";
       }else{
-        cell.textContent=value;
+        cell.textContent=
+          value;
       }
       cell.addEventListener(
         "click",
@@ -1076,7 +1344,7 @@ function createCard(){
   );
 }
 /* =========================
-   RANDOM NUMBERS
+   RANDOM
 ========================= */
 function randomNumbers(
   min,
@@ -1085,18 +1353,18 @@ function randomNumbers(
 ){
   const arr=[];
   for(
-    let n=min;
-    n<=max;
-    n++
+    let i=min;
+    i<=max;
+    i++
   ){
-    arr.push(n);
+    arr.push(i);
   }
   for(
     let i=arr.length-1;
     i>0;
     i--
   ){
-    const j =
+    const j=
       Math.floor(
         Math.random()*(i+1)
       );
@@ -1114,7 +1382,7 @@ function randomNumbers(
   );
 }
 /* =========================
-   BINGO LETTER
+   LETTER
 ========================= */
 function getBingoLetter(
   number
@@ -1146,82 +1414,538 @@ function getBingoLetter(
   return "O";
 }
 /* =========================
-   MARK CELL
+   MARK
 ========================= */
 function markCell(
   cell,
   index
 ){
-  if(gameFinished){
-    return;
-  }
-  if(numbers[index]==="FREE"){
-    return;
-  }
-  const number =
-    Number(numbers[index]);
   if(
-    !calledNumbers.includes(number)
+    gameFinished &&
+    myWinnerRank
+  ){
+    return;
+  }
+  if(
+    numbers[index]==="FREE"
+  ){
+    return;
+  }
+  const number=
+    Number(
+      numbers[index]
+    );
+  if(
+    !calledNumbers.includes(
+      number
+    )
   ){
     document.getElementById(
       "message"
-    ).textContent =
+    ).textContent=
       "ئەم ژمارەیە هێشتا بانگ نەکراوە.";
     return;
   }
   if(
-    cell.classList.contains("marked")
+    cell.classList.contains(
+      "marked"
+    )
   ){
     return;
   }
-  const letter =
-    getBingoLetter(number);
+  const letter=
+    getBingoLetter(
+      number
+    );
   cell.classList.add(
     "marked",
     "marked-"+letter
   );
   playMarkSound();
+  broadcastCardState();
   checkBingo();
 }
 /* =========================
-   CHECK BINGO
+   CHECK WIN
 ========================= */
 function checkBingo(){
-  const cells =
+  if(
+    myWinnerRank
+  ){
+    return;
+  }
+  const cells=
     Array.from(
       document.querySelectorAll(
         "#bingoGrid .cell"
       )
     );
-  const marked =
+  const marked=
     cells.map(
       cell =>
-        cell.classList.contains("marked")
+        cell.classList.contains(
+          "marked"
+        )
     );
-  const lines=[
+  /*
+    1. ڕیز
+  */
+  const rows=[
     [0,1,2,3,4],
     [5,6,7,8,9],
     [10,11,12,13,14],
     [15,16,17,18,19],
-    [20,21,22,23,24],
+    [20,21,22,23,24]
+  ];
+  /*
+    2. ستوون
+  */
+  const columns=[
     [0,5,10,15,20],
     [1,6,11,16,21],
     [2,7,12,17,22],
     [3,8,13,18,23],
-    [4,9,14,19,24],
+    [4,9,14,19,24]
+  ];
+  /*
+    3. دیاگۆناڵ
+  */
+  const diagonals=[
     [0,6,12,18,24],
     [4,8,12,16,20]
   ];
-  if(
-    lines.some(
+  /*
+    4. چوار گۆشەی کارت
+  */
+  const cardCorners=[
+    0,
+    4,
+    20,
+    24
+  ];
+  /*
+    5. چوار گۆشەی دەوری FREE
+       6   8
+         FREE
+       16  18
+  */
+  const freeCorners=[
+    6,
+    8,
+    16,
+    18
+  ];
+  const rowWin=
+    rows.some(
       line =>
         line.every(
-          index =>
-            marked[index]
+          i=>marked[i]
         )
+    );
+  const columnWin=
+    columns.some(
+      line =>
+        line.every(
+          i=>marked[i]
+        )
+    );
+  const diagonalWin=
+    diagonals.some(
+      line =>
+        line.every(
+          i=>marked[i]
+        )
+    );
+  const cornerWin=
+    cardCorners.every(
+      i=>marked[i]
+    );
+  const freeCornerWin=
+    freeCorners.every(
+      i=>marked[i]
+    );
+  if(
+    rowWin ||
+    columnWin ||
+    diagonalWin ||
+    cornerWin ||
+    freeCornerWin
+  ){
+    let reason="BINGO";
+    if(rowWin){
+      reason="ڕیز";
+    }
+    else if(columnWin){
+      reason="ستوون";
+    }
+    else if(diagonalWin){
+      reason="دیاگۆناڵ";
+    }
+    else if(cornerWin){
+      reason="٤ گۆشە";
+    }
+    else if(freeCornerWin){
+      reason="٤ گۆشەی FREE";
+    }
+    claimWinner(
+      reason
+    );
+  }
+}
+/* =========================
+   CLAIM WINNER
+========================= */
+async function claimWinner(
+  reason
+){
+  if(
+    myWinnerRank
+  ){
+    return;
+  }
+  if(
+    winners.length>=3
+  ){
+    return;
+  }
+  const payload={
+    session_id:sessionId,
+    player_id:currentPlayerId,
+    username:playerName,
+    gender:currentGender,
+    reason:reason,
+    claimed_at:
+      Date.now()
+  };
+  try{
+    if(roomChannel){
+      await roomChannel.send({
+        type:"broadcast",
+        event:"winner_claim",
+        payload:payload
+      });
+    }else{
+      handleWinnerClaim(
+        payload
+      );
+    }
+  }catch(error){
+    console.log(
+      "Winner broadcast:",
+      error
+    );
+    handleWinnerClaim(
+      payload
+    );
+  }
+}
+/* =========================
+   HANDLE WINNER
+========================= */
+function handleWinnerClaim(
+  payload
+){
+  if(
+    !payload ||
+    !payload.session_id
+  ){
+    return;
+  }
+  if(
+    winners.some(
+      w =>
+        w.session_id===
+        payload.session_id
     )
   ){
-    bingoWin();
+    return;
+  }
+  if(
+    winners.length>=3
+  ){
+    return;
+  }
+  const rank=
+    winners.length+1;
+  const winner={
+    ...payload,
+    rank:rank
+  };
+  winners.push(
+    winner
+  );
+  if(
+    payload.session_id===
+    sessionId
+  ){
+    myWinnerRank=
+      rank;
+    lockMyBoard();
+    showMyWinner(
+      rank,
+      payload.reason
+    );
+  }
+  updateWinnerDisplay();
+  if(
+    winners.length>=3
+  ){
+    stopAutoCall();
+    gameFinished=true;
+    document.getElementById(
+      "message"
+    ).textContent=
+      "🏆 سێ براوە دیاریکران.";
+  }
+}
+/* =========================
+   LOCK MY BOARD
+========================= */
+function lockMyBoard(){
+  document.getElementById(
+    "board"
+  ).classList.add(
+    "locked",
+    "winner"
+  );
+}
+/* =========================
+   WINNER POPUP
+========================= */
+function showMyWinner(
+  rank,
+  reason
+){
+  playWinSound();
+  const isFemale=
+    currentGender==="female" ||
+    currentGender==="f" ||
+    currentGender==="girl";
+  let crown="👑";
+  let title="YOU ARE KING!";
+  if(isFemale){
+    crown="👸";
+    title="YOU ARE QUEEN!";
+  }
+  if(rank===2){
+    crown="🥈";
+  }
+  if(rank===3){
+    crown="🥉";
+  }
+  document.getElementById(
+    "winnerCrown"
+  ).textContent=
+    crown;
+  document.getElementById(
+    "winnerTitle"
+  ).textContent=
+    title;
+  document.getElementById(
+    "winnerSub"
+  ).textContent=
+    "🎉 بردنەوە بە: "+
+    reason;
+  document
+    .getElementById(
+      "winnerOverlay"
+    )
+    .classList.add("show");
+  createConfetti();
+  setTimeout(
+    function(){
+      if(rank===1){
+        speakText(
+          isFemale
+            ?"You are Queen"
+            :"You are King",
+          isFemale
+            ?"female"
+            :"male"
+        );
+      }
+      if(rank===2){
+        speakText(
+          "Second Winner",
+          "number"
+        );
+      }
+      if(rank===3){
+        speakText(
+          "Third Winner",
+          "number"
+        );
+      }
+    },
+    600
+  );
+}
+/* =========================
+   WINNER LIST
+========================= */
+function updateWinnerDisplay(){
+  const list=
+    document.getElementById(
+      "winnerList"
+    );
+  list.innerHTML="";
+  winners.forEach(
+    function(winner){
+      const row=
+        document.createElement(
+          "div"
+        );
+      row.className=
+        "winner-row";
+      let medal="🥇";
+      if(
+        winner.rank===2
+      ){
+        medal="🥈";
+      }
+      if(
+        winner.rank===3
+      ){
+        medal="🥉";
+      }
+      const avatar=
+        makeAvatar(
+          winner.username
+        );
+      row.innerHTML=`
+        <div class="winner-place">
+          ${medal}
+        </div>
+        <img
+          class="winner-avatar"
+          src="${avatar}"
+        >
+        <div class="winner-name">
+          ${escapeHtml(
+            winner.username ||
+            "Player"
+          )}
+          <div class="rank-badge">
+            ${getWinnerReason(
+              winner.reason
+            )}
+          </div>
+        </div>
+      `;
+      list.appendChild(
+        row
+      );
+    }
+  );
+}
+/* =========================
+   REASON
+========================= */
+function getWinnerReason(
+  reason
+){
+  if(
+    reason==="ڕیز"
+  ){
+    return "BINGO - ڕیز";
+  }
+  if(
+    reason==="ستوون"
+  ){
+    return "BINGO - ستوون";
+  }
+  if(
+    reason==="دیاگۆناڵ"
+  ){
+    return "BINGO - دیاگۆناڵ";
+  }
+  if(
+    reason==="٤ گۆشە"
+  ){
+    return "٤ گۆشە";
+  }
+  if(
+    reason==="٤ گۆشەی FREE"
+  ){
+    return "٤ گۆشەی FREE";
+  }
+  return "BINGO";
+}
+/* =========================
+   WATCH
+========================= */
+function watchWinnerGame(){
+  document
+    .getElementById(
+      "winnerOverlay"
+    )
+    .classList.remove(
+      "show"
+    );
+  document
+    .getElementById(
+      "playersList"
+    )
+    .scrollIntoView({
+      behavior:"smooth",
+      block:"center"
+    });
+  setTimeout(
+    function(){
+      alert(
+        "لەسەر یاریزانێک کلیک بکە بۆ سەیرکردنی یارییەکە."
+      );
+    },
+    400
+  );
+}
+/* =========================
+   CONFETTI
+========================= */
+function createConfetti(){
+  const overlay=
+    document.getElementById(
+      "winnerOverlay"
+    );
+  for(
+    let i=0;
+    i<70;
+    i++
+  ){
+    const piece=
+      document.createElement(
+        "div"
+      );
+    piece.className=
+      "confetti";
+    piece.style.left=
+      Math.random()*100+
+      "%";
+    piece.style.background=
+      [
+        "#ff3b30",
+        "#ffd23f",
+        "#00d9ff",
+        "#7b3cff",
+        "#35e88a",
+        "#ff5ca8"
+      ][
+        Math.floor(
+          Math.random()*6
+        )
+      ];
+    piece.style.animationDelay=
+      Math.random()*1.5+
+      "s";
+    overlay.appendChild(
+      piece
+    );
+    setTimeout(
+      function(){
+        piece.remove();
+      },
+      5000
+    );
   }
 }
 /* =========================
@@ -1229,15 +1953,20 @@ function checkBingo(){
 ========================= */
 function startAutoCall(){
   stopAutoCall();
-  if(gameFinished){
+  if(
+    gameFinished
+  ){
     return;
   }
-  autoCallTimer =
+  /*
+    هەر ٤ چرکە
+  */
+  autoCallTimer=
     setInterval(
       function(){
         callNumber();
       },
-      5000
+      4000
     );
 }
 function stopAutoCall(){
@@ -1252,7 +1981,9 @@ function stopAutoCall(){
    CALL NUMBER
 ========================= */
 function callNumber(){
-  if(gameFinished){
+  if(
+    gameFinished
+  ){
     return;
   }
   if(
@@ -1263,44 +1994,57 @@ function callNumber(){
   }
   let random;
   do{
-    random =
+    random=
       Math.floor(
         Math.random()*75
       )+1;
   }while(
-    calledNumbers.includes(random)
+    calledNumbers.includes(
+      random
+    )
   );
-  calledNumbers.push(random);
-  showCalledNumber(random);
+  calledNumbers.push(
+    random
+  );
+  showCalledNumber(
+    random
+  );
 }
 /* =========================
    SHOW NUMBER
-   تەنها ژمارە
 ========================= */
 function showCalledNumber(
   random
 ){
-  const letter =
-    getBingoLetter(random);
-  const numberElement =
+  const letter=
+    getBingoLetter(
+      random
+    );
+  const numberElement=
     document.getElementById(
       "numberDisplay"
     );
-  numberElement.className="number";
+  numberElement.className=
+    "number";
   numberElement.classList.add(
     "number-"+letter
   );
-  numberElement.textContent=random;
+  numberElement.textContent=
+    random;
   void numberElement.offsetWidth;
-  numberElement.classList.add("show");
+  numberElement.classList.add(
+    "show"
+  );
   document.getElementById(
     "message"
-  ).textContent =
-    "ژمارەی "+random+" بانگ کرا.";
+  ).textContent=
+    "ژمارەی "+
+    random+
+    " بانگ کرا.";
   /*
-   * پیت تەنها بۆ دەنگە،
-   * لە شاشە پیشان نادرێت.
-   */
+    پیت لە شاشە نییە،
+    بەڵام بۆ دەنگ خوێندرێتەوە.
+  */
   speakText(
     letter+" "+random,
     "number"
@@ -1314,25 +2058,28 @@ async function loadRoomPlayers(){
     return;
   }
   try{
-    const {
+    const{
       data,
       error
-    } =
+    }=
       await supabaseClient
       .rpc(
         "get_room_players",
         {
-          p_room_id:currentRoomId
+          p_room_id:
+            currentRoomId
         }
       );
     if(error){
       console.log(
-        "Players error:",
+        "Players:",
         error
       );
       return;
     }
-    renderPlayers(data || []);
+    renderPlayers(
+      data||[]
+    );
   }catch(error){
     console.log(
       "Players:",
@@ -1340,8 +2087,10 @@ async function loadRoomPlayers(){
     );
   }
 }
-function renderPlayers(players){
-  const list =
+function renderPlayers(
+  players
+){
+  const list=
     document.getElementById(
       "playersList"
     );
@@ -1356,70 +2105,69 @@ function renderPlayers(players){
   }
   players.forEach(
     function(player){
-      const item =
-        document.createElement("div");
-      item.className="player-item";
-      const avatar =
-        document.createElement("img");
-      avatar.className="player-avatar";
-      avatar.src =
+      const item=
+        document.createElement(
+          "div"
+        );
+      item.className=
+        "player-item";
+      const avatar=
+        document.createElement(
+          "img"
+        );
+      avatar.className=
+        "player-avatar";
+      avatar.src=
         player.profile_picture ||
-        makeAvatar(player.username);
-      avatar.alt =
+        makeAvatar(
+          player.username
+        );
+      avatar.alt=
         player.username ||
         "Player";
-      const name =
-        document.createElement("div");
-      name.className="player-name";
-      name.innerHTML =
+      const name=
+        document.createElement(
+          "div"
+        );
+      name.className=
+        "player-name";
+      name.innerHTML=
         escapeHtml(
           player.username ||
           "Player"
         )+
         ' <span class="online-dot"></span>';
-      item.appendChild(avatar);
-      item.appendChild(name);
+      item.appendChild(
+        avatar
+      );
+      item.appendChild(
+        name
+      );
       item.addEventListener(
         "click",
         function(){
-          openFriendGame(player);
+          openFriendGame(
+            player
+          );
         }
       );
-      list.appendChild(item);
+      list.appendChild(
+        item
+      );
     }
   );
-}
-function makeAvatar(name){
-  const safe =
-    encodeURIComponent(
-      name ||
-      "Player"
-    );
-  return(
-    "https://ui-avatars.com/api/?name="+
-    safe+
-    "&background=1677ff&color=fff&size=128"
-  );
-}
-function escapeHtml(value){
-  return String(value)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
 }
 /* =========================
    REFRESH PLAYERS
 ========================= */
 function startPlayersRefresh(){
   stopPlayersRefresh();
-  playersRefreshTimer =
+  playersRefreshTimer=
     setInterval(
       function(){
         if(
-          !gameFinished &&
-          currentRoomId
+          currentRoomId &&
+          !gameFinished
         ){
           loadRoomPlayers();
         }
@@ -1428,7 +2176,9 @@ function startPlayersRefresh(){
     );
 }
 function stopPlayersRefresh(){
-  if(playersRefreshTimer){
+  if(
+    playersRefreshTimer
+  ){
     clearInterval(
       playersRefreshTimer
     );
@@ -1436,10 +2186,10 @@ function stopPlayersRefresh(){
   }
 }
 /* =========================
-   VIEW FRIEND GAME
+   FRIEND GAME
 ========================= */
 function openFriendGameSelector(){
-  const list =
+  const list=
     document.querySelectorAll(
       ".player-item"
     );
@@ -1450,16 +2200,20 @@ function openFriendGameSelector(){
     return;
   }
   document
-    .getElementById("playersList")
+    .getElementById(
+      "playersList"
+    )
     .scrollIntoView({
       behavior:"smooth",
       block:"center"
     });
   alert(
-    "لەسەر وێنەی یاریزانەکە کلیک بکە بۆ بینینی یارییەکە."
+    "لەسەر وێنەی یاریزانەکە کلیک بکە."
   );
 }
-async function openFriendGame(player){
+async function openFriendGame(
+  player
+){
   if(
     !player ||
     !player.player_id
@@ -1467,47 +2221,55 @@ async function openFriendGame(player){
     return;
   }
   if(
-    Number(player.player_id) ===
+    Number(player.player_id)===
     Number(currentPlayerId)
   ){
     return;
   }
-  const panel =
+  const panel=
     document.getElementById(
       "friendGamePanel"
     );
-  const avatar =
+  const avatar=
     document.getElementById(
       "friendGameAvatar"
     );
-  const name =
+  const name=
     document.getElementById(
       "friendGameName"
     );
-  const message =
+  const message=
     document.getElementById(
       "friendGameMessage"
     );
-  const card =
+  const card=
     document.getElementById(
       "friendCard"
     );
-  panel.classList.add("show");
-  avatar.src =
+  panel.classList.add(
+    "show"
+  );
+  avatar.src=
     player.profile_picture ||
-    makeAvatar(player.username);
-  name.textContent =
+    makeAvatar(
+      player.username
+    );
+  name.textContent=
     player.username ||
     "Player";
-  message.classList.remove("hidden");
-  card.classList.add("hidden");
-  message.textContent =
+  message.classList.remove(
+    "hidden"
+  );
+  card.classList.add(
+    "hidden"
+  );
+  message.textContent=
     "کارتەکە بار دەکرێت...";
   try{
-    const {
+    const{
       data,
       error
-    } =
+    }=
       await supabaseClient
       .from("BingoCard")
       .select(
@@ -1524,70 +2286,80 @@ async function openFriendGame(player){
       .limit(1)
       .maybeSingle();
     if(error){
-      console.log(
-        "Friend card error:",
-        error
-      );
-      message.textContent =
+      message.textContent=
         "کارتەکە نەدۆزرایەوە.";
       return;
     }
     if(!data){
-      message.textContent =
-        "ئەم یاریزانە هێشتا کارتی نییە.";
+      message.textContent=
+        "ئەم یاریزانە کارتی نییە.";
       return;
     }
-    const friendNumbers =
-      Array.isArray(data.numbers)
-        ? data.numbers
-        : [];
-    const friendCalled =
-      Array.isArray(data.called_numbers)
-        ? data.called_numbers
-        : [];
     renderFriendCard(
-      friendNumbers,
-      friendCalled
+      Array.isArray(
+        data.numbers
+      )
+        ?data.numbers
+        :[],
+      Array.isArray(
+        data.called_numbers
+      )
+        ?data.called_numbers
+        :[]
     );
-    message.classList.add("hidden");
-    card.classList.remove("hidden");
+    message.classList.add(
+      "hidden"
+    );
+    card.classList.remove(
+      "hidden"
+    );
   }catch(error){
     console.log(
-      "Friend game:",
       error
     );
-    message.textContent =
-      "کێشەیەک لە بارکردنی یارییەکە ڕوویدا.";
+    message.textContent=
+      "کێشەیەک ڕوویدا.";
   }
 }
 function renderFriendCard(
   friendNumbers,
   friendCalled
 ){
-  const card =
+  const card=
     document.getElementById(
       "friendCard"
     );
   card.innerHTML="";
   friendNumbers.forEach(
     function(value){
-      const cell =
-        document.createElement("div");
-      cell.className="friend-cell";
-      if(value==="FREE"){
+      const cell=
+        document.createElement(
+          "div"
+        );
+      cell.className=
+        "friend-cell";
+      if(
+        value==="FREE"
+      ){
         cell.classList.add(
           "free",
           "marked"
         );
-        cell.textContent="FREE";
+        cell.textContent=
+          "FREE";
       }else{
-        const number =
+        const number=
           Number(value);
-        const letter =
-          getBingoLetter(number);
-        cell.textContent=number;
+        const letter=
+          getBingoLetter(
+            number
+          );
+        cell.textContent=
+          number;
         if(
-          friendCalled.includes(number)
+          friendCalled.includes(
+            number
+          )
         ){
           cell.classList.add(
             "marked",
@@ -1595,117 +2367,129 @@ function renderFriendCard(
           );
         }
       }
-      card.appendChild(cell);
+      card.appendChild(
+        cell
+      );
     }
   );
 }
 function closeFriendGame(){
   document
-    .getElementById("friendGamePanel")
-    .classList.remove("show");
+    .getElementById(
+      "friendGamePanel"
+    )
+    .classList.remove(
+      "show"
+    );
 }
 /* =========================
-   WINNER
+   CARD BROADCAST
 ========================= */
-function bingoWin(){
-  if(gameFinished){
+async function broadcastCardState(){
+  if(
+    !roomChannel
+  ){
     return;
   }
-  gameFinished=true;
-  stopAutoCall();
-  stopPlayersRefresh();
-  const board =
-    document.getElementById("board");
-  const caller =
-    document.querySelector(".caller");
-  const message =
-    document.getElementById("message");
-  board.classList.add(
-    "locked",
-    "winner"
-  );
-  caller.classList.add("winner");
-  message.classList.add(
-    "winner-message"
-  );
-  message.textContent =
-    "🎉 BINGO! YOU WIN! 🎉";
-  const isFemale =
-    currentGender==="female" ||
-    currentGender==="f" ||
-    currentGender==="girl";
-  let title="YOU ARE KING!";
-  let crown="👑";
-  if(isFemale){
-    title="YOU ARE QUEEN!";
-    crown="👸";
+  const cells=
+    document.querySelectorAll(
+      "#bingoGrid .cell"
+    );
+  const marked=
+    Array.from(
+      cells
+    ).map(
+      cell =>
+        cell.classList.contains(
+          "marked"
+        )
+    );
+  myCardState={
+    session_id:sessionId,
+    username:playerName,
+    numbers:numbers,
+    marked:marked,
+    called_numbers:
+      calledNumbers
+  };
+  try{
+    await roomChannel.send({
+      type:"broadcast",
+      event:"card_state",
+      payload:myCardState
+    });
+  }catch(error){
+    console.log(
+      "Card broadcast:",
+      error
+    );
   }
-  document.getElementById(
-    "winnerCrown"
-  ).textContent=crown;
-  document.getElementById(
-    "winnerTitle"
-  ).textContent=title;
-  document
-    .getElementById("winnerOverlay")
-    .classList.add("show");
-  playWinSound();
-  createConfetti();
-  setTimeout(
-    function(){
-      speakText(
-        isFemale
-          ? "You are Queen"
-          : "You are King",
-        isFemale
-          ? "female"
-          : "male"
-      );
-    },
-    600
+}
+function receiveCardState(
+  payload
+){
+  /*
+    بۆ دواتر دەتوانین
+    لیستی یارییەکانی هەموو
+    یاریزانەکان لێ دروست بکەین.
+  */
+}
+/* =========================
+   WATCH REQUEST
+========================= */
+function receiveWatchRequest(
+  payload
+){
+  if(
+    !payload
+  ){
+    return;
+  }
+}
+/* =========================
+   AVATAR
+========================= */
+function makeAvatar(
+  name
+){
+  const safe=
+    encodeURIComponent(
+      name ||
+      "Player"
+    );
+  return(
+    "https://ui-avatars.com/api/?name="+
+    safe+
+    "&background=1677ff&color=fff&size=128"
   );
 }
 /* =========================
-   CONFETTI
+   ESCAPE
 ========================= */
-function createConfetti(){
-  const overlay =
-    document.getElementById(
-      "winnerOverlay"
+function escapeHtml(
+  value
+){
+  return String(value)
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
     );
-  for(
-    let i=0;
-    i<80;
-    i++
-  ){
-    const piece =
-      document.createElement("div");
-    piece.className="confetti";
-    piece.style.left =
-      Math.random()*100+"%";
-    piece.style.background =
-      [
-        "#ff3b30",
-        "#ffd23f",
-        "#00d9ff",
-        "#7b3cff",
-        "#35e88a",
-        "#ff5ca8"
-      ][
-        Math.floor(
-          Math.random()*6
-        )
-      ];
-    piece.style.animationDelay =
-      Math.random()*1.5+"s";
-    overlay.appendChild(piece);
-    setTimeout(
-      function(){
-        piece.remove();
-      },
-      5000
-    );
-  }
 }
 /* =========================
    NEW GAME
@@ -1714,50 +2498,61 @@ function newGame(){
   stopAutoCall();
   stopPlayersRefresh();
   gameFinished=false;
+  winners=[];
+  myWinnerRank=null;
   calledNumbers=[];
   document
-    .getElementById("winnerOverlay")
-    .classList.remove("show");
+    .getElementById(
+      "winnerOverlay"
+    )
+    .classList.remove(
+      "show"
+    );
   document
-    .getElementById("board")
+    .getElementById(
+      "board"
+    )
     .classList.remove(
       "locked",
       "winner"
     );
   document
-    .querySelector(".caller")
-    .classList.remove("winner");
+    .getElementById(
+      "numberDisplay"
+    ).className=
+      "number";
   document
-    .getElementById("message")
-    .classList.remove(
-      "winner-message"
-    );
+    .getElementById(
+      "numberDisplay"
+    ).textContent=
+      "---";
   document
-    .getElementById("numberDisplay")
-    .className="number";
+    .getElementById(
+      "message"
+    ).className=
+      "message";
   document
-    .getElementById("numberDisplay")
-    .textContent="---";
-  document
-    .getElementById("message")
-    .textContent="ئامادە بە...";
+    .getElementById(
+      "message"
+    ).textContent=
+      "ئامادە بە...";
   createCard();
   loadRoomPlayers();
   startPlayersRefresh();
   startAutoCall();
 }
 /* =========================
-   SPEECH VOICES
+   SPEECH
 ========================= */
 if(
   "speechSynthesis" in window
 ){
   window.speechSynthesis
-    .onvoiceschanged =
-    function(){
-      window.speechSynthesis
-        .getVoices();
-    };
+    .onvoiceschanged=
+      function(){
+        window.speechSynthesis
+          .getVoices();
+      };
 }
 </script>
 </body>
