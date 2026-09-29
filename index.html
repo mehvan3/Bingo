@@ -2606,9 +2606,12 @@ function markCell(
     );
 
   cell.classList.add(
-    "marked",
-    "marked-"+letter
-  );
+  "marked",
+  "gold-mark"
+);
+
+cell.innerHTML =
+  '<span class="gold-bingo">BINGO</span>';
 
   playMarkSound();
 
