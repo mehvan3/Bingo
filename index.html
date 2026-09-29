@@ -675,17 +675,13 @@ async function createPlayer(
   } =
     await supabaseClient
 
-      .from("Player")
-
-      .insert({
-
-        room_id: roomId
-
-      })
-
-      .select()
-
-      .single();
+const {
+  data,
+  error
+} = await supabaseClient
+  .rpc("create_player", {
+    p_room_id: roomId
+  });
 
 
   if(error){
