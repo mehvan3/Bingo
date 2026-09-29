@@ -358,6 +358,15 @@ button:active{
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  <script>
+const SUPABASE_URL = "https://szmqbywztfgtyoemzgiq.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_UcmJ964uYcedY4lp8iYxRA_PF3TSNNY";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+</script>
 let numbers = [];
 let calledNumbers = [];
 let roomCode = "";
