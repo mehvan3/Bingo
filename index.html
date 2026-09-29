@@ -350,16 +350,11 @@ input{
 
 .called-list{
   display:flex;
-  flex-direction:row-reverse;
+  flex-direction:row;
+  direction:rtl;
   gap:8px;
-  overflow-x:auto;
-  padding:8px 4px 12px;
-  scrollbar-width:none;
-  direction:rtl
-}
-
-.called-list::-webkit-scrollbar{
-  display:none
+  overflow:hidden;
+  padding:8px 4px 12px
 }
 
 .called-item{
@@ -552,7 +547,10 @@ input{
   color:#1b1600
 }
 
-/* iPhone */
+/* =========================
+   IPHONE
+========================= */
+
 @media(max-width:430px){
 
   .page{
@@ -1059,7 +1057,6 @@ input{
     <span id="roomText">------</span>
   </div>
 
-
   <div class="caller">
 
     <div
@@ -1078,7 +1075,6 @@ input{
 
   </div>
 
-
   <div class="called-wrap">
 
     <div class="called-title">
@@ -1092,12 +1088,10 @@ input{
 
   </div>
 
-
   <div
     id="boards"
     class="boards"
   ></div>
-
 
   <div class="players-section">
 
@@ -1124,7 +1118,6 @@ input{
     </button>
 
   </div>
-
 
   <div class="bottom">
 
@@ -1460,7 +1453,6 @@ function unlockAudio(){
   }catch(error){
     console.log("Audio:",error);
   }
-
 
   try{
 
@@ -3478,40 +3470,47 @@ function renderCalledNumbers(){
 
   list.innerHTML="";
 
-  calledNumbers.forEach(
-    (number,index)=>{
+  /*
+    newest -> oldest
+    direction:rtl
+    newest stays on the right
+  */
 
-      const item =
-        document.createElement(
-          "div"
-        );
+  [...calledNumbers]
+    .reverse()
+    .forEach(
+      (number,index)=>{
 
-      item.className=
-        "called-item "+
-        getBingoLetter(
-          number
-        );
+        const item =
+          document.createElement(
+            "div"
+          );
 
-      if(
-        index===
-        calledNumbers.length-1
-      ){
+        item.className=
+          "called-item "+
+          getBingoLetter(
+            number
+          );
 
-        item.classList.add(
-          "latest"
+        if(
+          index===0
+        ){
+
+          item.classList.add(
+            "latest"
+          );
+
+        }
+
+        item.textContent=
+          number;
+
+        list.appendChild(
+          item
         );
 
       }
-
-      item.textContent=
-        number;
-
-      list.appendChild(
-        item
-      );
-
-    }
-  );
+    );
 
 }
 
