@@ -483,7 +483,6 @@ button:active{
 
       <button
         class="entry-button selected"
-        data-fee="100"
         onclick="selectEntryFee(100,this)"
       >
         🪙 100
@@ -491,7 +490,6 @@ button:active{
 
       <button
         class="entry-button"
-        data-fee="500"
         onclick="selectEntryFee(500,this)"
       >
         🪙 500
@@ -499,7 +497,6 @@ button:active{
 
       <button
         class="entry-button"
-        data-fee="1000"
         onclick="selectEntryFee(1000,this)"
       >
         🪙 1,000
@@ -507,7 +504,6 @@ button:active{
 
       <button
         class="entry-button"
-        data-fee="5000"
         onclick="selectEntryFee(5000,this)"
       >
         🪙 5,000
@@ -515,7 +511,6 @@ button:active{
 
       <button
         class="entry-button"
-        data-fee="10000"
         onclick="selectEntryFee(10000,this)"
       >
         🪙 10,000
@@ -523,7 +518,6 @@ button:active{
 
       <button
         class="entry-button"
-        data-fee="25000"
         onclick="selectEntryFee(25000,this)"
       >
         🪙 25,000
@@ -531,7 +525,6 @@ button:active{
 
       <button
         class="entry-button"
-        data-fee="100000"
         onclick="selectEntryFee(100000,this)"
       >
         🪙 100,000
@@ -632,6 +625,7 @@ button:active{
 
 </section>
 
+
 <section id="game">
 
   <div class="header">
@@ -645,6 +639,7 @@ button:active{
     </div>
 
   </div>
+
 
   <div
     id="profileBox"
@@ -697,6 +692,7 @@ button:active{
 
   </div>
 
+
   <div class="topbar">
 
     <div class="room">
@@ -721,6 +717,7 @@ button:active{
 
   </div>
 
+
   <div class="caller">
 
     <div class="caller-title">
@@ -743,6 +740,7 @@ button:active{
 
   </div>
 
+
   <div class="bingo-title">
 
     <div>B</div>
@@ -753,10 +751,12 @@ button:active{
 
   </div>
 
+
   <div
     class="board"
     id="board"
   ></div>
+
 
   <div
     class="message"
@@ -764,6 +764,7 @@ button:active{
   >
     Call a number to start.
   </div>
+
 
   <button
     class="newgame"
@@ -775,6 +776,7 @@ button:active{
 </section>
 
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -792,53 +794,20 @@ const supabaseClient =
     SUPABASE_ANON_KEY
   );
 
-console.log(
-  "Supabase connected:",
-  !!supabaseClient
-);
-
 
 /* =========================
    GAME STATE
 ========================= */
 
 let numbers = [];
-
 let calledNumbers = [];
-
 let roomCode = "";
-
 let playerName = "Mehvan";
-
 let currentPlayerId = null;
-
 let currentRoomId = null;
-
-
 let autoCallTimer = null;
 
-function startAutoCall(){
-
-  if(autoCallTimer !== null){
-    clearInterval(autoCallTimer);
-  }
-
-  autoCallTimer = setInterval(
-    function(){
-      callNumber();
-    },
-    3000
-  );
-
-}
-  
-
-/* =========================
-   HOME STATE
-========================= */
-
 let selectedEntryFee = 100;
-
 let selectedMode = "solo";
 
 
@@ -850,20 +819,26 @@ window.addEventListener(
   "DOMContentLoaded",
   function(){
 
-    document.getElementById(
-      "name"
-    ).value = "Mehvan";
+    const nameInput =
+      document.getElementById("name");
 
-    document.getElementById(
-      "homeUserName"
-    ).textContent = "Mehvan";
+    if(nameInput){
+      nameInput.value = "Mehvan";
+    }
+
+    const homeUserName =
+      document.getElementById("homeUserName");
+
+    if(homeUserName){
+      homeUserName.textContent = "Mehvan";
+    }
 
   }
 );
 
 
 /* =========================
-   SELECT ENTRY FEE
+   ENTRY FEE
 ========================= */
 
 function selectEntryFee(
@@ -874,25 +849,20 @@ function selectEntryFee(
   selectedEntryFee = fee;
 
   document
-    .querySelectorAll(
-      ".entry-button"
-    )
-    .forEach(
-      btn =>
-        btn.classList.remove(
-          "selected"
-        )
-    );
+    .querySelectorAll(".entry-button")
+    .forEach(function(btn){
 
-  button.classList.add(
-    "selected"
-  );
+      btn.classList.remove("selected");
+
+    });
+
+  button.classList.add("selected");
 
 }
 
 
 /* =========================
-   SELECT GAME MODE
+   GAME MODE
 ========================= */
 
 function selectMode(mode){
@@ -900,40 +870,24 @@ function selectMode(mode){
   selectedMode = mode;
 
   document
-    .getElementById(
-      "soloMode"
-    )
-    .classList.remove(
-      "selected"
-    );
+    .getElementById("soloMode")
+    .classList.remove("selected");
 
   document
-    .getElementById(
-      "friendsMode"
-    )
-    .classList.remove(
-      "selected"
-    );
+    .getElementById("friendsMode")
+    .classList.remove("selected");
 
   if(mode === "solo"){
 
     document
-      .getElementById(
-        "soloMode"
-      )
-      .classList.add(
-        "selected"
-      );
+      .getElementById("soloMode")
+      .classList.add("selected");
 
   }else{
 
     document
-      .getElementById(
-        "friendsMode"
-      )
-      .classList.add(
-        "selected"
-      );
+      .getElementById("friendsMode")
+      .classList.add("selected");
 
   }
 
@@ -946,38 +900,50 @@ function selectMode(mode){
 
 async function playGame(){
 
-  const nameInput =
+  try{
+
+    const nameInput =
+      document.getElementById("name");
+
+    playerName =
+      nameInput.value.trim();
+
+    if(!playerName){
+
+      playerName = "Mehvan";
+
+      nameInput.value =
+        "Mehvan";
+
+    }
+
     document.getElementById(
-      "name"
-    );
+      "homeUserName"
+    ).textContent =
+      playerName;
 
-  playerName =
-    nameInput.value.trim();
-
-  if(!playerName){
-
-    playerName = "Mehvan";
-
-    nameInput.value =
-      "Mehvan";
-
-  }
-
-  document.getElementById(
-    "homeUserName"
-  ).textContent =
-    playerName;
-
-  console.log(
-    "Starting game:",
-    {
+    console.log(
+      "Starting game:",
       playerName,
       selectedEntryFee,
       selectedMode
-    }
-  );
+    );
 
-  await createRoom();
+    await createRoom();
+
+  }catch(error){
+
+    console.error(
+      "PLAY ERROR:",
+      error
+    );
+
+    alert(
+      "کێشەیەک ڕوویدا:\n" +
+      error.message
+    );
+
+  }
 
 }
 
@@ -1031,11 +997,9 @@ function homeNavigation(section){
 
 async function createRoom(){
 
-  if(!playerName){
-
-    playerName = "Mehvan";
-
-  }
+  console.log(
+    "Creating room..."
+  );
 
   const {
     data,
@@ -1061,23 +1025,39 @@ async function createRoom(){
           "8cc0bcb2-144c-4e0b-9da7-902599f0c6e2"
 
       })
-      .select()
+      .select("id, room_code")
       .single();
 
   if(error){
 
     console.error(
-      "Room error:",
+      "ROOM ERROR:",
       error
     );
 
     alert(
+      "Room error:\n" +
       error.message
     );
 
     return;
 
   }
+
+  if(!data){
+
+    alert(
+      "Room دروست نەکرا."
+    );
+
+    return;
+
+  }
+
+  console.log(
+    "Room created:",
+    data
+  );
 
   roomCode =
     data.room_code;
@@ -1100,6 +1080,11 @@ async function createPlayer(
   roomId
 ){
 
+  console.log(
+    "Using owner player:",
+    roomId
+  );
+
   const {
     data,
     error
@@ -1116,12 +1101,23 @@ async function createPlayer(
   if(error){
 
     console.error(
-      "Player error:",
+      "PLAYER ERROR:",
       error
     );
 
     alert(
+      "Player error:\n" +
       error.message
+    );
+
+    return;
+
+  }
+
+  if(!data){
+
+    alert(
+      "Player نەگەڕایەوە لە Supabase."
     );
 
     return;
@@ -1144,57 +1140,14 @@ async function createPlayer(
 
 
 /* =========================
-   CREATE PROFILE
-========================= */
-
-async function createProfile(){
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .rpc(
-        "create_player_profile",
-        {
-          p_player_id:
-            currentPlayerId,
-
-          p_username:
-            playerName
-        }
-      );
-
-  if(error){
-
-    console.error(
-      "Profile error:",
-      error
-    );
-
-    alert(
-      error.message
-    );
-
-    return;
-
-  }
-
-  console.log(
-    "Profile created:",
-    data
-  );
-
-  startGame();
-
-}
-
-
-/* =========================
    START GAME
 ========================= */
 
 function startGame(){
+
+  console.log(
+    "START GAME"
+  );
 
   document.getElementById(
     "home"
@@ -1209,21 +1162,20 @@ function startGame(){
   document.getElementById(
     "roomDisplay"
   ).textContent =
-    roomCode;
+    roomCode || "------";
 
   document.getElementById(
     "playerDisplay"
   ).textContent =
     currentPlayerId || 1;
 
-  createCard();
+  calledNumbers = [];
 
-  loadProfile();
+  createCard();
 
   startAutoCall();
 
 }
-  
 
 
 /* =========================
@@ -1252,7 +1204,7 @@ async function loadProfile(){
   if(error){
 
     console.error(
-      "Profile load error:",
+      "PROFILE ERROR:",
       error
     );
 
@@ -1302,27 +1254,27 @@ async function loadProfile(){
   document.getElementById(
     "profileLevel"
   ).textContent =
-    profile.level;
+    profile.level ?? "-";
 
   document.getElementById(
     "profileXP"
   ).textContent =
-    profile.xp;
+    profile.xp ?? "0";
 
   document.getElementById(
     "profileCoin"
   ).textContent =
-    profile.coin;
+    profile.coin ?? "0";
 
   document.getElementById(
     "profileGifts"
   ).textContent =
-    profile.gifts_received;
+    profile.gifts_received ?? "0";
 
   document.getElementById(
     "homeCoins"
   ).textContent =
-    profile.coin;
+    profile.coin ?? "0";
 
   document.getElementById(
     "homeUserName"
@@ -1364,12 +1316,8 @@ function createCard(){
     let nums = [];
 
     for(
-      let n =
-        ranges[column][0];
-
-      n <=
-        ranges[column][1];
-
+      let n = ranges[column][0];
+      n <= ranges[column][1];
       n++
     ){
 
@@ -1378,9 +1326,9 @@ function createCard(){
     }
 
     nums.sort(
-      () =>
-        Math.random() -
-        0.5
+      function(){
+        return Math.random() - 0.5;
+      }
     );
 
     for(
@@ -1394,9 +1342,7 @@ function createCard(){
         row === 2
       ){
 
-        card.push(
-          "FREE"
-        );
+        card.push("FREE");
 
       }else{
 
@@ -1425,9 +1371,7 @@ function createCard(){
     ){
 
       board.push(
-        card[
-          col * 5 + row
-        ]
+        card[col * 5 + row]
       );
 
     }
@@ -1443,25 +1387,21 @@ function createCard(){
 
 
 /* =========================
-   DRAW BOARD
+   RENDER BOARD
 ========================= */
 
 function renderBoard(){
 
   const board =
-    document.getElementById(
-      "board"
-    );
+    document.getElementById("board");
 
   board.innerHTML = "";
 
   numbers.forEach(
-    (num,index)=>{
+    function(num,index){
 
       const cell =
-        document.createElement(
-          "div"
-        );
+        document.createElement("div");
 
       cell.className =
         "cell";
@@ -1469,26 +1409,21 @@ function renderBoard(){
       cell.textContent =
         num;
 
-      if(
-        num === "FREE"
-      ){
+      if(num === "FREE"){
 
-        cell.classList.add(
-          "free"
-        );
-
-        cell.classList.add(
-          "marked"
-        );
+        cell.classList.add("free");
+        cell.classList.add("marked");
 
       }
 
       cell.onclick =
-        ()=>{
+        function(){
+
           markCell(
             cell,
             index
           );
+
         };
 
       board.appendChild(
@@ -1502,7 +1437,7 @@ function renderBoard(){
 
 
 /* =========================
-   MARK NUMBER
+   MARK CELL
 ========================= */
 
 function markCell(
@@ -1511,8 +1446,7 @@ function markCell(
 ){
 
   if(
-    numbers[index] ===
-    "FREE"
+    numbers[index] === "FREE"
   ){
 
     return;
@@ -1525,18 +1459,14 @@ function markCell(
     );
 
   if(
-    !calledNumbers.includes(
-      number
-    )
+    !calledNumbers.includes(number)
   ){
 
     return;
 
   }
 
-  cell.classList.add(
-    "marked"
-  );
+  cell.classList.add("marked");
 
   checkBingo();
 
@@ -1558,9 +1488,7 @@ function callNumber(){
   ){
 
     if(
-      !calledNumbers.includes(
-        i
-      )
+      !calledNumbers.includes(i)
     ){
 
       available.push(i);
@@ -1577,6 +1505,16 @@ function callNumber(){
       "message"
     ).textContent =
       "All numbers have been called.";
+
+    if(autoCallTimer !== null){
+
+      clearInterval(
+        autoCallTimer
+      );
+
+      autoCallTimer = null;
+
+    }
 
     return;
 
@@ -1609,15 +1547,23 @@ function callNumber(){
 }
 
 
+/* =========================
+   AUTO CALL
+========================= */
+
 function startAutoCall(){
 
-  if(autoCallTimer){
+  if(autoCallTimer !== null){
     return;
   }
 
   autoCallTimer =
     setInterval(
-      callNumber,
+      function(){
+
+        callNumber();
+
+      },
       3000
     );
 
@@ -1631,9 +1577,7 @@ function startAutoCall(){
 function checkBingo(){
 
   const cells =
-    document.querySelectorAll(
-      ".cell"
-    );
+    document.querySelectorAll(".cell");
 
   let marked = [];
 
@@ -1646,9 +1590,7 @@ function checkBingo(){
     marked[i] =
       cells[i]
         .classList
-        .contains(
-          "marked"
-        );
+        .contains("marked");
 
   }
 
@@ -1673,6 +1615,7 @@ function checkBingo(){
       ){
 
         win = false;
+        break;
 
       }
 
@@ -1681,7 +1624,6 @@ function checkBingo(){
     if(win){
 
       bingoWin();
-
       return;
 
     }
@@ -1709,6 +1651,7 @@ function checkBingo(){
       ){
 
         win = false;
+        break;
 
       }
 
@@ -1717,7 +1660,6 @@ function checkBingo(){
     if(win){
 
       bingoWin();
-
       return;
 
     }
@@ -1739,6 +1681,7 @@ function checkBingo(){
     ){
 
       diagonal1 = false;
+      break;
 
     }
 
@@ -1747,7 +1690,6 @@ function checkBingo(){
   if(diagonal1){
 
     bingoWin();
-
     return;
 
   }
@@ -1762,11 +1704,12 @@ function checkBingo(){
 
     if(
       !marked[
-        i * 5 + (4-i)
+        i * 5 + (4 - i)
       ]
     ){
 
       diagonal2 = false;
+      break;
 
     }
 
@@ -1782,7 +1725,7 @@ function checkBingo(){
 
 
 /* =========================
-   WIN
+   BINGO WIN
 ========================= */
 
 function bingoWin(){
@@ -1801,6 +1744,16 @@ function bingoWin(){
 
 function newGame(){
 
+  if(autoCallTimer !== null){
+
+    clearInterval(
+      autoCallTimer
+    );
+
+    autoCallTimer = null;
+
+  }
+
   calledNumbers = [];
 
   document.getElementById(
@@ -1814,6 +1767,8 @@ function newGame(){
     "New game started.";
 
   createCard();
+
+  startAutoCall();
 
 }
 
