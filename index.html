@@ -3817,8 +3817,11 @@ async function openCardSelection(){
   $('selectedCardsCount').textContent =
     '0';
 
-  $('requiredCardsCount').textContent =
-    selectedCardCount;
+  $('cardEntryFee').textContent =
+    `${money(selectedEntryFee)} Coins`;
+
+  $('cardSelectedAmount').textContent =
+    '0 Coins';
 
   $('confirmCardsBtn').disabled =
     true;
@@ -3827,6 +3830,10 @@ async function openCardSelection(){
 
 }
 
+
+/* =========================================================
+   LOAD 5 AVAILABLE CARDS
+========================================================= */
 
 async function loadAvailableCards(){
 
@@ -3842,9 +3849,13 @@ async function loadAvailableCards(){
 
   }catch(error){
 
-    console.log(error);
+    console.log(
+      'Card generation:',
+      error
+    );
 
   }
+
 
   const {data,error} =
     await supabaseClient
@@ -3862,53 +3873,82 @@ async function loadAvailableCards(){
       )
       .limit(5);
 
+
   if(error){
 
+    console.error(
+      'Load cards:',
+      error
+    );
+
     showToast(
-      error.message
+      error.message ||
+      'Unable to load cards.'
     );
 
     return;
 
   }
 
+
   availableCards =
     data || [];
+
 
   renderAvailableCards();
 
 }
 
 
+/* =========================================================
+   NORMALIZE CARD NUMBERS
+========================================================= */
+
 function normalizeCardNumbers(numbers){
 
   if(Array.isArray(numbers))
     return numbers;
 
+
   if(typeof numbers === 'string'){
 
     try{
+
       return JSON.parse(numbers);
+
     }catch{
+
       return [];
+
     }
 
   }
 
+
   if(numbers?.numbers)
     return numbers.numbers;
+
 
   return [];
 
 }
 
 
+/* =========================================================
+   RENDER 5 CARDS
+========================================================= */
+
 function renderAvailableCards(){
 
   const list =
     $('cardsList');
 
+  if(!list)
+    return;
+
+
   list.innerHTML = '';
+
 
   availableCards.forEach(
     (card,index) => {
@@ -3918,16 +3958,34 @@ function renderAvailableCards(){
           card.numbers
         );
 
+
       const option =
         document.createElement('div');
+
 
       option.className =
         'card-option';
 
+
       option.dataset.id =
         card.id;
 
+
+      if(
+        selectedCards.some(
+          c => c.id === card.id
+        )
+      ){
+
+        option.classList.add(
+          'selected'
+        );
+
+      }
+
+
       let cells = '';
+
 
       for(let row=0;row<5;row++){
 
@@ -3937,9 +3995,11 @@ function renderAvailableCards(){
             numbers[row]?.[col] ??
             '';
 
+
           const free =
             row === 2 &&
             col === 2;
+
 
           cells += `
             <div
@@ -3952,6 +4012,7 @@ function renderAvailableCards(){
         }
 
       }
+
 
       option.innerHTML = `
 
@@ -3971,6 +4032,7 @@ function renderAvailableCards(){
 
         </div>
 
+
         <div class="card-option-label">
 
           <span>
@@ -3978,16 +4040,23 @@ function renderAvailableCards(){
           </span>
 
           <span>
-            ${selectedCards.some(
-              c => c.id === card.id
-            ) ? 'SELECTED' : 'SELECT'}
+            ${
+              selectedCards.some(
+                c => c.id === card.id
+              )
+              ? 'SELECTED'
+              : 'SELECT'
+            }
           </span>
 
         </div>
+
       `;
+
 
       option.onclick =
         () => toggleCard(card.id);
+
 
       list.appendChild(option);
 
@@ -3997,12 +4066,19 @@ function renderAvailableCards(){
 }
 
 
+/* =========================================================
+   SELECT 1 OR 2 CARDS
+========================================================= */
+
 function toggleCard(cardId){
 
   const existing =
     selectedCards.findIndex(
       card => card.id === cardId
     );
+
+
+  /* REMOVE */
 
   if(existing >= 0){
 
@@ -4011,42 +4087,78 @@ function toggleCard(cardId){
       1
     );
 
-  }else{
+  }
+
+
+  /* ADD */
+
+  else{
 
     if(
-      selectedCards.length >=
-      selectedCardCount
+      selectedCards.length >= 2
     ){
 
       showToast(
-        `You can select only ${selectedCardCount} card(s).`
+        'You can select maximum 2 cards.'
       );
 
       return;
 
     }
 
+
     const card =
       availableCards.find(
         c => c.id === cardId
       );
 
-    if(card)
-      selectedCards.push(card);
+
+    if(card){
+
+      selectedCards.push(
+        card
+      );
+
+    }
 
   }
+
+
+  /* COUNT */
 
   $('selectedCardsCount').textContent =
     selectedCards.length;
 
+
+  /* TOTAL PRICE */
+
+  const fee =
+    Number(
+      selectedEntryFee || 0
+    );
+
+
+  const total =
+    fee *
+    selectedCards.length;
+
+
+  $('cardSelectedAmount').textContent =
+    `${money(total)} Coins`;
+
+
+  /* CONFIRM */
+
   $('confirmCardsBtn').disabled =
-    selectedCards.length !==
-    selectedCardCount;
+    !(
+      selectedCards.length === 1 ||
+      selectedCards.length === 2
+    );
+
 
   renderAvailableCards();
 
 }
-
 
 /* =========================================================
    PURCHASE
