@@ -4,85 +4,2085 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#080b18" />
+
 <title>BINGO — Premium Game</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--bg:#070916;--panel:#10152a;--panel2:#151b34;--line:rgba(255,255,255,.09);--text:#f7f8ff;--muted:#8e97b6;--purple:#8b5cf6;--purple2:#6d42e9;--blue:#39a8ff;--gold:#ffc857;--green:#36d399;--danger:#ff5577;--shadow:0 22px 70px rgba(0,0,0,.42)}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Arial,sans-serif}body{overflow-x:hidden}.app{min-height:100vh;position:relative;overflow:hidden;background:radial-gradient(circle at 20% -10%,rgba(112,74,255,.28),transparent 38%),radial-gradient(circle at 100% 20%,rgba(37,159,255,.15),transparent 32%),linear-gradient(180deg,#0b0e1d 0%,#070916 60%,#050611 100%)}.app:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,black,transparent 72%);pointer-events:none}.page{position:relative;z-index:1;max-width:560px;margin:auto;min-height:100vh;padding:18px 16px 104px}.hidden{display:none!important}
-/* ICONS */
-.icon{width:22px;height:22px;display:block;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.icon.sm{width:17px;height:17px}.icon.lg{width:27px;height:27px}.icon.xl{width:34px;height:34px}.icon-fill{fill:currentColor;stroke:none}
-/* HOME */
-.home-header{display:flex;align-items:center;justify-content:space-between;margin:4px 0 18px}.profile{display:flex;align-items:center;gap:11px}.avatar{width:48px;height:48px;border-radius:16px;padding:2px;background:linear-gradient(145deg,#b38aff,#4e7cff);box-shadow:0 8px 25px rgba(111,79,255,.32)}.avatar-inner{width:100%;height:100%;border-radius:14px;background:linear-gradient(145deg,#252d52,#11162b);display:grid;place-items:center;font-size:20px;font-weight:800;color:#dce4ff}.profile-copy{display:flex;flex-direction:column;gap:3px}.profile-name{font-size:16px;font-weight:800;letter-spacing:.1px}.profile-meta{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px}.online{width:7px;height:7px;border-radius:50%;background:#3ee49d;box-shadow:0 0 10px #3ee49d}.wallet{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.055);border:1px solid var(--line);border-radius:15px;padding:8px 11px 8px 8px;box-shadow:0 8px 25px rgba(0,0,0,.16)}.coin{width:27px;height:27px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff2a0,#ffc52f 45%,#d88b00 100%);border:2px solid #ffe27a;display:grid;place-items:center;color:#8a5700;font-size:12px;font-weight:900;box-shadow:0 3px 12px rgba(255,190,35,.32)}.wallet strong{font-size:14px}.wallet small{display:block;color:#858eae;font-size:9px;margin-top:1px}.brand{text-align:center;margin:9px 0 24px}.brand-mark{position:relative;display:inline-flex;align-items:center;justify-content:center}.brand-mark:before{content:"";position:absolute;width:170px;height:72px;background:radial-gradient(ellipse,rgba(132,83,255,.35),transparent 70%);filter:blur(12px)}.brand-title{position:relative;font-size:46px;line-height:1;font-weight:950;font-style:italic;letter-spacing:-3px;background:linear-gradient(180deg,#fff 0%,#cfc5ff 35%,#7958ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 28px rgba(125,86,255,.3)}.brand-sub{margin:7px 0 0;font-size:10px;letter-spacing:4px;color:#7e88aa;font-weight:700}
-.play-card{position:relative;overflow:hidden;border:1px solid rgba(173,142,255,.26);border-radius:26px;padding:19px;background:linear-gradient(135deg,rgba(121,78,245,.24),rgba(43,132,239,.11) 55%,rgba(255,255,255,.035));box-shadow:var(--shadow);cursor:pointer;width:100%;text-align:left;color:white}.play-card:before{content:"";position:absolute;width:180px;height:180px;right:-70px;top:-80px;border-radius:50%;background:rgba(155,117,255,.24);filter:blur(8px)}.play-card:after{content:"";position:absolute;left:-30px;bottom:-100px;width:240px;height:170px;background:rgba(42,157,255,.13);filter:blur(25px);border-radius:50%}.play-row{position:relative;z-index:2;display:flex;align-items:center;gap:14px}.play-badge{width:58px;height:58px;border-radius:19px;background:linear-gradient(145deg,#a884ff,#5d35d9);display:grid;place-items:center;box-shadow:0 12px 28px rgba(103,63,230,.4);flex:0 0 auto}.play-badge .icon{width:27px;height:27px}.play-copy{flex:1}.play-copy small{display:block;color:#bcb5dd;font-size:11px;margin-bottom:3px}.play-copy strong{display:block;font-size:22px;letter-spacing:.2px}.play-arrow{width:34px;height:34px;border-radius:12px;background:rgba(255,255,255,.08);display:grid;place-items:center}.play-arrow .icon{width:17px}
-.section{margin-top:23px}.section-head{display:flex;align-items:center;justify-content:space-between;margin:0 3px 11px}.section-head strong{font-size:14px}.section-head span{font-size:10px;color:#7882a3}.fee-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.choice{border:1px solid var(--line);background:rgba(255,255,255,.035);color:#9ea7c4;border-radius:14px;min-height:48px;font-weight:800;font-size:12px;cursor:pointer;transition:.2s}.choice.active{color:#fff;border-color:rgba(150,113,255,.7);background:linear-gradient(145deg,rgba(127,79,241,.34),rgba(73,118,232,.14));box-shadow:0 8px 22px rgba(101,66,220,.2);transform:translateY(-1px)}.choice .unit{display:block;color:#6f7899;font-size:8px;margin-top:2px}.choice.active .unit{color:#bca9ff}.two-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mode-card{display:flex;align-items:center;gap:11px;padding:12px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.035);cursor:pointer;color:#9da6c1}.mode-card.active{border-color:rgba(139,92,246,.62);background:rgba(116,75,232,.16);color:#fff}.mode-icon{width:39px;height:39px;border-radius:12px;background:rgba(255,255,255,.06);display:grid;place-items:center}.mode-card.active .mode-icon{background:rgba(139,92,246,.28);color:#cdbdff}.mode-card strong{display:block;font-size:12px}.mode-card small{display:block;color:#707a9a;font-size:9px;margin-top:3px}.mode-card.active small{color:#9fa8c8}.cards-choice{display:flex;gap:9px}.cards-choice .choice{flex:1}.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.quick{min-height:78px;border:1px solid var(--line);border-radius:17px;background:rgba(255,255,255,.035);color:#dfe3f5;padding:10px 5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px}.quick .q-icon{width:30px;height:30px;border-radius:10px;background:rgba(139,92,246,.13);color:#b9a2ff;display:grid;place-items:center}.quick strong{font-size:9px}.quick small{font-size:8px;color:#697391}.online-card{margin-top:14px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.035);padding:12px;display:flex;align-items:center;gap:11px}.avatars{display:flex}.mini-avatar{width:30px;height:30px;border-radius:50%;border:2px solid #0b0e1d;background:linear-gradient(145deg,#37436d,#151b32);display:grid;place-items:center;font-size:9px;margin-left:-7px}.mini-avatar:first-child{margin-left:0}.online-copy{flex:1}.online-copy strong{font-size:11px;display:block}.online-copy small{font-size:9px;color:#737d9d;display:block;margin-top:3px}.live-dot{width:8px;height:8px;border-radius:50%;background:#3ee49d;box-shadow:0 0 11px #3ee49d}
-.bottom{position:fixed;z-index:20;bottom:0;left:50%;transform:translateX(-50%);width:min(560px,100%);padding:9px 12px calc(9px + env(safe-area-inset-bottom));background:rgba(7,9,22,.88);backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,.07);display:grid;grid-template-columns:repeat(5,1fr)}.nav{border:0;background:none;color:#626d8d;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:8px;font-weight:700}.nav.active{color:#a98cff}.nav.active .nav-icon{background:rgba(139,92,246,.14);color:#bba6ff}.nav-icon{width:30px;height:25px;border-radius:9px;display:grid;place-items:center}.nav .icon{width:18px;height:18px}
-/* ROOM */
-.room-page{padding-top:18px}.room-page:before{content:'';position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:360px;height:260px;background:radial-gradient(circle,rgba(126,83,255,.2),transparent 68%);pointer-events:none}.topbar{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2}.back{width:40px;height:40px;border:1px solid var(--line);background:rgba(255,255,255,.055);border-radius:14px;color:#dce1f4;display:grid;place-items:center}.room-title{text-align:center}.room-title small{font-size:8px;color:#727d9e;display:block;letter-spacing:2px}.room-title strong{font-size:14px}.room-hero{margin-top:22px;border:1px solid rgba(151,119,255,.22);border-radius:27px;padding:20px;background:linear-gradient(145deg,rgba(125,78,244,.2),rgba(45,122,232,.09) 55%,rgba(255,255,255,.025));box-shadow:var(--shadow);position:relative;overflow:hidden}.room-hero:after{content:'';position:absolute;right:-65px;top:-75px;width:190px;height:190px;border-radius:50%;background:rgba(102,79,245,.18);filter:blur(10px)}.room-hero-top{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1}.room-label{font-size:8px;color:#8892b2;letter-spacing:2px}.room-state{display:flex;align-items:center;gap:6px;font-size:9px;color:#72e9bb;background:rgba(54,211,153,.08);border:1px solid rgba(54,211,153,.2);padding:6px 9px;border-radius:20px}.room-state i{width:6px;height:6px;border-radius:50%;background:#36d399;box-shadow:0 0 9px #36d399}.room-code-row{display:flex;align-items:center;gap:10px;margin-top:12px;position:relative;z-index:1}.room-code{flex:1;padding:0;text-align:left;background:none;border:0;margin:0}.room-code small{display:none}.room-code strong{display:block;letter-spacing:6px;font-size:30px;line-height:1.1}.copy-room{width:40px;height:40px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.06);color:#c9c0ff;display:grid;place-items:center}.room-meta{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:17px;position:relative;z-index:1}.room-stat{border:1px solid rgba(255,255,255,.07);background:rgba(0,0,0,.12);border-radius:14px;padding:10px}.room-stat small{display:block;color:#707b9d;font-size:8px}.room-stat strong{display:block;margin-top:3px;font-size:12px}.prize-value{color:#ffd66b}.players-panel{margin-top:15px;border:1px solid var(--line);border-radius:24px;padding:15px;background:rgba(255,255,255,.035);box-shadow:0 15px 45px rgba(0,0,0,.15)}.players-head{display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:9px}.players-head span{color:#747e9e;font-size:9px}.player-row{display:flex;align-items:center;gap:10px;padding:10px 2px;border-top:1px solid rgba(255,255,255,.05)}.player-row:first-child{border-top:0}.player-avatar{width:40px;height:40px;border-radius:14px;background:linear-gradient(145deg,#374573,#171c34);border:1px solid rgba(151,126,255,.22);display:grid;place-items:center;font-weight:850;font-size:12px;color:#dce3ff;box-shadow:0 7px 16px rgba(0,0,0,.2)}.player-info{flex:1}.player-info strong{display:block;font-size:11px}.player-info small{color:#6f7997;font-size:8px;display:block;margin-top:2px}.ready{font-size:8px;color:#3ee49d;background:rgba(54,211,153,.08);border:1px solid rgba(54,211,153,.15);padding:5px 8px;border-radius:10px}.room-tip{display:flex;gap:9px;align-items:center;margin-top:13px;padding:11px 12px;border-radius:15px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.05);color:#8993b2;font-size:9px;line-height:1.4}.room-tip svg{color:#9e8aff;flex:0 0 auto}.room-start{width:100%;margin-top:15px;border:0;border-radius:19px;padding:17px;background:linear-gradient(135deg,#8b5cf6,#4b7bea);color:#fff;font-weight:900;font-size:13px;letter-spacing:.3px;box-shadow:0 16px 32px rgba(92,73,225,.3)}.room-start:active{transform:scale(.985)}
-/* GAME */
-.game-head{display:flex;align-items:center;justify-content:space-between}.game-room{font-size:10px;color:#7983a2}.pot{background:rgba(255,200,87,.08);border:1px solid rgba(255,200,87,.22);border-radius:12px;padding:7px 10px;color:#ffd978;font-size:10px;font-weight:800}.caller{margin-top:17px;border:1px solid var(--line);border-radius:25px;padding:18px;background:linear-gradient(145deg,rgba(139,92,246,.18),rgba(50,145,255,.08));text-align:center}.caller-label{font-size:9px;color:#8a94b3;letter-spacing:2px}.number{font-size:62px;font-weight:950;line-height:1;margin:5px 0 3px;background:linear-gradient(#fff,#aaa6ff);-webkit-background-clip:text;color:transparent}.number.empty{font-size:38px;color:#656e8f;-webkit-text-fill-color:#656e8f}.board-wrap{margin-top:14px;padding:11px;border:1px solid var(--line);border-radius:22px;background:rgba(255,255,255,.035)}.bingo-head{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:6px}.bingo-head div{text-align:center;color:#a98cff;font-weight:900;font-size:13px}.board{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.cell{aspect-ratio:1;border:1px solid rgba(255,255,255,.08);background:#11162a;border-radius:10px;color:#dfe4f6;font-size:15px;font-weight:800;display:grid;place-items:center}.cell.called{background:rgba(71,207,151,.13);border-color:rgba(71,207,151,.38);color:#72e9bb}.cell.free{background:rgba(139,92,246,.2);color:#c8b9ff}.cell.marked{box-shadow:inset 0 0 0 2px #9a7cff;background:linear-gradient(145deg,rgba(139,92,246,.42),rgba(69,125,232,.22))}.bingo-btn{width:100%;margin-top:13px;border:0;border-radius:18px;padding:15px;background:linear-gradient(135deg,#ffbd45,#ff7b57);color:#1b1020;font-weight:950;letter-spacing:.8px;box-shadow:0 13px 27px rgba(255,135,75,.22)}
-/* FULL BINGO GAMEPLAY */
-.game-tools{margin-top:10px;display:flex;align-items:center;justify-content:space-between;gap:8px}.game-status{font-size:9px;color:#7f89a8}.history{display:flex;gap:5px;min-width:0;overflow:hidden;justify-content:flex-end}.history-pill{flex:0 0 29px;height:27px;border-radius:9px;border:1px solid rgba(255,255,255,.08);display:grid;place-items:center;font-size:9px;font-weight:900;background:rgba(255,255,255,.04)}.history-pill:nth-child(5n+1){color:#ff7894;border-color:rgba(255,92,120,.28)}.history-pill:nth-child(5n+2){color:#62b7ff;border-color:rgba(57,168,255,.28)}.history-pill:nth-child(5n+3){color:#c69aff;border-color:rgba(139,92,246,.28)}.history-pill:nth-child(5n+4){color:#4de0ad;border-color:rgba(54,211,153,.28)}.history-pill:nth-child(5n){color:#ffd36a;border-color:rgba(255,200,87,.28)}.game-cards{margin-top:13px;display:grid;gap:9px}.game-cards.two{grid-template-columns:1fr 1fr}.game-card{position:relative;padding:8px;border:1px solid var(--line);border-radius:19px;background:linear-gradient(145deg,rgba(255,255,255,.05),rgba(255,255,255,.018));box-shadow:0 13px 35px rgba(0,0,0,.22);overflow:hidden}.game-card.locked{border-color:rgba(255,200,87,.52);box-shadow:0 0 0 1px rgba(255,200,87,.12),0 16px 40px rgba(255,168,55,.12)}.game-card-top{display:flex;align-items:center;justify-content:space-between;padding:2px 3px 7px}.game-card-top strong{font-size:9px;letter-spacing:1.4px;color:#cfd5ec}.card-win-tag{font-size:7px;color:#ffd66b;border:1px solid rgba(255,200,87,.25);background:rgba(255,200,87,.08);padding:4px 6px;border-radius:8px}.game-bingo-head{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;margin-bottom:3px}.game-bingo-head div{text-align:center;font-size:11px;font-weight:950}.game-bingo-head div:nth-child(1){color:#ff6687}.game-bingo-head div:nth-child(2){color:#55adff}.game-bingo-head div:nth-child(3){color:#b78cff}.game-bingo-head div:nth-child(4){color:#46dca5}.game-bingo-head div:nth-child(5){color:#ffd05c}.game-board{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}.game-cell{position:relative;aspect-ratio:1;border:1px solid rgba(255,255,255,.075);background:#10162a;border-radius:7px;color:#dfe4f6;font-size:13px;font-weight:850;display:grid;place-items:center;padding:0}.game-cards.two .game-cell{font-size:10px;border-radius:6px}.game-cell.called{box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}.game-cell.marked{color:#fff;border-color:rgba(165,131,255,.75);background:linear-gradient(145deg,rgba(139,92,246,.5),rgba(57,137,239,.28));box-shadow:inset 0 0 0 2px #9c7cff,0 0 10px rgba(139,92,246,.14)}.game-cell.free{background:rgba(139,92,246,.18);color:#cdbdff}.game-cell.col-b.called{background:rgba(255,89,121,.14);color:#ff9ab0;border-color:rgba(255,89,121,.36)}.game-cell.col-i.called{background:rgba(57,168,255,.14);color:#7bc7ff;border-color:rgba(57,168,255,.36)}.game-cell.col-n.called{background:rgba(139,92,246,.14);color:#c6aaff;border-color:rgba(139,92,246,.36)}.game-cell.col-g.called{background:rgba(54,211,153,.14);color:#70e6bb;border-color:rgba(54,211,153,.36)}.game-cell.col-o.called{background:rgba(255,200,87,.14);color:#ffda78;border-color:rgba(255,200,87,.36)}.game-card.locked:after{content:'BINGO';position:absolute;inset:31% 8% auto;text-align:center;font-size:31px;font-style:italic;font-weight:950;letter-spacing:-2px;color:#fff;text-shadow:0 0 22px rgba(255,196,78,.8);transform:rotate(-7deg);pointer-events:none}.game-cards.two .game-card.locked:after{font-size:20px}.winner-panel{margin-top:11px;border:1px solid rgba(255,200,87,.18);border-radius:17px;background:rgba(255,200,87,.035);padding:10px}.winner-panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}.winner-panel-head strong{font-size:10px}.winner-panel-head span{font-size:8px;color:#777f9d}.winner-list{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.winner-slot{min-height:52px;border:1px solid rgba(255,255,255,.06);border-radius:12px;background:rgba(0,0,0,.12);display:flex;align-items:center;gap:6px;padding:6px}.winner-medal{font-size:15px;flex:0 0 auto}.winner-avatar{width:27px;height:27px;border-radius:9px;background:linear-gradient(145deg,#414d7a,#181e37);display:grid;place-items:center;font-size:8px;font-weight:900}.winner-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:8px;font-weight:800}.winner-empty{color:#656e8b;font-size:8px;text-align:center;width:100%}.participants-panel{margin-top:10px;border:1px solid var(--line);border-radius:17px;background:rgba(255,255,255,.025);padding:10px}.participants-head{display:flex;justify-content:space-between;margin-bottom:5px}.participants-head strong{font-size:10px}.participants-head span{font-size:8px;color:#707a98}.participants-list{display:flex;gap:6px;overflow:hidden}.participant{display:flex;align-items:center;gap:5px;min-width:0}.participant-avatar{width:25px;height:25px;border-radius:8px;background:linear-gradient(145deg,#35416c,#151a31);display:grid;place-items:center;font-size:7px;font-weight:900}.participant-name{max-width:58px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:7px;color:#9ca5c0}.game-actions{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:11px}.bingo-btn{margin-top:0}.leave-btn{width:48px;border:1px solid var(--line);border-radius:17px;background:rgba(255,255,255,.04);color:#aab3cd}.number.col-b{color:#ff7894}.number.col-i{color:#62b7ff}.number.col-n{color:#c69aff}.number.col-g{color:#4de0ad}.number.col-o{color:#ffd36a}
-/* CARD SELECT */
-.select-panel{margin-top:20px}.cards-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card-option{border:1px solid var(--line);border-radius:17px;padding:10px;background:rgba(255,255,255,.035);cursor:pointer}.card-option.selected{border-color:#9270ff;box-shadow:0 0 0 1px rgba(146,112,255,.25)}.card-mini{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}.card-mini span{aspect-ratio:1;display:grid;place-items:center;background:#151b31;border-radius:4px;font-size:6px;color:#d8def1}.card-mini span.h{background:rgba(139,92,246,.22);color:#bfaeff;font-weight:900}.card-name{font-size:9px;color:#8992af;margin-top:7px}.confirm{width:100%;margin-top:12px;border:0;border-radius:17px;padding:15px;background:linear-gradient(135deg,#8b5cf6,#4d82ef);color:white;font-weight:900}
-.toast{position:fixed;z-index:50;left:50%;bottom:90px;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#171d34;border:1px solid var(--line);border-radius:13px;padding:11px 14px;font-size:10px;color:#edf0fb;transition:.25s;box-shadow:var(--shadow);max-width:90%;text-align:center}.toast.show{opacity:1;transform:translate(-50%,0)}
-.modal{position:fixed;inset:0;z-index:40;background:rgba(2,3,9,.76);backdrop-filter:blur(10px);display:grid;place-items:end center}.modal-card{width:min(560px,100%);background:#0f1428;border:1px solid var(--line);border-radius:26px 26px 0 0;padding:20px 16px calc(22px + env(safe-area-inset-bottom));box-shadow:0 -20px 60px rgba(0,0,0,.45)}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.modal-head strong{font-size:15px}.close{background:none;border:0;color:#7d87a5}.winner{text-align:center;padding:14px}.winner-ring{width:92px;height:92px;border-radius:50%;margin:auto;background:linear-gradient(145deg,#ffc857,#8b5cf6);padding:4px}.winner-ring div{width:100%;height:100%;border-radius:50%;background:#12172c;display:grid;place-items:center;font-size:28px}.winner h2{margin:13px 0 5px;font-size:24px}.winner p{margin:0;color:#808aa8;font-size:11px}
-@media(max-width:370px){.fee-grid{grid-template-columns:repeat(3,1fr)}.quick-grid{grid-template-columns:repeat(2,1fr)}.brand-title{font-size:42px}}
-</style>
-</head>
-<body>
-<div class="app">
-<!-- HOME -->
-<section id="homePage" class="page">
-  <header class="home-header">
-    <div class="profile">
-      <div class="avatar"><div class="avatar-inner" id="homeAvatar">M</div></div>
-      <div class="profile-copy"><div class="profile-name" id="homePlayerName">Mehvan</div><div class="profile-meta"><i class="online"></i><span id="homeLevel">Level 12</span><span>•</span><span>Online</span></div></div>
-    </div>
-    <div class="wallet"><div class="coin">B</div><div><strong id="homeCoins">25,000</strong><small>COINS</small></div></div>
-  </header>
+:root{
+  --bg:#070a16;
+  --bg2:#0b1024;
+  --card:rgba(18,24,48,.82);
+  --card2:rgba(25,32,63,.88);
+  --line:rgba(255,255,255,.09);
+  --text:#f7f9ff;
+  --muted:#9da7c5;
+  --blue:#39a7ff;
+  --blue2:#5865ff;
+  --purple:#a855f7;
+  --green:#31e6a1;
+  --gold:#ffd75a;
+  --red:#ff5577;
+  --shadow:0 20px 60px rgba(0,0,0,.42);
+}
 
-  <div class="brand"><div class="brand-mark"><div class="brand-title">BINGO</div></div><div class="brand-sub">PLAY • CONNECT • WIN</div></div>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
 
-  <button class="play-card" onclick="playGame()">
-    <div class="play-row"><div class="play-badge"><svg class="icon-fill icon" viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5L8 5.5z"/></svg></div><div class="play-copy"><small>READY FOR YOUR NEXT MATCH?</small><strong>PLAY NOW</strong></div><div class="play-arrow"><svg class="icon" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></div></div>
-  </button>
+html,body{
+  margin:0;
+  padding:0;
+  min-height:100%;
+  background:
+    radial-gradient(circle at 15% 0%,rgba(54,108,255,.18),transparent 32%),
+    radial-gradient(circle at 90% 10%,rgba(168,85,247,.16),transparent 30%),
+    linear-gradient(180deg,#080b18,#050712);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
+}
 
-  <div class="section"><div class="section-head"><strong>Entry Fee</strong><span>Select your match</span></div><div class="fee-grid" id="feeGrid"></div></div>
+body{
+  overflow-x:hidden;
+}
 
-  <div class="section"><div class="section-head"><strong>Game Mode</strong><span>Choose how to play</span></div><div class="two-grid"><button class="mode-card active" data-mode="solo" onclick="selectMode('solo')"><div class="mode-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5 20c.8-4 3-6 7-6s6.2 2 7 6"/></svg></div><div><strong>Solo Match</strong><small>Find players</small></div></button><button class="mode-card" data-mode="friends" onclick="selectMode('friends')"><div class="mode-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3.5 20c.7-3.5 2.5-5 5.5-5s4.8 1.5 5.5 5M15 15c2.8.1 4.3 1.5 5 4"/></svg></div><div><strong>Friends</strong><small>Play together</small></div></button></div></div>
+button,input{
+  font:inherit;
+}
 
-  <div class="section"><div class="section-head"><strong>Number of Cards</strong><span>More cards, more chances</span></div><div class="cards-choice"><button class="choice active" data-count="1" onclick="selectCardCount(1)">1 Card</button><button class="choice" data-count="2" onclick="selectCardCount(2)">2 Cards</button></div></div>
+button{
+  border:0;
+  color:inherit;
+  cursor:pointer;
+}
 
-  <div class="section"><div class="section-head"><strong>Quick Access</strong><span>Explore</span></div><div class="quick-grid"><button class="quick" onclick="showToast('Winners section is ready for the next update')"><div class="q-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 01-8 0V4zM12 12v5M8 20h8M9 17h6"/><path d="M8 6H5a3 3 0 003 5M16 6h3a3 3 0 01-3 5"/></svg></div><strong>Winners</strong><small>Top players</small></button><button class="quick" onclick="showToast('Players list will open here')"><div class="q-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3.5 20c.7-3.5 2.5-5 5.5-5s4.8 1.5 5.5 5M15 15c2.8.1 4.3 1.5 5 4"/></svg></div><strong>Players</strong><small>Online now</small></button><button class="quick" onclick="showToast('Rewards section will open here')"><div class="q-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 8h16v12H4zM3 5h18v3H3zM12 5v15M7 5c-2.5 0-3.5-3 0-3 2.2 0 4 3 5 3 1-1 2.8-3 5-3 3.5 0 2.5 3 0 3"/></svg></div><strong>Rewards</strong><small>Daily gifts</small></button><button class="quick" onclick="showToast('Chat section will open here')"><div class="q-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4V5z"/><path d="M8 9h8M8 12h5"/></svg></div><strong>Chat</strong><small>Meet players</small></button></div></div>
+.hidden{
+  display:none!important;
+}
 
-  <div class="online-card"><div class="avatars"><div class="mini-avatar">A</div><div class="mini-avatar">K</div><div class="mini-avatar">S</div><div class="mini-avatar">R</div></div><div class="online-copy"><strong><span id="onlineCount">1,248</span> players online</strong><small>Players are waiting for a match</small></div><i class="live-dot"></i></div>
-</section>
+.app{
+  width:100%;
+  max-width:520px;
+  min-height:100vh;
+  margin:auto;
+  position:relative;
+  overflow:hidden;
+}
 
-<!-- ROOM -->
-<section id="roomPage" class="page room-page hidden"><div class="topbar"><button class="back" onclick="backHome()"><svg class="icon" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><div class="room-title"><small>GAME ROOM</small><strong id="roomText">—</strong></div><div style="width:40px"></div></div><div class="room-hero"><div class="room-hero-top"><span class="room-label">MATCH ROOM</span><span class="room-state"><i></i>WAITING</span></div><div class="room-code-row"><div class="room-code"><strong id="roomCodeBig">—</strong></div><button class="copy-room" onclick="copyRoomCode()" aria-label="Copy room code"><svg class="icon sm" viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V5a2 2 0 00-2-2H5a2 2 0 00-2 2v9a2 2 0 002 2h3"/></svg></button></div><div class="room-meta"><div class="room-stat"><small>ENTRY FEE</small><strong id="roomFeeText">100 COINS</strong></div><div class="room-stat"><small>PRIZE POOL</small><strong class="prize-value" id="roomPrizeText">— COINS</strong></div></div></div><div class="players-panel"><div class="players-head"><strong>Players in Room</strong><span id="playerCountText">Waiting...</span></div><div id="playersList"></div></div><div class="room-tip"><svg class="icon sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7h.01"/></svg><span>Wait for players to join, then choose your Bingo card to enter the match.</span></div><button class="room-start" onclick="openCardSelection()" disabled style="opacity:.55;pointer-events:none">WAITING FOR PLAYERS... <svg class="icon sm" style="display:inline-block;vertical-align:middle;margin-left:5px" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button></section>
+.page{
+  min-height:100vh;
+  padding:18px 16px 110px;
+}
 
-<!-- CARD SELECTION -->
-<section id="cardPage" class="page hidden"><div class="topbar"><button class="back" onclick="showPage('roomPage')"><svg class="icon" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><div class="room-title"><small>YOUR CARDS</small><strong>Select cards</strong></div><div style="width:38px"></div></div><div class="select-panel"><div class="section-head"><strong>Choose your cards</strong><span id="selectedCountLabel">0 selected</span></div><div class="cards-list" id="cardsList"></div><button class="confirm" onclick="confirmCardSelection()">CONFIRM & START</button></div></section>
-
-<!-- GAME -->
-<section id="gamePage" class="page hidden"><div class="game-head"><button class="back" onclick="backHome()"><svg class="icon" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><div class="game-room">ROOM <strong id="gameRoomCode">—</strong></div><div class="pot" id="potText">100 COINS</div></div><div class="caller"><div class="caller-label">NUMBER CALLED</div><div class="number empty" id="calledNumber">WAITING</div><div class="caller-label" id="callStatus">Get ready</div></div><div class="game-tools"><div class="game-status" id="gameStatus">Waiting for the caller...</div><div class="history" id="numberHistory"></div></div><div class="game-cards" id="gameCards"></div><div class="winner-panel"><div class="winner-panel-head"><strong>WINNERS</strong><span id="winnerCountText">0 / 3</span></div><div class="winner-list" id="winnerList"></div></div><div class="participants-panel"><div class="participants-head"><strong>Players</strong><span id="participantsCount">0</span></div><div class="participants-list" id="participantsList"></div></div><div class="game-actions"><button class="bingo-btn" onclick="claimWinner()">BINGO!</button><button class="leave-btn" onclick="backHome()" aria-label="Leave game"><svg class="icon sm" viewBox="0 0 24 24"><path d="M15 5l-7 7-7-7" transform="rotate(90 12 12)"/></svg></button></div></section>
-</div>
-<div id="toast" class="toast"></div>
-<div id="winnerModal" class="modal hidden"><div class="modal-card"><div class="modal-head"><strong>WINNER</strong><button class="close" onclick="closeWinner()"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="winner"><div class="winner-ring"><div><svg class="icon xl" viewBox="0 0 24 24"><path d="M8 4h8v4a4 4 0 01-8 0V4zM12 12v5M8 20h8M9 17h6"/></svg></div></div><h2 id="winnerTitle">BINGO!</h2><p id="winnerText">Congratulations.</p></div></div></div>
-<nav class="bottom" id="bottomNav"><button class="nav active" onclick="navHome(this)"><div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9H5v-7"/><path d="M9 20v-5h6v5"/></svg></div>Home</button><button class="nav" onclick="showToast('Friends will be available here')"><div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="10" r="2.5"/><path d="M3.5 20c.7-3.5 2.5-5 5.5-5s4.8 1.5 5.5 5M15 15c2.8.1 4.3 1.5 5 4"/></svg></div>Friends</button><button class="nav" onclick="showToast('Chat will be available here')"><div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 5h16v11H8l-4 4V5z"/></svg></div>Chat</button><button class="nav" onclick="showToast('Rewards will be available here')"><div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><path d="M4 8h16v12H4zM3 5h18v3H3zM12 5v15"/></svg></div>Rewards</button><button class="nav" onclick="showToast('Profile will be available here')"><div class="nav-icon"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-4 3.1-6 7-6s6.2 2 7 6"/></svg></div>Profile</button></nav>
-<script>
-const SUPABASE_URL='https://szmqbywztfgtyoemzgiq.supabase.co';
-const SUPABASE_KEY='sb_publishable_UcmJ964uYcedY4lp8iYxRA_PF3TSNNY';
-const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+.glass{
+  background:linear-gradient(
+    145deg,
+    rgba(27,35,72,.88),
+    rgba(11,15,34,.88)
+  );
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(22px);
+  -webkit-backdrop-filter:blur(22px);
+}
 
 /* =========================
-   GAME SETTINGS
+   HOME
 ========================= */
 
-const OWNER_PERCENT=0.20;
-const PRIZE_PERCENT=0.80;
+.home-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:18px;
+}
 
-const fees=[
+.profile{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.avatar{
+  width:48px;
+  height:48px;
+  border-radius:16px;
+  display:grid;
+  place-items:center;
+  background:
+    linear-gradient(135deg,var(--blue),var(--purple));
+  font-size:19px;
+  font-weight:900;
+  box-shadow:0 8px 30px rgba(57,167,255,.25);
+}
+
+.profile-info{
+  min-width:0;
+}
+
+.profile-name{
+  font-weight:800;
+  font-size:15px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.profile-level{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:3px;
+}
+
+.wallet{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:9px 12px;
+  border-radius:14px;
+  background:rgba(255,255,255,.055);
+  border:1px solid var(--line);
+  font-weight:800;
+  font-size:13px;
+}
+
+.wallet-dot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:var(--gold);
+  box-shadow:0 0 14px var(--gold);
+}
+
+.brand{
+  text-align:center;
+  margin:22px 0 20px;
+}
+
+.brand-small{
+  color:var(--blue);
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:4px;
+  margin-bottom:4px;
+}
+
+.brand h1{
+  margin:0;
+  font-size:45px;
+  line-height:1;
+  font-weight:1000;
+  letter-spacing:-3px;
+  background:linear-gradient(90deg,#fff,var(--blue),#a78bfa);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.brand p{
+  margin:9px 0 0;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.play-card{
+  padding:18px;
+  border-radius:25px;
+  margin-bottom:18px;
+  background:
+    radial-gradient(circle at 90% 0%,rgba(88,101,255,.26),transparent 38%),
+    linear-gradient(145deg,rgba(26,39,82,.95),rgba(11,16,38,.95));
+  border:1px solid rgba(88,101,255,.28);
+  box-shadow:0 20px 55px rgba(20,55,160,.18);
+}
+
+.play-card-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+
+.play-title{
+  font-size:18px;
+  font-weight:900;
+}
+
+.play-sub{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:4px;
+}
+
+.play-now{
+  margin-top:16px;
+  width:100%;
+  height:54px;
+  border-radius:17px;
+  background:linear-gradient(100deg,var(--blue),var(--blue2));
+  font-weight:950;
+  box-shadow:0 12px 30px rgba(57,167,255,.25);
+}
+
+.section{
+  margin-top:22px;
+}
+
+.section-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:10px;
+}
+
+.section-title h3{
+  margin:0;
+  font-size:14px;
+  font-weight:900;
+}
+
+.section-title span{
+  color:var(--muted);
+  font-size:10px;
+}
+
+.fee-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+}
+
+.choice{
+  min-height:58px;
+  border-radius:15px;
+  background:rgba(255,255,255,.045);
+  border:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:3px;
+  transition:.2s;
+}
+
+.choice strong{
+  font-size:13px;
+}
+
+.choice span{
+  color:var(--muted);
+  font-size:9px;
+}
+
+.choice.active{
+  border-color:rgba(57,167,255,.75);
+  background:rgba(57,167,255,.13);
+  box-shadow:0 0 22px rgba(57,167,255,.12);
+}
+
+.mode-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+
+.mode-card{
+  padding:15px;
+  border-radius:16px;
+  background:rgba(255,255,255,.045);
+  border:1px solid var(--line);
+  text-align:left;
+}
+
+.mode-card strong{
+  display:block;
+  font-size:13px;
+}
+
+.mode-card span{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:4px;
+}
+
+.mode-card.active{
+  border-color:rgba(168,85,247,.7);
+  background:rgba(168,85,247,.1);
+}
+
+.cards-choice{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+
+.cards-choice button{
+  height:48px;
+  border-radius:15px;
+  background:rgba(255,255,255,.045);
+  border:1px solid var(--line);
+  font-weight:900;
+}
+
+.cards-choice button.active{
+  border-color:var(--blue);
+  background:rgba(57,167,255,.12);
+}
+
+.quick-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:9px;
+}
+
+.quick{
+  padding:15px;
+  border-radius:17px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--line);
+}
+
+.quick strong{
+  display:block;
+  font-size:13px;
+}
+
+.quick span{
+  color:var(--muted);
+  font-size:10px;
+}
+
+.online-card{
+  padding:15px;
+  border-radius:18px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.online-left{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.online-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 14px var(--green);
+}
+
+.bottom{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(520px,100%);
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+  background:rgba(7,10,22,.9);
+  border-top:1px solid var(--line);
+  backdrop-filter:blur(22px);
+  z-index:50;
+}
+
+.bottom-inner{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+}
+
+.nav{
+  height:50px;
+  border-radius:15px;
+  background:transparent;
+  color:var(--muted);
+  font-size:10px;
+  font-weight:800;
+}
+
+.nav.active{
+  color:#fff;
+  background:rgba(57,167,255,.1);
+}
+
+/* =========================
+   ROOM
+========================= */
+
+.room-page{
+  padding-bottom:30px;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:15px;
+}
+
+.back{
+  width:40px;
+  height:40px;
+  border-radius:13px;
+  background:rgba(255,255,255,.055);
+  border:1px solid var(--line);
+  font-size:20px;
+}
+
+.room-title{
+  text-align:center;
+}
+
+.room-title strong{
+  display:block;
+  font-size:15px;
+}
+
+.room-title span{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:3px;
+}
+
+.room-hero{
+  padding:18px;
+  border-radius:23px;
+  background:
+    radial-gradient(circle at 80% 0%,rgba(168,85,247,.2),transparent 40%),
+    linear-gradient(145deg,rgba(27,37,78,.95),rgba(10,14,33,.95));
+  border:1px solid var(--line);
+  margin-bottom:12px;
+}
+
+.room-state{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 10px;
+  border-radius:10px;
+  background:rgba(49,230,161,.08);
+  color:var(--green);
+  font-size:10px;
+  font-weight:900;
+}
+
+.room-state-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:currentColor;
+}
+
+.room-code{
+  margin-top:15px;
+  font-size:26px;
+  font-weight:1000;
+  letter-spacing:3px;
+}
+
+.room-meta{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-top:15px;
+}
+
+.meta-box{
+  padding:11px;
+  border-radius:14px;
+  background:rgba(255,255,255,.045);
+  border:1px solid var(--line);
+}
+
+.meta-box span{
+  display:block;
+  color:var(--muted);
+  font-size:9px;
+}
+
+.meta-box strong{
+  display:block;
+  margin-top:4px;
+  font-size:12px;
+}
+
+.prize-box{
+  margin-top:10px;
+  padding:15px;
+  border-radius:17px;
+  background:linear-gradient(
+    100deg,
+    rgba(255,215,90,.1),
+    rgba(168,85,247,.08)
+  );
+  border:1px solid rgba(255,215,90,.17);
+}
+
+.prize-box span{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+}
+
+.prize-box strong{
+  display:block;
+  margin-top:4px;
+  color:var(--gold);
+  font-size:24px;
+}
+
+.players-panel,
+.room-tip,
+.room-start{
+  margin-top:12px;
+}
+
+.panel{
+  padding:15px;
+  border-radius:19px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--line);
+}
+
+.panel-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.panel-head strong{
+  font-size:13px;
+}
+
+.panel-head span{
+  color:var(--muted);
+  font-size:10px;
+}
+
+.player-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:9px 0;
+  border-bottom:1px solid rgba(255,255,255,.055);
+}
+
+.player-row:last-child{
+  border-bottom:0;
+}
+
+.player-avatar{
+  width:36px;
+  height:36px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#263d8c,#702fa9);
+  font-weight:900;
+  font-size:12px;
+}
+
+.player-main{
+  min-width:0;
+  flex:1;
+}
+
+.player-name{
+  font-size:12px;
+  font-weight:800;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.owner-badge{
+  color:var(--gold);
+  font-size:9px;
+}
+
+.player-sub{
+  color:var(--muted);
+  font-size:9px;
+  margin-top:3px;
+}
+
+.player-mic{
+  width:30px;
+  height:30px;
+  border-radius:10px;
+  background:rgba(255,255,255,.055);
+  display:grid;
+  place-items:center;
+  font-size:13px;
+}
+
+.room-start button{
+  width:100%;
+  height:52px;
+  border-radius:16px;
+  background:linear-gradient(100deg,var(--blue),var(--blue2));
+  font-weight:950;
+}
+
+.room-start button:disabled{
+  opacity:.5;
+}
+
+/* =========================
+   ROOM SOCIAL
+========================= */
+
+.social-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-top:12px;
+}
+
+.social-card{
+  padding:14px;
+  border-radius:18px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--line);
+  min-height:118px;
+}
+
+.social-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.social-icon{
+  width:34px;
+  height:34px;
+  border-radius:11px;
+  display:grid;
+  place-items:center;
+  background:rgba(57,167,255,.1);
+  color:var(--blue);
+  font-weight:950;
+}
+
+.social-label{
+  color:var(--muted);
+  font-size:9px;
+  margin-top:12px;
+}
+
+.social-value{
+  font-size:20px;
+  font-weight:1000;
+  margin-top:3px;
+}
+
+.progress{
+  height:6px;
+  border-radius:10px;
+  background:rgba(255,255,255,.08);
+  overflow:hidden;
+  margin-top:8px;
+}
+
+.progress-bar{
+  height:100%;
+  width:0%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,var(--blue),var(--purple));
+  transition:.3s;
+}
+
+.xp-line{
+  display:flex;
+  justify-content:space-between;
+  margin-top:5px;
+  color:var(--muted);
+  font-size:8px;
+}
+
+/* =========================
+   CHAT
+========================= */
+
+.chat-panel{
+  margin-top:12px;
+  padding:15px;
+  border-radius:20px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--line);
+}
+
+.chat-messages{
+  height:210px;
+  overflow-y:auto;
+  padding-right:3px;
+}
+
+.chat-message{
+  display:flex;
+  gap:8px;
+  margin-bottom:10px;
+}
+
+.chat-mini-avatar{
+  width:28px;
+  height:28px;
+  min-width:28px;
+  border-radius:9px;
+  background:linear-gradient(135deg,#2949a5,#7834a7);
+  display:grid;
+  place-items:center;
+  font-size:9px;
+  font-weight:900;
+}
+
+.chat-content{
+  min-width:0;
+}
+
+.chat-user{
+  font-size:9px;
+  color:var(--blue);
+  font-weight:900;
+}
+
+.chat-text{
+  margin-top:3px;
+  padding:8px 10px;
+  border-radius:11px 11px 11px 4px;
+  background:rgba(255,255,255,.055);
+  font-size:11px;
+  line-height:1.4;
+  word-break:break-word;
+}
+
+.chat-time{
+  color:var(--muted);
+  font-size:7px;
+  margin-top:3px;
+}
+
+.chat-input-row{
+  display:flex;
+  gap:7px;
+  margin-top:10px;
+}
+
+.chat-input{
+  flex:1;
+  height:43px;
+  min-width:0;
+  border-radius:13px;
+  border:1px solid var(--line);
+  background:rgba(0,0,0,.18);
+  color:#fff;
+  padding:0 12px;
+  outline:none;
+}
+
+.chat-input:focus{
+  border-color:rgba(57,167,255,.5);
+}
+
+.chat-send{
+  width:44px;
+  height:43px;
+  border-radius:13px;
+  background:linear-gradient(135deg,var(--blue),var(--blue2));
+  font-weight:950;
+}
+
+/* =========================
+   MIC
+========================= */
+
+.mic-panel{
+  margin-top:12px;
+  padding:15px;
+  border-radius:20px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--line);
+}
+
+.mic-seats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:9px;
+}
+
+.mic-seat{
+  min-height:75px;
+  border-radius:15px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.035);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+}
+
+.mic-seat.active{
+  border-color:rgba(57,167,255,.55);
+  background:rgba(57,167,255,.08);
+}
+
+.mic-seat-avatar{
+  width:30px;
+  height:30px;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#233f9d,#7633a6);
+  font-size:10px;
+  font-weight:900;
+}
+
+.mic-seat-number{
+  color:var(--muted);
+  font-size:8px;
+}
+
+.mic-controls{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+}
+
+.mic-btn{
+  flex:1;
+  height:43px;
+  border-radius:13px;
+  background:rgba(255,255,255,.055);
+  border:1px solid var(--line);
+  font-weight:800;
+  font-size:11px;
+}
+
+.mic-btn.active{
+  background:rgba(49,230,161,.1);
+  border-color:rgba(49,230,161,.3);
+  color:var(--green);
+}
+
+/* =========================
+   GIFT PLACEHOLDER
+========================= */
+
+.gift-panel{
+  margin-top:12px;
+  padding:18px;
+  border-radius:20px;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(168,85,247,.15),transparent 45%),
+    rgba(255,255,255,.04);
+  border:1px solid var(--line);
+  text-align:center;
+}
+
+.gift-placeholder-icon{
+  width:54px;
+  height:54px;
+  margin:0 auto 10px;
+  border-radius:17px;
+  display:grid;
+  place-items:center;
+  background:rgba(168,85,247,.1);
+  color:#c084fc;
+  font-size:23px;
+}
+
+.gift-panel h3{
+  margin:0;
+  font-size:14px;
+}
+
+.gift-panel p{
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.5;
+  margin:7px auto 0;
+  max-width:280px;
+}
+
+.gift-placeholder-btn{
+  margin-top:13px;
+  width:100%;
+  height:43px;
+  border-radius:13px;
+  background:rgba(168,85,247,.08);
+  border:1px solid rgba(168,85,247,.2);
+  color:#c084fc;
+  font-size:11px;
+  font-weight:900;
+}
+
+/* =========================
+   CARD SELECT
+========================= */
+
+.select-panel{
+  padding:15px;
+}
+
+.cards-list{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.card-option{
+  padding:10px;
+  border-radius:17px;
+  background:rgba(255,255,255,.035);
+  border:2px solid var(--line);
+  transition:.2s;
+}
+
+.card-option.selected{
+  border-color:var(--blue);
+  background:rgba(57,167,255,.08);
+}
+
+.card-mini{
+  width:100%;
+  aspect-ratio:1;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:3px;
+}
+
+.card-mini-head{
+  grid-column:span 5;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:3px;
+  margin-bottom:2px;
+}
+
+.card-mini-head div{
+  text-align:center;
+  color:var(--blue);
+  font-size:8px;
+  font-weight:1000;
+}
+
+.card-mini-cell{
+  display:grid;
+  place-items:center;
+  border-radius:4px;
+  background:rgba(255,255,255,.07);
+  font-size:8px;
+  font-weight:800;
+}
+
+.card-mini-cell.free{
+  color:var(--gold);
+  font-size:6px;
+}
+
+.card-option-label{
+  margin-top:8px;
+  display:flex;
+  justify-content:space-between;
+  color:var(--muted);
+  font-size:9px;
+}
+
+.confirm{
+  width:100%;
+  height:50px;
+  border-radius:15px;
+  margin-top:12px;
+  background:linear-gradient(100deg,var(--blue),var(--blue2));
+  font-weight:950;
+}
+
+.confirm:disabled{
+  opacity:.45;
+}
+
+/* =========================
+   GAME
+========================= */
+
+.game-page{
+  padding-bottom:25px;
+}
+
+.game-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
+}
+
+.game-brand{
+  font-size:18px;
+  font-weight:1000;
+}
+
+.pot{
+  padding:8px 11px;
+  border-radius:12px;
+  background:rgba(255,215,90,.08);
+  color:var(--gold);
+  border:1px solid rgba(255,215,90,.15);
+  font-size:10px;
+  font-weight:900;
+}
+
+.caller{
+  padding:18px;
+  border-radius:23px;
+  text-align:center;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(57,167,255,.25),transparent 55%),
+    rgba(255,255,255,.04);
+  border:1px solid var(--line);
+}
+
+.caller-label{
+  color:var(--muted);
+  font-size:10px;
+}
+
+.number{
+  margin-top:3px;
+  font-size:58px;
+  line-height:1;
+  font-weight:1000;
+  letter-spacing:-4px;
+}
+
+.number span{
+  font-size:16px;
+  letter-spacing:0;
+  color:var(--blue);
+  vertical-align:top;
+}
+
+.game-tools{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+}
+
+.history{
+  display:flex;
+  gap:5px;
+  overflow-x:auto;
+  padding:2px;
+}
+
+.history span{
+  min-width:27px;
+  height:27px;
+  border-radius:8px;
+  display:grid;
+  place-items:center;
+  background:rgba(255,255,255,.055);
+  color:var(--muted);
+  font-size:9px;
+  font-weight:900;
+}
+
+.game-cards{
+  margin-top:13px;
+  display:grid;
+  gap:13px;
+}
+
+.game-card{
+  padding:12px;
+  border-radius:19px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--line);
+}
+
+.game-bingo-head{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:5px;
+  margin-bottom:6px;
+}
+
+.game-bingo-head div{
+  text-align:center;
+  color:var(--blue);
+  font-weight:1000;
+  font-size:12px;
+}
+
+.game-board{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:5px;
+}
+
+.game-cell{
+  aspect-ratio:1;
+  border-radius:9px;
+  background:rgba(255,255,255,.06);
+  display:grid;
+  place-items:center;
+  font-size:13px;
+  font-weight:900;
+  border:1px solid rgba(255,255,255,.03);
+}
+
+.game-cell.called{
+  background:rgba(57,167,255,.14);
+  border-color:rgba(57,167,255,.3);
+}
+
+.game-cell.marked{
+  background:linear-gradient(135deg,var(--blue),var(--purple));
+  box-shadow:0 0 15px rgba(57,167,255,.18);
+}
+
+.game-cell.free{
+  color:var(--gold);
+}
+
+.winner-panel,
+.participants-panel{
+  margin-top:13px;
+  padding:15px;
+  border-radius:19px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--line);
+}
+
+.winner-row{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:8px 0;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+.winner-row:last-child{
+  border-bottom:0;
+}
+
+.rank{
+  width:27px;
+  height:27px;
+  border-radius:9px;
+  display:grid;
+  place-items:center;
+  background:rgba(255,215,90,.09);
+  color:var(--gold);
+  font-size:10px;
+  font-weight:1000;
+}
+
+.game-actions{
+  margin-top:14px;
+}
+
+.bingo-btn{
+  width:100%;
+  height:55px;
+  border-radius:17px;
+  background:linear-gradient(100deg,#ffb52e,#ffcf4d);
+  color:#17120a;
+  font-weight:1000;
+  box-shadow:0 12px 30px rgba(255,190,50,.18);
+}
+
+/* =========================
+   MODAL / TOAST
+========================= */
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:90px;
+  transform:translate(-50%,20px);
+  width:min(90%,420px);
+  padding:12px 15px;
+  border-radius:13px;
+  background:rgba(18,24,48,.96);
+  border:1px solid var(--line);
+  box-shadow:var(--shadow);
+  font-size:11px;
+  text-align:center;
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  z-index:100;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.68);
+  display:grid;
+  place-items:center;
+  padding:20px;
+  z-index:120;
+}
+
+.modal-card{
+  width:min(100%,390px);
+  padding:23px;
+  border-radius:25px;
+  background:#10162d;
+  border:1px solid var(--line);
+  text-align:center;
+  box-shadow:var(--shadow);
+}
+
+.modal-card h2{
+  margin:0;
+  font-size:22px;
+}
+
+.modal-card p{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.modal-card button{
+  width:100%;
+  height:48px;
+  margin-top:10px;
+  border-radius:14px;
+  background:linear-gradient(100deg,var(--blue),var(--blue2));
+  font-weight:900;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:380px){
+  .fee-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .mic-seats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .social-grid{
+    grid-template-columns:1fr;
+  }
+
+  .number{
+    font-size:50px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- =====================================================
+     HOME
+===================================================== -->
+
+<section id="homePage" class="page">
+
+  <div class="home-header">
+
+    <div class="profile">
+      <div class="avatar" id="homeAvatar">M</div>
+
+      <div class="profile-info">
+        <div class="profile-name" id="homeUsername">Mehvan</div>
+        <div class="profile-level" id="homeLevel">Level 1 · 0 XP</div>
+      </div>
+    </div>
+
+    <div class="wallet">
+      <span class="wallet-dot"></span>
+      <span id="homeCoins">0</span>
+    </div>
+
+  </div>
+
+  <div class="brand">
+    <div class="brand-small">PREMIUM ONLINE</div>
+    <h1>BINGO</h1>
+    <p>Play • Win • Connect</p>
+  </div>
+
+  <div class="play-card glass">
+
+    <div class="play-card-top">
+
+      <div>
+        <div class="play-title">Ready to Play?</div>
+        <div class="play-sub">
+          Join a room and choose your Bingo cards.
+        </div>
+      </div>
+
+      <div style="font-size:24px">B</div>
+
+    </div>
+
+    <button class="play-now" onclick="playGame()">
+      PLAY NOW
+    </button>
+
+  </div>
+
+  <div class="section">
+
+    <div class="section-title">
+      <h3>Entry Fee</h3>
+      <span>Select room price</span>
+    </div>
+
+    <div class="fee-grid" id="feeGrid"></div>
+
+  </div>
+
+  <div class="section">
+
+    <div class="section-title">
+      <h3>Game Mode</h3>
+      <span>Choose mode</span>
+    </div>
+
+    <div class="mode-grid">
+
+      <button
+        class="mode-card active"
+        id="modeSolo"
+        onclick="selectMode('solo')"
+      >
+        <strong>Classic</strong>
+        <span>Standard Bingo room</span>
+      </button>
+
+      <button
+        class="mode-card"
+        id="modeFast"
+        onclick="selectMode('fast')"
+      >
+        <strong>Fast Room</strong>
+        <span>Faster number calling</span>
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="section">
+
+    <div class="section-title">
+      <h3>Number of Cards</h3>
+      <span>Maximum 2 cards</span>
+    </div>
+
+    <div class="cards-choice">
+
+      <button
+        id="cards1"
+        class="active"
+        onclick="selectCardCount(1)"
+      >
+        1 Card
+      </button>
+
+      <button
+        id="cards2"
+        onclick="selectCardCount(2)"
+      >
+        2 Cards
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="section">
+
+    <div class="section-title">
+      <h3>Quick Access</h3>
+    </div>
+
+    <div class="quick-grid">
+
+      <div class="quick">
+        <strong>25 Players</strong>
+        <span>Room capacity</span>
+      </div>
+
+      <div class="quick">
+        <strong>125 Cards</strong>
+        <span>Cards generated</span>
+      </div>
+
+      <div class="quick">
+        <strong>3 Winners</strong>
+        <span>Top winners</span>
+      </div>
+
+      <div class="quick">
+        <strong>Live Room</strong>
+        <span>Realtime play</span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="section">
+
+    <div class="online-card">
+
+      <div class="online-left">
+        <div class="online-dot"></div>
+
+        <div>
+          <strong style="font-size:12px">
+            Bingo Network Online
+          </strong>
+
+          <div style="color:var(--muted);font-size:9px;margin-top:3px">
+            Rooms are available now
+          </div>
+        </div>
+      </div>
+
+      <strong id="onlinePlayers" style="font-size:12px">
+        Online
+      </strong>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     ROOM PAGE
+===================================================== -->
+
+<section id="roomPage" class="page room-page hidden">
+
+  <div class="topbar">
+
+    <button class="back" onclick="backHome()">‹</button>
+
+    <div class="room-title">
+      <strong>BINGO ROOM</strong>
+      <span id="roomTopStatus">Waiting</span>
+    </div>
+
+    <button
+      class="back"
+      onclick="copyRoomCode()"
+      style="font-size:13px"
+    >
+      ⧉
+    </button>
+
+  </div>
+
+
+  <!-- ROOM HERO -->
+
+  <div class="room-hero">
+
+    <div class="room-state" id="roomState">
+      <span class="room-state-dot"></span>
+      <span id="roomStateText">WAITING</span>
+    </div>
+
+    <div class="room-code" id="roomCodeText">
+      ------
+    </div>
+
+    <div
+      style="color:var(--muted);font-size:10px;margin-top:4px"
+    >
+      Room Code
+    </div>
+
+    <div class="room-meta">
+
+      <div class="meta-box">
+        <span>Entry</span>
+        <strong id="roomFee">0</strong>
+      </div>
+
+      <div class="meta-box">
+        <span>Players</span>
+        <strong id="roomPlayersCount">0 / 25</strong>
+      </div>
+
+      <div class="meta-box">
+        <span>Cards</span>
+        <strong id="roomCardsCount">0</strong>
+      </div>
+
+    </div>
+
+    <div class="prize-box">
+
+      <span>Prize Pool</span>
+
+      <strong id="roomPrizePool">
+        0
+      </strong>
+
+      <div
+        style="color:var(--muted);font-size:9px;margin-top:4px"
+      >
+        80% of purchased cards
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- LEVEL / XP -->
+
+  <div class="social-grid">
+
+    <div class="social-card">
+
+      <div class="social-top">
+
+        <div>
+          <div class="social-label" style="margin-top:0">
+            ROOM LEVEL
+          </div>
+
+          <div class="social-value">
+            Lv.<span id="roomLevel">1</span>
+          </div>
+        </div>
+
+        <div class="social-icon">R</div>
+
+      </div>
+
+      <div class="progress">
+        <div
+          id="roomXpBar"
+          class="progress-bar"
+        ></div>
+      </div>
+
+      <div class="xp-line">
+        <span id="roomXpText">0 XP</span>
+        <span id="roomNextXp">100 XP</span>
+      </div>
+
+    </div>
+
+
+    <div class="social-card">
+
+      <div class="social-top">
+
+        <div>
+          <div class="social-label" style="margin-top:0">
+            PLAYER LEVEL
+          </div>
+
+          <div class="social-value">
+            Lv.<span id="playerLevel">1</span>
+          </div>
+        </div>
+
+        <div class="social-icon">P</div>
+
+      </div>
+
+      <div class="progress">
+        <div
+          id="playerXpBar"
+          class="progress-bar"
+        ></div>
+      </div>
+
+      <div class="xp-line">
+        <span id="playerXpText">0 XP</span>
+        <span id="playerNextXp">100 XP</span>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- DAILY XP -->
+
+  <div class="panel" style="margin-top:12px">
+
+    <div class="panel-head">
+      <strong>Daily XP</strong>
+      <span id="dailyXpDate">Today</span>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+
+      <div
+        style="
+          padding:12px;
+          border-radius:14px;
+          background:rgba(255,255,255,.04);
+          border:1px solid var(--line);
+        "
+      >
+        <div style="color:var(--muted);font-size:9px">
+          Player Daily XP
+        </div>
+
+        <div
+          id="playerDailyXp"
+          style="font-size:18px;font-weight:1000;margin-top:4px"
+        >
+          0
+        </div>
+      </div>
+
+      <div
+        style="
+          padding:12px;
+          border-radius:14px;
+          background:rgba(255,255,255,.04);
+          border:1px solid var(--line);
+        "
+      >
+        <div style="color:var(--muted);font-size:9px">
+          Room Daily XP
+        </div>
+
+        <div
+          id="roomDailyXp"
+          style="font-size:18px;font-weight:1000;margin-top:4px"
+        >
+          0
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- PLAYERS -->
+
+  <div class="players-panel panel">
+
+    <div class="panel-head">
+      <strong>Players</strong>
+      <span id="playersPanelCount">0 / 25</span>
+    </div>
+
+    <div id="playersList"></div>
+
+  </div>
+
+
+  <!-- ROOM CHAT -->
+
+  <div class="chat-panel">
+
+    <div class="panel-head">
+      <strong>Room Chat</strong>
+      <span>Live</span>
+    </div>
+
+    <div
+      id="chatMessages"
+      class="chat-messages"
+    ></div>
+
+    <div class="chat-input-row">
+
+      <input
+        id="chatInput"
+        class="chat-input"
+        type="text"
+        maxlength="300"
+        placeholder="Write a message..."
+        autocomplete="off"
+      />
+
+      <button
+        class="chat-send"
+        onclick="sendChatMessage()"
+      >
+        ➤
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- MIC -->
+
+  <div class="mic-panel">
+
+    <div class="panel-head">
+      <strong>Voice / Mic</strong>
+      <span id="micStatusText">Not connected</span>
+    </div>
+
+    <div
+      id="micSeats"
+      class="mic-seats"
+    ></div>
+
+    <div class="mic-controls">
+
+      <button
+        id="micJoinBtn"
+        class="mic-btn"
+        onclick="toggleMic()"
+      >
+        🎙 Join Mic
+      </button>
+
+      <button
+        id="micMuteBtn"
+        class="mic-btn"
+        onclick="toggleMute()"
+      >
+        Mic On
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- GIFT PLACEHOLDER -->
+
+  <div class="gift-panel">
+
+    <div class="gift-placeholder-icon">
+      🎁
+    </div>
+
+    <h3>Room Gifts</h3>
+
+    <p>
+      Gift system is coming soon.
+      Gifts, prices and animations will be added later.
+    </p>
+
+    <button
+      class="gift-placeholder-btn"
+      onclick="giftComingSoon()"
+    >
+      Gifts Coming Soon
+    </button>
+
+  </div>
+
+
+  <!-- ROOM TIP -->
+
+  <div class="room-tip panel">
+
+    <div style="font-size:12px;font-weight:900">
+      How the room works
+    </div>
+
+    <div
+      style="
+        color:var(--muted);
+        font-size:10px;
+        line-height:1.6;
+        margin-top:6px;
+      "
+    >
+      The room starts when 25 players join.
+      You can select 1 or 2 Bingo cards.
+      Prize Pool is calculated from purchased cards.
+    </div>
+
+  </div>
+
+
+  <div class="room-start">
+
+    <button
+      id="roomStartBtn"
+      onclick="openCardSelection()"
+      disabled
+    >
+      Waiting for Players...
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     CARD SELECTION
+===================================================== -->
+
+<section id="cardPage" class="page hidden">
+
+  <div class="topbar">
+
+    <button class="back" onclick="showPage('roomPage')">
+      ‹
+    </button>
+
+    <div class="room-title">
+      <strong>CHOOSE CARDS</strong>
+      <span>Select your Bingo cards</span>
+    </div>
+
+    <div style="width:40px"></div>
+
+  </div>
+
+  <div class="select-panel panel">
+
+    <div class="panel-head">
+      <strong>Your Cards</strong>
+
+      <span>
+        <span id="selectedCardsCount">0</span>
+        /
+        <span id="requiredCardsCount">1</span>
+      </span>
+    </div>
+
+    <div
+      id="cardsList"
+      class="cards-list"
+    ></div>
+
+    <button
+      id="confirmCardsBtn"
+      class="confirm"
+      onclick="confirmCardSelection()"
+      disabled
+    >
+      Confirm & Pay
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     GAME PAGE
+===================================================== -->
+
+<section id="gamePage" class="page game-page hidden">
+
+  <div class="game-head">
+
+    <div class="game-brand">
+      BINGO
+    </div>
+
+    <div class="pot">
+      Pool:
+      <span id="gamePrizePool">0</span>
+    </div>
+
+  </div>
+
+
+  <div class="caller">
+
+    <div class="caller-label">
+      CURRENT NUMBER
+    </div>
+
+    <div
+      id="currentNumber"
+      class="number"
+    >
+      --
+    </div>
+
+  </div>
+
+
+  <div class="game-tools">
+
+    <div class="history" id="history"></div>
+
+  </div>
+
+
+  <div
+    id="gameCards"
+    class="game-cards"
+  ></div>
+
+
+  <div class="winner-panel">
+
+    <div class="panel-head">
+      <strong>Live Winners</strong>
+      <span>Top 3</span>
+    </div>
+
+    <div id="winnerList"></div>
+
+  </div>
+
+
+  <div class="participants-panel">
+
+    <div class="panel-head">
+      <strong>Participants</strong>
+      <span id="gameParticipantCount">0</span>
+    </div>
+
+    <div id="gameParticipants"></div>
+
+  </div>
+
+
+  <div class="game-actions">
+
+    <button
+      class="bingo-btn"
+      onclick="claimWinner()"
+    >
+      BINGO!
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     WINNER MODAL
+===================================================== -->
+
+<div
+  id="winnerModal"
+  class="modal hidden"
+>
+
+  <div class="modal-card">
+
+    <div style="font-size:45px">
+      🏆
+    </div>
+
+    <h2 id="winnerModalTitle">
+      Winner!
+    </h2>
+
+    <p id="winnerModalText">
+      Congratulations!
+    </p>
+
+    <button onclick="closeWinner()">
+      Continue
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div
+  id="toast"
+  class="toast"
+></div>
+
+
+<!-- BOTTOM NAV -->
+
+<div class="bottom">
+
+  <div class="bottom-inner">
+
+    <button
+      id="navHome"
+      class="nav active"
+      onclick="navHome()"
+    >
+      Home
+    </button>
+
+    <button
+      class="nav"
+      onclick="playGame()"
+    >
+      Play
+    </button>
+
+    <button
+      class="nav"
+      onclick="showToast('Profile section coming soon')"
+    >
+      Profile
+    </button>
+
+  </div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+  'https://szmqbywztfgtyoemzgiq.supabase.co';
+
+const SUPABASE_KEY =
+  'sb_publishable_UcmJ964uYcedY4lp8iYxRA_PF3TSNNY';
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+const OWNER_PERCENT = 0.20;
+const PRIZE_PERCENT = 0.80;
+
+const fees = [
   100,
   500,
   1000,
@@ -92,59 +2092,84 @@ const fees=[
   100000
 ];
 
-let roomCode='';
-let currentRoomId=null;
-let currentPlayerId=null;
-let playerName='Mehvan';
 
-let selectedEntryFee=100;
-let selectedMode='solo';
-let selectedCardCount=1;
+/* =========================================================
+   STATE
+========================================================= */
 
-let availableCards=[];
-let selectedCards=[];
+let roomCode = '';
+let currentRoomId = null;
+let currentPlayerId = null;
 
-let calledNumbers=[];
-let autoCallTimer=null;
-let roomWaitingTimer=null;
-let roomChannel=null;
+let playerName = 'Mehvan';
 
-let gameFinished=false;
-let winners=[];
-let participants=[];
+let selectedEntryFee = 100;
+let selectedMode = 'solo';
+let selectedCardCount = 1;
 
-let roomPrizePool=0;
-let purchaseDone=false;
+let availableCards = [];
+let selectedCards = [];
+
+let calledNumbers = [];
+let autoCallTimer = null;
+let roomWaitingTimer = null;
+
+let roomChannel = null;
+
+let gameFinished = false;
+
+let winners = [];
+let participants = [];
+
+let roomPrizePool = 0;
+
+let purchaseDone = false;
+
+let playerLevelValue = 1;
+let playerXpValue = 0;
+
+let roomLevelValue = 1;
+let roomXpValue = 0;
+
+let playerDailyXpValue = 0;
+let roomDailyXpValue = 0;
+
+let micJoined = false;
+let micMuted = false;
+
+let micSeats = [];
 
 
-/* =========================
+/* =========================================================
    HELPERS
-========================= */
+========================================================= */
 
-const $=id=>document.getElementById(id);
-
-function money(n){
-  return Number(n||0).toLocaleString();
+function $(id){
+  return document.getElementById(id);
 }
+
+
+function money(value){
+  return Number(value || 0).toLocaleString();
+}
+
+
+function escapeHtml(value){
+  return String(value ?? '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+}
+
 
 function showPage(id){
 
-  [
-    'homePage',
-    'roomPage',
-    'cardPage',
-    'gamePage'
-  ].forEach(x=>{
-    $(x).classList.toggle(
-      'hidden',
-      x!==id
-    );
-  });
+  document.querySelectorAll('.page')
+    .forEach(page => page.classList.add('hidden'));
 
-  $('bottomNav').classList.toggle(
-    'hidden',
-    id!=='homePage'
-  );
+  $(id).classList.remove('hidden');
 
   window.scrollTo({
     top:0,
@@ -153,15 +2178,7 @@ function showPage(id){
 }
 
 
-function navHome(btn){
-
-  document.querySelectorAll('.nav')
-    .forEach(x=>{
-      x.classList.remove('active');
-    });
-
-  btn.classList.add('active');
-
+function navHome(){
   showPage('homePage');
 }
 
@@ -170,220 +2187,169 @@ function backHome(){
 
   if(autoCallTimer){
     clearInterval(autoCallTimer);
-    autoCallTimer=null;
+    autoCallTimer = null;
   }
 
   if(roomWaitingTimer){
     clearInterval(roomWaitingTimer);
-    roomWaitingTimer=null;
-  }
-
-  if(roomChannel){
-    supabaseClient.removeChannel(
-      roomChannel
-    );
-
-    roomChannel=null;
+    roomWaitingTimer = null;
   }
 
   showPage('homePage');
 }
 
 
-function showToast(msg){
+function showToast(message){
 
-  const t=$('toast');
+  const toast = $('toast');
 
-  t.textContent=msg;
+  toast.textContent = message;
+  toast.classList.add('show');
 
-  t.classList.add('show');
+  clearTimeout(window.__toastTimer);
 
-  clearTimeout(window.__toast);
-
-  window.__toast=setTimeout(()=>{
-    t.classList.remove('show');
-  },2600);
+  window.__toastTimer =
+    setTimeout(() => {
+      toast.classList.remove('show');
+    },2600);
 }
 
 
-function escapeHtml(s){
-
-  return String(s).replace(
-    /[&<>'"]/g,
-    c=>({
-      '&':'&amp;',
-      '<':'&lt;',
-      '>':'&gt;',
-      "'":'&#39;',
-      '"':'&quot;'
-    }[c])
-  );
-}
-
-
-/* =========================
-   PRIZE POOL
-========================= */
+/* =========================================================
+   PRIZE
+========================================================= */
 
 function calculatePrizePool(
   totalCards,
-  entryFee=selectedEntryFee
+  entryFee
 ){
 
-  const cards=
-    Math.max(
-      0,
-      Number(totalCards||0)
-    );
+  const total =
+    Number(totalCards || 0) *
+    Number(entryFee || 0);
 
-  const fee=
-    Math.max(
-      0,
-      Number(entryFee||0)
-    );
-
-  const total=
-    cards*fee;
-
-  const owner=
-    Math.round(
-      total*OWNER_PERCENT
-    );
-
-  const prizePool=
-    total-owner;
-
-  return {
-    cards,
-    fee,
-    total,
-    owner,
-    prizePool
-  };
+  return total * PRIZE_PERCENT;
 }
 
-
-/*
-  IMPORTANT:
-  The real Prize Pool comes from Supabase Room.prize_pool.
-  We NEVER calculate the player's payment here.
-*/
 
 function setPrizePool(value){
 
-  roomPrizePool=
-    Number(value||0);
+  roomPrizePool =
+    Number(value || 0);
 
-  if($('roomPrizeText')){
-    $('roomPrizeText').textContent=
-      money(roomPrizePool)+' COINS';
-  }
+  $('roomPrizePool').textContent =
+    money(roomPrizePool);
 
-  if($('potText')){
-    $('potText').textContent=
-      money(roomPrizePool)+' COINS';
-  }
+  $('gamePrizePool').textContent =
+    money(roomPrizePool);
 }
 
 
-/* =========================
+/* =========================================================
    HOME
-========================= */
-
-function selectFee(f){
-
-  selectedEntryFee=
-    Number(f);
-
-  document.querySelectorAll('.fee-choice')
-    .forEach(b=>{
-      b.classList.toggle(
-        'active',
-        Number(b.dataset.fee)===
-        selectedEntryFee
-      );
-    });
-}
-
-
-function selectMode(m){
-
-  selectedMode=m;
-
-  document.querySelectorAll('.mode-card')
-    .forEach(b=>{
-      b.classList.toggle(
-        'active',
-        b.dataset.mode===m
-      );
-    });
-}
-
-
-function selectCardCount(n){
-
-  selectedCardCount=
-    Number(n);
-
-  document.querySelectorAll(
-    '.cards-choice .choice'
-  ).forEach(b=>{
-    b.classList.toggle(
-      'active',
-      Number(b.dataset.count)===
-      selectedCardCount
-    );
-  });
-}
-
+========================================================= */
 
 function renderFees(){
 
-  const g=$('feeGrid');
+  const grid = $('feeGrid');
 
-  g.innerHTML=
-    fees.map(f=>`
+  grid.innerHTML = '';
 
-      <button
-        class="choice fee-choice ${
-          f===selectedEntryFee
-          ?'active'
-          :''
-        }"
-        data-fee="${f}"
-        onclick="selectFee(${f})"
-      >
+  fees.forEach(fee => {
 
-        ${
-          f>=1000
-          ?(f/1000)+'K'
-          :f
-        }
+    const button =
+      document.createElement('button');
 
-        <span class="unit">
-          COINS
-        </span>
+    button.className =
+      'choice' +
+      (
+        fee === selectedEntryFee
+        ? ' active'
+        : ''
+      );
 
-      </button>
+    button.innerHTML = `
+      <strong>${money(fee)}</strong>
+      <span>Coins</span>
+    `;
 
-    `).join('');
+    button.onclick =
+      () => selectFee(fee);
+
+    grid.appendChild(button);
+
+  });
+
 }
 
 
-/* =========================
+function selectFee(fee){
+
+  selectedEntryFee =
+    Number(fee);
+
+  renderFees();
+
+}
+
+
+function selectMode(mode){
+
+  selectedMode = mode;
+
+  $('modeSolo')
+    .classList.toggle(
+      'active',
+      mode === 'solo'
+    );
+
+  $('modeFast')
+    .classList.toggle(
+      'active',
+      mode === 'fast'
+    );
+
+}
+
+
+function selectCardCount(count){
+
+  selectedCardCount =
+    Number(count);
+
+  $('cards1')
+    .classList.toggle(
+      'active',
+      count === 1
+    );
+
+  $('cards2')
+    .classList.toggle(
+      'active',
+      count === 2
+    );
+
+}
+
+
+/* =========================================================
    PROFILE
-========================= */
+========================================================= */
 
 async function loadProfile(){
 
-  if(!currentPlayerId)return;
+  if(!currentPlayerId){
+
+    $('homeUsername').textContent =
+      playerName;
+
+    return;
+
+  }
 
   try{
 
-    const {
-      data,
-      error
-    }=
+    const {data,error} =
       await supabaseClient.rpc(
         'get_player_profile',
         {
@@ -392,80 +2358,166 @@ async function loadProfile(){
         }
       );
 
-    if(error)throw error;
+    if(error){
+      console.log(error);
+      return;
+    }
 
-    const p=
+    const profile =
       Array.isArray(data)
-      ?data[0]
-      :data;
+      ? data[0]
+      : data;
 
-    if(!p)return;
+    if(!profile)
+      return;
 
-    playerName=
-      p.username||
-      playerName||
-      'Mehvan';
-
-    $('homePlayerName')
-      .textContent=
+    playerName =
+      profile.username ||
       playerName;
 
-    $('homeAvatar')
-      .textContent=
+    playerLevelValue =
+      Number(profile.level || 1);
+
+    playerXpValue =
+      Number(profile.xp || 0);
+
+    $('homeUsername').textContent =
+      playerName;
+
+    $('homeAvatar').textContent =
       playerName
-        .slice(0,1)
+        .charAt(0)
         .toUpperCase();
 
-    if(p.coin!=null){
+    $('homeCoins').textContent =
+      money(profile.coin);
 
-      $('homeCoins')
-        .textContent=
-        money(p.coin);
+    $('homeLevel').textContent =
+      `Level ${playerLevelValue} · ${money(playerXpValue)} XP`;
 
-    }
+    updatePlayerXPUI();
 
-    if(p.level!=null){
+  }catch(error){
 
-      $('homeLevel')
-        .textContent=
-        'Level '+p.level;
-
-    }
-
-  }catch(e){
-
-    console.warn(
-      'profile:',
-      e.message
-    );
+    console.log(error);
 
   }
+
 }
 
 
-/* =========================
-   CREATE / FIND ROOM
-========================= */
+/* =========================================================
+   XP UI
+========================================================= */
+
+function xpForLevel(level){
+
+  return Math.max(
+    100,
+    Number(level || 1) * 100
+  );
+}
+
+
+function updatePlayerXPUI(){
+
+  const currentLevelXp =
+    (playerLevelValue - 1) * 100;
+
+  const nextLevelXp =
+    playerLevelValue * 100;
+
+  const inside =
+    Math.max(
+      0,
+      playerXpValue -
+      currentLevelXp
+    );
+
+  const needed =
+    nextLevelXp -
+    currentLevelXp;
+
+  const percent =
+    Math.min(
+      100,
+      (inside / needed) * 100
+    );
+
+  $('playerLevel').textContent =
+    playerLevelValue;
+
+  $('playerXpText').textContent =
+    `${money(playerXpValue)} XP`;
+
+  $('playerNextXp').textContent =
+    `${money(nextLevelXp)} XP`;
+
+  $('playerXpBar').style.width =
+    percent + '%';
+
+  $('playerDailyXp').textContent =
+    money(playerDailyXpValue);
+
+}
+
+
+function updateRoomXPUI(){
+
+  const currentLevelXp =
+    (roomLevelValue - 1) * 100;
+
+  const nextLevelXp =
+    roomLevelValue * 100;
+
+  const inside =
+    Math.max(
+      0,
+      roomXpValue -
+      currentLevelXp
+    );
+
+  const needed =
+    nextLevelXp -
+    currentLevelXp;
+
+  const percent =
+    Math.min(
+      100,
+      (inside / needed) * 100
+    );
+
+  $('roomLevel').textContent =
+    roomLevelValue;
+
+  $('roomXpText').textContent =
+    `${money(roomXpValue)} XP`;
+
+  $('roomNextXp').textContent =
+    `${money(nextLevelXp)} XP`;
+
+  $('roomXpBar').style.width =
+    percent + '%';
+
+  $('roomDailyXp').textContent =
+    money(roomDailyXpValue);
+
+}
+
+
+/* =========================================================
+   PLAY GAME
+========================================================= */
 
 async function playGame(){
 
+  showPage('roomPage');
+
   try{
 
-    playerName=
-      (
-        $('homePlayerName')
-        .textContent||
-        'Mehvan'
-      ).trim()||'Mehvan';
+    showToast('Finding a Bingo room...');
 
-    showToast(
-      'Finding a game room...'
-    );
-
-    const {
-      data,
-      error
-    }=
+    const {data,error} =
       await supabaseClient.rpc(
         'find_or_create_bingo_room',
         {
@@ -474,55 +2526,45 @@ async function playGame(){
         }
       );
 
-    if(error)throw error;
+    if(error)
+      throw error;
 
-    const room=
+    const room =
       Array.isArray(data)
-      ?data[0]
-      :data;
+      ? data[0]
+      : data;
 
-    if(!room){
-
+    if(!room)
       throw new Error(
-        'Game Room could not be created.'
+        'Room not found'
       );
 
-    }
-
-    currentRoomId=
+    currentRoomId =
       room.id;
 
-    roomCode=
-      room.room_code||'';
+    roomCode =
+      room.room_code || '';
 
-    $('roomText')
-      .textContent=
-      roomCode;
+    $('roomCodeText').textContent =
+      roomCode || '------';
 
-    $('roomCodeBig')
-      .textContent=
-      roomCode;
+    await createPlayer();
 
-    $('roomFeeText')
-      .textContent=
-      money(selectedEntryFee)+
-      ' COINS';
+    await setupRoom();
 
-    setPrizePool(
-      room.prize_pool||0
-    );
-
-    purchaseDone=false;
-
-    await createPlayer(
-      currentRoomId
-    );
-
-    showPage('roomPage');
+    await loadProfile();
 
     await loadRoomPlayers();
 
     await loadRoomData();
+
+    await loadDailyXP();
+
+    await loadRoomXP();
+
+    await setupRoomChat();
+
+    await setupRoomMics();
 
     setupRoomChannel();
 
@@ -533,881 +2575,714 @@ async function playGame(){
     console.error(error);
 
     showToast(
-      error.message||
-      'Could not start the game.'
-    );
-
-  }
-}
-
-
-/* =========================
-   ROOM DATA
-========================= */
-
-async function loadRoomData(){
-
-  if(!currentRoomId)return;
-
-  try{
-
-    const {
-      data,
-      error
-    }=
-      await supabaseClient
-        .from('Room')
-        .select(
-          'id,status,player_count,max_player,entry_fee,prize_pool,room_code'
-        )
-        .eq(
-          'id',
-          currentRoomId
-        )
-        .single();
-
-    if(error)throw error;
-
-    setPrizePool(
-      data.prize_pool||0
-    );
-
-    $('roomFeeText')
-      .textContent=
-      money(
-        data.entry_fee||
-        selectedEntryFee
-      )+' COINS';
-
-  }catch(e){
-
-    console.warn(
-      'room data:',
-      e.message
-    );
-
-  }
-}
-
-
-/* =========================
-   WAIT FOR ROOM
-========================= */
-
-async function waitForRoomStart(){
-
-  if(roomWaitingTimer){
-
-    clearInterval(
-      roomWaitingTimer
+      error.message ||
+      'Unable to join room.'
     );
 
   }
 
-  const checkRoom=async()=>{
-
-    if(!currentRoomId)return;
-
-    try{
-
-      const {
-        data,
-        error
-      }=
-        await supabaseClient
-          .from('Room')
-          .select(
-            'id,status,player_count,max_player,entry_fee,prize_pool'
-          )
-          .eq(
-            'id',
-            currentRoomId
-          )
-          .single();
-
-      if(error)throw error;
-
-      const count=
-        Number(
-          data.player_count||0
-        );
-
-      const max=
-        Number(
-          data.max_player||25
-        );
-
-      $('playerCountText')
-        .textContent=
-        count+' / '+max+
-        ' players';
-
-      setPrizePool(
-        data.prize_pool||0
-      );
-
-      const state=
-        document.querySelector(
-          '.room-state'
-        );
-
-      if(state){
-
-        state.innerHTML=
-          data.status==='playing'
-          ?'<i></i>STARTING'
-          :'<i></i>WAITING';
-
-      }
-
-      const button=
-        document.querySelector(
-          '.room-start'
-        );
-
-      if(button){
-
-        const ready=
-          data.status==='playing'||
-          count>=max;
-
-        button.disabled=
-          !ready;
-
-        button.style.opacity=
-          ready
-          ?'1'
-          :'.55';
-
-        button.style.pointerEvents=
-          ready
-          ?'auto'
-          :'none';
-
-        button.innerHTML=
-          ready
-
-          ?`
-            CHOOSE BINGO CARD
-
-            <svg
-              class="icon sm"
-              style="
-                display:inline-block;
-                vertical-align:middle;
-                margin-left:5px
-              "
-              viewBox="0 0 24 24"
-            >
-              <path d="M9 5l7 7-7 7"/>
-            </svg>
-          `
-
-          :'WAITING FOR PLAYERS...';
-
-      }
-
-      if(
-        data.status==='playing'||
-        count>=max
-      ){
-
-        clearInterval(
-          roomWaitingTimer
-        );
-
-        roomWaitingTimer=null;
-
-        await loadRoomPlayers();
-
-        if(
-          document
-            .getElementById(
-              'cardPage'
-            )
-            .classList
-            .contains('hidden')
-        ){
-
-          showToast(
-            'Room is full. Choose your Bingo card.'
-          );
-
-        }
-
-      }
-
-    }catch(e){
-
-      console.warn(
-        'room status:',
-        e.message
-      );
-
-    }
-
-  };
-
-  await checkRoom();
-
-  roomWaitingTimer=
-    setInterval(
-      checkRoom,
-      2000
-    );
 }
 
 
-/* =========================
+/* =========================================================
    CREATE PLAYER
-========================= */
+========================================================= */
 
-async function createPlayer(roomId){
+async function createPlayer(){
 
-  const {
-    data,
-    error
-  }=
+  const {data,error} =
     await supabaseClient.rpc(
       'use_owner_player',
       {
-        p_room_id:roomId
+        p_room_id:
+          currentRoomId
       }
     );
 
-  if(error)throw error;
+  if(error)
+    throw error;
 
-  const p=
-    Array.isArray(data)
-    ?data[0]
-    :data;
-
-  if(!p){
-
-    throw new Error(
-      'Player could not be created.'
+  currentPlayerId =
+    Number(
+      Array.isArray(data)
+      ? data[0]?.id
+      : data?.id
     );
 
-  }
-
-  currentPlayerId=
-    p.id||
-    p.player_id||
-    null;
-
-  await loadProfile();
 }
 
 
-/* =========================
-   ROOM PLAYERS
-========================= */
+/* =========================================================
+   ROOM
+========================================================= */
 
-async function loadRoomPlayers(){
+async function setupRoom(){
 
-  if(!currentRoomId)return;
+  if(!currentRoomId)
+    return;
 
   try{
 
-    const {
-      data,
+    await supabaseClient.rpc(
+      'generate_room_bingo_cards',
+      {
+        p_room_id:
+          currentRoomId
+      }
+    );
+
+  }catch(error){
+
+    console.log(
+      'Card generation:',
       error
-    }=
-      await supabaseClient.rpc(
-        'get_room_players',
-        {
-          p_room_id:
-            currentRoomId
-        }
-      );
-
-    if(error)throw error;
-
-    participants=
-      Array.isArray(data)
-      ?data
-      :[];
-
-    $('playerCountText')
-      .textContent=
-      participants.length+
-      ' / 25 players';
-
-    await loadRoomData();
-
-    $('playersList').innerHTML=
-
-      participants.map(
-        (p,i)=>{
-
-          const name=
-            p.username||
-            p.name||
-            'Player '+(i+1);
-
-          const isMe=
-            Number(
-              p.player_id||
-              p.id
-            )===
-            Number(
-              currentPlayerId
-            );
-
-          return `
-
-            <div class="player-row">
-
-              <div class="player-avatar">
-                ${escapeHtml(
-                  name
-                    .slice(0,1)
-                    .toUpperCase()
-                )}
-              </div>
-
-              <div class="player-info">
-
-                <strong>
-                  ${escapeHtml(name)}
-                </strong>
-
-                <small>
-                  ${
-                    isMe
-                    ?'You'
-                    :'Ready to play'
-                  }
-                </small>
-
-              </div>
-
-              <span class="ready">
-                READY
-              </span>
-
-            </div>
-
-          `;
-
-        }
-      ).join('')||
-
-      `
-        <div
-          style="
-            padding:15px;
-            text-align:center;
-            color:#6f7898;
-            font-size:10px
-          "
-        >
-          Waiting for players...
-        </div>
-      `;
-
-  }catch(e){
-
-    console.warn(
-      'players:',
-      e.message
     );
 
   }
+
 }
 
 
-/* =========================
-   REALTIME ROOM
-========================= */
+async function loadRoomData(){
 
-function setupRoomChannel(){
+  if(!currentRoomId)
+    return;
 
-  if(
-    !currentRoomId||
-    roomChannel
-  )return;
-
-  roomChannel=
-    supabaseClient
-      .channel(
-        'bingo-room-'+
+  const {data,error} =
+    await supabaseClient
+      .from('Room')
+      .select(`
+        id,
+        status,
+        player_count,
+        max_player,
+        entry_fee,
+        prize_pool,
+        room_code,
+        room_level,
+        daily_points
+      `)
+      .eq(
+        'id',
         currentRoomId
       )
+      .single();
 
-      .on(
-        'broadcast',
-        {
-          event:'number'
-        },
-        ({payload})=>{
+  if(error){
 
-          if(payload?.number){
+    console.log(error);
 
-            receiveNumber(
-              payload.number
-            );
+    return;
 
-          }
+  }
 
-        }
-      )
+  $('roomFee').textContent =
+    money(data.entry_fee);
 
-      .on(
-        'broadcast',
-        {
-          event:'winner'
-        },
-        ({payload})=>{
+  $('roomPlayersCount').textContent =
+    `${data.player_count || 0} / ${data.max_player || 25}`;
 
-          if(payload){
+  $('playersPanelCount').textContent =
+    `${data.player_count || 0} / ${data.max_player || 25}`;
 
-            handleWinner(
-              payload
-            );
+  $('roomCardsCount').textContent =
+    await countPurchasedCards();
 
-          }
+  setPrizePool(
+    data.prize_pool || 0
+  );
 
-        }
-      )
+  roomLevelValue =
+    Number(data.room_level || 1);
 
-      .on(
-        'broadcast',
-        {
-          event:'card-entry'
-        },
-        ({payload})=>{
+  updateRoomXPUI();
 
-          if(payload){
+  const status =
+    String(data.status || 'waiting')
+      .toLowerCase();
 
-            loadRoomData();
-
-          }
-
-        }
-      )
-
-      .subscribe();
+  updateRoomStatus(status);
 
 }
 
 
-/* =========================
+function updateRoomStatus(status){
+
+  const waiting =
+    status === 'waiting';
+
+  const playing =
+    status === 'playing';
+
+  const full =
+    status === 'full';
+
+  $('roomStateText').textContent =
+    playing
+      ? 'PLAYING'
+      : full
+        ? 'FULL'
+        : 'WAITING';
+
+  $('roomTopStatus').textContent =
+    playing
+      ? 'Playing'
+      : full
+        ? 'Full'
+        : 'Waiting';
+
+  const button =
+    $('roomStartBtn');
+
+  if(playing){
+
+    button.disabled = false;
+
+    button.textContent =
+      'Choose Bingo Cards';
+
+    return;
+
+  }
+
+  if(full){
+
+    button.disabled = false;
+
+    button.textContent =
+      'Choose Bingo Cards';
+
+    return;
+
+  }
+
+  button.disabled = true;
+
+  button.textContent =
+    'Waiting for Players...';
+
+}
+
+
+async function countPurchasedCards(){
+
+  if(!currentRoomId)
+    return 0;
+
+  const {count,error} =
+    await supabaseClient
+      .from('BingoCard')
+      .select(
+        'id',
+        {
+          count:'exact',
+          head:true
+        }
+      )
+      .eq(
+        'room_id',
+        currentRoomId
+      )
+      .not(
+        'player_id',
+        'is',
+        null
+      );
+
+  if(error)
+    return 0;
+
+  return count || 0;
+
+}
+
+
+/* =========================================================
+   WAIT FOR ROOM START
+========================================================= */
+
+function waitForRoomStart(){
+
+  if(roomWaitingTimer)
+    clearInterval(roomWaitingTimer);
+
+  roomWaitingTimer =
+    setInterval(
+      async () => {
+
+        if(!currentRoomId)
+          return;
+
+        const {data,error} =
+          await supabaseClient
+            .from('Room')
+            .select(`
+              status,
+              player_count,
+              max_player,
+              prize_pool,
+              room_level
+            `)
+            .eq(
+              'id',
+              currentRoomId
+            )
+            .single();
+
+        if(error)
+          return;
+
+        $('roomPlayersCount').textContent =
+          `${data.player_count || 0} / ${data.max_player || 25}`;
+
+        $('playersPanelCount').textContent =
+          `${data.player_count || 0} / ${data.max_player || 25}`;
+
+        setPrizePool(
+          data.prize_pool || 0
+        );
+
+        roomLevelValue =
+          Number(data.room_level || 1);
+
+        updateRoomXPUI();
+
+        updateRoomStatus(
+          String(
+            data.status || 'waiting'
+          ).toLowerCase()
+        );
+
+        await loadRoomPlayers();
+
+      },
+      2500
+    );
+
+}
+
+
+/* =========================================================
+   PLAYERS
+========================================================= */
+
+async function loadRoomPlayers(){
+
+  if(!currentRoomId)
+    return;
+
+  const {data,error} =
+    await supabaseClient.rpc(
+      'get_room_players',
+      {
+        p_room_id:
+          currentRoomId
+      }
+    );
+
+  if(error){
+
+    console.log(error);
+
+    return;
+
+  }
+
+  participants =
+    Array.isArray(data)
+      ? data
+      : [];
+
+  renderPlayers();
+
+}
+
+
+function renderPlayers(){
+
+  const list =
+    $('playersList');
+
+  list.innerHTML = '';
+
+  if(!participants.length){
+
+    list.innerHTML = `
+      <div style="
+        color:var(--muted);
+        text-align:center;
+        padding:15px;
+        font-size:10px;
+      ">
+        Waiting for players...
+      </div>
+    `;
+
+    return;
+
+  }
+
+  participants.forEach((player,index) => {
+
+    const id =
+      Number(
+        player.player_id ||
+        player.id
+      );
+
+    const username =
+      player.username ||
+      player.player_name ||
+      `Player ${index + 1}`;
+
+    const level =
+      Number(player.level || 1);
+
+    const isOwner =
+      Boolean(player.is_owner);
+
+    const row =
+      document.createElement('div');
+
+    row.className =
+      'player-row';
+
+    row.innerHTML = `
+
+      <div class="player-avatar">
+        ${escapeHtml(
+          username
+            .charAt(0)
+            .toUpperCase()
+        )}
+      </div>
+
+      <div class="player-main">
+
+        <div class="player-name">
+
+          ${escapeHtml(username)}
+
+          ${
+            isOwner
+              ? '<span class="owner-badge">OWNER</span>'
+              : ''
+          }
+
+        </div>
+
+        <div class="player-sub">
+          Level ${level}
+        </div>
+
+      </div>
+
+      <div class="player-mic">
+        ${findPlayerMic(id) ? '🎙' : '·'}
+      </div>
+
+    `;
+
+    list.appendChild(row);
+
+  });
+
+}
+
+
+/* =========================================================
    CARD SELECTION
-========================= */
+========================================================= */
 
 async function openCardSelection(){
 
-  if(!currentRoomId)return;
+  if(!currentRoomId)
+    return;
 
   showPage('cardPage');
+
+  selectedCards = [];
+
+  $('selectedCardsCount').textContent =
+    '0';
+
+  $('requiredCardsCount').textContent =
+    selectedCardCount;
+
+  $('confirmCardsBtn').disabled =
+    true;
 
   await loadAvailableCards();
 
 }
 
 
-/*
-  Generate the 125 DB cards for this room.
-
-  The database function already exists
-  in your Supabase project.
-*/
-
 async function loadAvailableCards(){
 
   try{
 
-    showToast(
-      'Preparing Bingo cards...'
-    );
-
-    /*
-      Generate room cards.
-    */
-    const {
-      error:generateError
-    }=
-      await supabaseClient.rpc(
-        'generate_room_bingo_cards',
-        {
-          p_room_id:
-            currentRoomId
-        }
-      );
-
-    /*
-      If the cards already exist,
-      the function may return a harmless
-      duplicate/existing result.
-    */
-    if(
-      generateError &&
-      !String(
-        generateError.message||''
-      ).toLowerCase()
-        .includes('exist')
-    ){
-
-      console.warn(
-        'generate cards:',
-        generateError.message
-      );
-
-    }
-
-
-    /*
-      Read cards belonging to this room.
-
-      We only show five candidate cards.
-    */
-    const {
-      data,
-      error
-    }=
-      await supabaseClient
-        .from('BingoCard')
-        .select(
-          'id,room_id,player_id,numbers,card_slot'
-        )
-        .eq(
-          'room_id',
+    await supabaseClient.rpc(
+      'generate_room_bingo_cards',
+      {
+        p_room_id:
           currentRoomId
-        )
-        .is(
-          'player_id',
-          null
-        )
-        .order(
-          'id',
-          {
-            ascending:true
-          }
-        )
-        .limit(5);
-
-    if(error)throw error;
-
-    availableCards=
-      Array.isArray(data)
-      ?data
-      :[];
-
-    /*
-      If RLS prevents reading cards,
-      show a clear message instead of
-      creating fake card IDs.
-    */
-    if(!availableCards.length){
-
-      throw new Error(
-        'No Bingo cards are available for this room.'
-      );
-
-    }
-
-    selectedCards=[];
-
-    $('selectedCountLabel')
-      .textContent=
-      '0 selected';
-
-    renderAvailableCards();
-
-  }catch(e){
-
-    console.error(e);
-
-    showToast(
-      e.message||
-      'Could not load Bingo cards.'
+      }
     );
+
+  }catch(error){
+
+    console.log(error);
 
   }
+
+  const {data,error} =
+    await supabaseClient
+      .from('BingoCard')
+      .select(
+        'id,room_id,player_id,card_slot,numbers'
+      )
+      .eq(
+        'room_id',
+        currentRoomId
+      )
+      .is(
+        'player_id',
+        null
+      )
+      .limit(5);
+
+  if(error){
+
+    showToast(
+      error.message
+    );
+
+    return;
+
+  }
+
+  availableCards =
+    data || [];
+
+  renderAvailableCards();
 
 }
 
 
-/* =========================
-   RENDER CARD OPTIONS
-========================= */
-
 function normalizeCardNumbers(numbers){
 
-  if(Array.isArray(numbers)){
+  if(Array.isArray(numbers))
     return numbers;
-  }
 
-  if(
-    numbers&&
-    typeof numbers==='object'
-  ){
+  if(typeof numbers === 'string'){
 
-    if(Array.isArray(numbers.numbers)){
-      return numbers.numbers;
-    }
-
-    if(Array.isArray(numbers.values)){
-      return numbers.values;
+    try{
+      return JSON.parse(numbers);
+    }catch{
+      return [];
     }
 
   }
+
+  if(numbers?.numbers)
+    return numbers.numbers;
 
   return [];
+
 }
 
 
 function renderAvailableCards(){
 
-  $('cardsList').innerHTML=
-    availableCards
-      .map((c,index)=>{
+  const list =
+    $('cardsList');
 
-        const nums=
-          normalizeCardNumbers(
-            c.numbers
-          );
+  list.innerHTML = '';
 
-        const full=
-          nums.length===25
-          ?nums
-          :[
-            ...nums.slice(0,12),
-            'FREE',
-            ...nums.slice(12)
-          ];
+  availableCards.forEach(
+    (card,index) => {
 
-        return `
+      const numbers =
+        normalizeCardNumbers(
+          card.numbers
+        );
 
-          <button
-            class="card-option"
-            id="card-${c.id}"
-            onclick="toggleCard(${c.id})"
-          >
+      const option =
+        document.createElement('div');
 
-            <div class="card-mini">
+      option.className =
+        'card-option';
 
-              ${
-                full.map(
-                  (n,i)=>`
+      option.dataset.id =
+        card.id;
 
-                    <span
-                      class="${
-                        i===12
-                        ?'h'
-                        :''
-                      }"
-                    >
-                      ${
-                        i===12
-                        ?'FREE'
-                        :escapeHtml(n)
-                      }
-                    </span>
+      let cells = '';
 
-                  `
-                ).join('')
-              }
+      for(let row=0;row<5;row++){
 
+        for(let col=0;col<5;col++){
+
+          const value =
+            numbers[row]?.[col] ??
+            '';
+
+          const free =
+            row === 2 &&
+            col === 2;
+
+          cells += `
+            <div
+              class="card-mini-cell ${free ? 'free' : ''}"
+            >
+              ${free ? 'FREE' : escapeHtml(value)}
             </div>
+          `;
 
-            <div class="card-name">
-              CARD ${index+1}
-            </div>
+        }
 
-          </button>
+      }
 
-        `;
+      option.innerHTML = `
 
-      }).join('');
+        <div class="card-mini">
+
+          <div class="card-mini-head">
+
+            <div>B</div>
+            <div>I</div>
+            <div>N</div>
+            <div>G</div>
+            <div>O</div>
+
+          </div>
+
+          ${cells}
+
+        </div>
+
+        <div class="card-option-label">
+
+          <span>
+            Card ${index + 1}
+          </span>
+
+          <span>
+            ${selectedCards.some(
+              c => c.id === card.id
+            ) ? 'SELECTED' : 'SELECT'}
+          </span>
+
+        </div>
+      `;
+
+      option.onclick =
+        () => toggleCard(card.id);
+
+      list.appendChild(option);
+
+    }
+  );
 
 }
 
 
-/* =========================
-   SELECT CARD
-========================= */
+function toggleCard(cardId){
 
-function toggleCard(id){
+  const existing =
+    selectedCards.findIndex(
+      card => card.id === cardId
+    );
 
-  id=Number(id);
+  if(existing >= 0){
 
-  if(
-    selectedCards.includes(id)
-  ){
-
-    selectedCards=
-      selectedCards.filter(
-        x=>x!==id
-      );
-
-  }else if(
-    selectedCards.length<
-    selectedCardCount
-  ){
-
-    selectedCards.push(id);
+    selectedCards.splice(
+      existing,
+      1
+    );
 
   }else{
 
-    selectedCards=[
-      ...selectedCards.slice(1),
-      id
-    ];
+    if(
+      selectedCards.length >=
+      selectedCardCount
+    ){
+
+      showToast(
+        `You can select only ${selectedCardCount} card(s).`
+      );
+
+      return;
+
+    }
+
+    const card =
+      availableCards.find(
+        c => c.id === cardId
+      );
+
+    if(card)
+      selectedCards.push(card);
 
   }
 
-  document
-    .querySelectorAll(
-      '.card-option'
-    )
-    .forEach(x=>{
+  $('selectedCardsCount').textContent =
+    selectedCards.length;
 
-      x.classList.toggle(
-        'selected',
-        selectedCards.includes(
-          Number(
-            x.id.replace(
-              'card-',
-              ''
-            )
-          )
-        )
-      );
+  $('confirmCardsBtn').disabled =
+    selectedCards.length !==
+    selectedCardCount;
 
-    });
+  renderAvailableCards();
 
-  $('selectedCountLabel')
-    .textContent=
-    selectedCards.length+
-    ' selected';
 }
 
 
-/* =========================
-   PURCHASE + SAVE CARDS
-========================= */
+/* =========================================================
+   PURCHASE
+========================================================= */
 
 async function confirmCardSelection(){
 
   if(
-    selectedCards.length<
+    selectedCards.length !==
     selectedCardCount
   ){
 
     showToast(
-      'Select '+
-      selectedCardCount+
-      ' card'+
-      (
-        selectedCardCount>1
-        ?'s'
-        :''
-      )+
-      ' first.'
+      'Please select your cards.'
     );
 
     return;
+
   }
 
+  const cardsPayload =
+    selectedCards.map(
+      (card,index) => ({
 
-  if(
-    !currentRoomId||
-    !currentPlayerId
-  ){
+        card_id:
+          Number(card.id),
 
-    showToast(
-      'Room or player is missing.'
+        card_slot:
+          index + 1,
+
+        numbers:
+          normalizeCardNumbers(
+            card.numbers
+          )
+
+      })
     );
-
-    return;
-  }
-
-
-  if(purchaseDone){
-
-    showToast(
-      'Your cards are already purchased.'
-    );
-
-    startGame();
-
-    return;
-  }
-
 
   try{
 
-    /*
-      Build cards for secure RPC.
+    $('confirmCardsBtn').disabled =
+      true;
 
-      IMPORTANT:
-      We send the REAL BingoCard IDs
-      generated by Supabase.
-    */
+    $('confirmCardsBtn').textContent =
+      'Processing...';
 
-    const cardsPayload=
-      selectedCards.map(
-        (cardId,index)=>{
-
-          const card=
-            availableCards.find(
-              x=>
-                Number(x.id)===
-                Number(cardId)
-            );
-
-          if(!card){
-
-            throw new Error(
-              'Bingo card not found.'
-            );
-
-          }
-
-          return {
-
-            card_id:
-              Number(card.id),
-
-            card_slot:
-              index+1,
-
-            numbers:
-              normalizeCardNumbers(
-                card.numbers
-              )
-
-          };
-
-        }
-      );
-
-
-    /*
-      SECURITY:
-
-      This RPC performs the complete
-      payment transaction on Supabase:
-
-      Player Coin
-          ↓
-      20% Owner
-          ↓
-      80% Prize Pool
-
-      It also saves the selected cards.
-    */
-
-    showToast(
-      'Processing your cards...'
-    );
-
-    const {
-      data,
-      error
-    }=
+    const {data,error} =
       await supabaseClient.rpc(
         'purchase_bingo_cards',
         {
@@ -1422,20 +3297,10 @@ async function confirmCardSelection(){
         }
       );
 
-    if(error)throw error;
+    if(error)
+      throw error;
 
-
-    const result=
-      Array.isArray(data)
-      ?data[0]
-      :data;
-
-    purchaseDone=true;
-
-
-    /*
-      Refresh wallet from database.
-    */
+    purchaseDone = true;
 
     await loadProfile();
 
@@ -1443,57 +3308,459 @@ async function confirmCardSelection(){
 
     await loadRoomData();
 
+    await loadPlayerDailyXP();
 
-    /*
-      Tell other players to refresh
-      their Prize Pool.
-    */
+    await loadRoomDailyXP();
 
-    if(roomChannel){
+    showToast(
+      'Cards purchased successfully!'
+    );
 
-      await roomChannel.send({
+    setTimeout(
+      () => startGame(),
+      600
+    );
 
-        type:'broadcast',
+  }catch(error){
 
-        event:'card-entry',
+    console.error(error);
 
-        payload:{
-          player_id:
+    showToast(
+      error.message ||
+      'Purchase failed.'
+    );
+
+    $('confirmCardsBtn').disabled =
+      false;
+
+    $('confirmCardsBtn').textContent =
+      'Confirm & Pay';
+
+  }
+
+}
+
+
+/* =========================================================
+   CHAT
+========================================================= */
+
+async function setupRoomChat(){
+
+  if(!currentRoomId)
+    return;
+
+  await loadChatMessages();
+
+}
+
+
+async function loadChatMessages(){
+
+  const {data,error} =
+    await supabaseClient
+      .from('RoomChat')
+      .select(`
+        id,
+        room_id,
+        player_id,
+        message,
+        message_type,
+        created_at
+      `)
+      .eq(
+        'room_id',
+        currentRoomId
+      )
+      .order(
+        'created_at',
+        {
+          ascending:true
+        }
+      )
+      .limit(100);
+
+  if(error){
+
+    console.log(
+      'Chat load:',
+      error
+    );
+
+    return;
+
+  }
+
+  const messages =
+    data || [];
+
+  $('chatMessages').innerHTML = '';
+
+  messages.forEach(
+    message =>
+      renderChatMessage(
+        message,
+        false
+      )
+  );
+
+  scrollChatToBottom();
+
+}
+
+
+function renderChatMessage(
+  message,
+  scroll=true
+){
+
+  const box =
+    $('chatMessages');
+
+  const username =
+    findPlayerName(
+      message.player_id
+    );
+
+  const item =
+    document.createElement('div');
+
+  item.className =
+    'chat-message';
+
+  const time =
+    message.created_at
+      ? new Date(
+          message.created_at
+        ).toLocaleTimeString(
+          [],
+          {
+            hour:'2-digit',
+            minute:'2-digit'
+          }
+        )
+      : '';
+
+  item.innerHTML = `
+
+    <div class="chat-mini-avatar">
+      ${escapeHtml(
+        username
+          .charAt(0)
+          .toUpperCase()
+      )}
+    </div>
+
+    <div class="chat-content">
+
+      <div class="chat-user">
+        ${escapeHtml(username)}
+      </div>
+
+      <div class="chat-text">
+        ${escapeHtml(message.message)}
+      </div>
+
+      <div class="chat-time">
+        ${time}
+      </div>
+
+    </div>
+
+  `;
+
+  box.appendChild(item);
+
+  if(scroll)
+    scrollChatToBottom();
+
+}
+
+
+function scrollChatToBottom(){
+
+  const box =
+    $('chatMessages');
+
+  box.scrollTop =
+    box.scrollHeight;
+
+}
+
+
+async function sendChatMessage(){
+
+  const input =
+    $('chatInput');
+
+  const message =
+    input.value.trim();
+
+  if(!message)
+    return;
+
+  if(!currentRoomId ||
+     !currentPlayerId){
+
+    showToast(
+      'Join a room first.'
+    );
+
+    return;
+
+  }
+
+  input.value = '';
+
+  try{
+
+    const {data,error} =
+      await supabaseClient.rpc(
+        'send_room_message',
+        {
+          p_room_id:
+            currentRoomId,
+
+          p_player_id:
             currentPlayerId,
 
-          card_count:
-            selectedCardCount
+          p_message:
+            message
+        }
+      );
+
+    if(error)
+      throw error;
+
+    const sent =
+      Array.isArray(data)
+        ? data[0]
+        : data;
+
+    if(sent)
+      renderChatMessage(
+        sent
+      );
+
+    await addPlayerChatXP();
+
+  }catch(error){
+
+    console.error(error);
+
+    showToast(
+      error.message ||
+      'Message could not be sent.'
+    );
+
+  }
+
+}
+
+
+$('chatInput').addEventListener(
+  'keydown',
+  event => {
+
+    if(event.key === 'Enter'){
+
+      event.preventDefault();
+
+      sendChatMessage();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   CHAT REALTIME
+========================================================= */
+
+async function subscribeChat(){
+
+  if(!roomChannel)
+    return;
+
+  roomChannel.on(
+    'broadcast',
+    {
+      event:'chat'
+    },
+    payload => {
+
+      if(
+        payload?.payload &&
+        payload.payload.message
+      ){
+
+        renderChatMessage(
+          payload.payload.message
+        );
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   ROOM CHANNEL
+========================================================= */
+
+function setupRoomChannel(){
+
+  if(!currentRoomId)
+    return;
+
+  if(roomChannel){
+
+    try{
+      supabaseClient.removeChannel(
+        roomChannel
+      );
+    }catch{}
+
+  }
+
+  roomChannel =
+    supabaseClient.channel(
+      `bingo-room-${currentRoomId}`
+    );
+
+  roomChannel
+    .on(
+      'broadcast',
+      {
+        event:'number'
+      },
+      payload => {
+
+        const number =
+          payload?.payload?.number;
+
+        if(number)
+          receiveNumber(
+            Number(number)
+          );
+
+      }
+    )
+    .on(
+      'broadcast',
+      {
+        event:'winner'
+      },
+      payload => {
+
+        const winner =
+          payload?.payload?.winner;
+
+        if(winner)
+          handleWinner(
+            winner
+          );
+
+      }
+    )
+    .on(
+      'broadcast',
+      {
+        event:'card-entry'
+      },
+      () => {
+
+        loadRoomData();
+
+      }
+    )
+    .on(
+      'broadcast',
+      {
+        event:'chat'
+      },
+      payload => {
+
+        const message =
+          payload?.payload?.message;
+
+        if(
+          message &&
+          Number(message.player_id) !==
+          Number(currentPlayerId)
+        ){
+
+          renderChatMessage(
+            message
+          );
+
         }
 
-      });
+      }
+    )
+    .on(
+      'broadcast',
+      {
+        event:'mic'
+      },
+      payload => {
 
-    }
+        if(payload?.payload)
+          handleMicBroadcast(
+            payload.payload
+          );
 
+      }
+    )
+    .subscribe(
+      status => {
 
-    showToast(
-      selectedCardCount===1
-      ?'Card purchased successfully!'
-      :'2 cards purchased successfully!'
+        if(status === 'SUBSCRIBED'){
+
+          $('micStatusText').textContent =
+            'Room connected';
+
+        }
+
+      }
     );
 
+}
 
-    /*
-      Start game using the exact
-      purchased cards.
-    */
 
-    startGame();
+/* =========================================================
+   PLAYER / ROOM XP
+========================================================= */
 
-  }catch(e){
+async function addPlayerChatXP(){
 
-    console.error(
-      'purchase:',
-      e
+  if(!currentPlayerId)
+    return;
+
+  try{
+
+    await supabaseClient.rpc(
+      'add_player_xp',
+      {
+        p_player_id:
+          currentPlayerId,
+
+        p_xp:1
+      }
     );
 
-    showToast(
-      e.message||
-      'Could not purchase Bingo cards.'
+    playerXpValue += 1;
+
+    updatePlayerXPUI();
+
+  }catch(error){
+
+    console.log(
+      'Player XP:',
+      error
     );
 
   }
@@ -1501,379 +3768,650 @@ async function confirmCardSelection(){
 }
 
 
-/* =========================
-   GAME
-========================= */
+async function addPlayerGameXP(){
 
-function cardNumbers(c){
+  if(!currentPlayerId)
+    return;
 
-  const nums=
-    normalizeCardNumbers(
-      c?.numbers
+  try{
+
+    await supabaseClient.rpc(
+      'add_player_xp',
+      {
+        p_player_id:
+          currentPlayerId,
+
+        p_xp:10
+      }
     );
 
-  if(nums.length===25){
+  }catch(error){
 
-    return nums;
+    console.log(
+      'Game XP:',
+      error
+    );
 
   }
 
-  return [
-    ...nums.slice(0,12),
-    'FREE',
-    ...nums.slice(12)
-  ];
+}
+
+
+async function addRoomGameXP(){
+
+  if(!currentRoomId)
+    return;
+
+  try{
+
+    await supabaseClient.rpc(
+      'add_room_xp',
+      {
+        p_room_id:
+          currentRoomId,
+
+        p_xp:10
+      }
+    );
+
+  }catch(error){
+
+    console.log(
+      'Room XP:',
+      error
+    );
+
+  }
 
 }
 
 
-function colClass(i){
+/* =========================================================
+   DAILY XP
+========================================================= */
 
-  return [
-    'col-b',
-    'col-i',
-    'col-n',
-    'col-g',
-    'col-o'
-  ][
-    Math.floor(i/5)
-  ];
+async function loadPlayerDailyXP(){
 
-}
+  if(!currentPlayerId)
+    return;
 
-
-function startGame(){
-
-  showPage('gamePage');
-
-  $('gameRoomCode')
-    .textContent=
-    roomCode;
-
-  /*
-    Read the authoritative
-    Prize Pool from Room.
-  */
-  loadRoomData();
-
-  calledNumbers=[];
-
-  gameFinished=false;
-
-  winners=[];
-
-  renderGameCards();
-
-  renderWinnerList();
-
-  renderHistory();
-
-  renderParticipants();
-
-  $('gameStatus')
-    .textContent=
-    'Mark called numbers on your card';
-
-
-  const ids=
-    participants
-      .map(
-        p=>
-          Number(
-            p.player_id||
-            p.id
-          )
+  const {data,error} =
+    await supabaseClient
+      .from('PlayerDailyXP')
+      .select(
+        'xp'
       )
-      .filter(Boolean);
+      .eq(
+        'player_id',
+        currentPlayerId
+      )
+      .eq(
+        'xp_date',
+        new Date()
+          .toISOString()
+          .slice(0,10)
+      )
+      .maybeSingle();
 
+  if(error){
 
-  if(ids.length){
+    console.log(
+      'Daily player XP:',
+      error
+    );
 
-    const host=
-      Math.min(...ids);
-
-    if(
-      currentPlayerId&&
-      Number(currentPlayerId)===
-      host
-    ){
-
-      startAutoCall();
-
-    }
+    return;
 
   }
+
+  playerDailyXpValue =
+    Number(
+      data?.xp || 0
+    );
+
+  $('playerDailyXp').textContent =
+    money(playerDailyXpValue);
 
 }
 
 
-/* =========================
-   GAME CARDS
-========================= */
+async function loadRoomDailyXP(){
 
-let gameCardsState=[];
+  if(!currentRoomId)
+    return;
+
+  const {data,error} =
+    await supabaseClient
+      .from('RoomDailyXP')
+      .select(
+        'xp'
+      )
+      .eq(
+        'room_id',
+        currentRoomId
+      )
+      .eq(
+        'xp_date',
+        new Date()
+          .toISOString()
+          .slice(0,10)
+      )
+      .maybeSingle();
+
+  if(error){
+
+    console.log(
+      'Daily room XP:',
+      error
+    );
+
+    return;
+
+  }
+
+  roomDailyXpValue =
+    Number(
+      data?.xp || 0
+    );
+
+  $('roomDailyXp').textContent =
+    money(roomDailyXpValue);
+
+}
 
 
-function renderGameCards(){
+async function loadDailyXP(){
 
-  gameCardsState=
-    selectedCards.map(
-      cardId=>({
+  await loadPlayerDailyXP();
 
-        id:cardId,
+  await loadRoomDailyXP();
 
-        locked:false,
+  $('dailyXpDate').textContent =
+    new Date().toLocaleDateString(
+      [],
+      {
+        month:'short',
+        day:'numeric'
+      }
+    );
 
-        marked:new Set([12])
+}
 
+
+/* =========================================================
+   ROOM XP
+========================================================= */
+
+async function loadRoomXP(){
+
+  if(!currentRoomId)
+    return;
+
+  const {data,error} =
+    await supabaseClient
+      .from('Room')
+      .select(
+        'room_level'
+      )
+      .eq(
+        'id',
+        currentRoomId
+      )
+      .single();
+
+  if(error)
+    return;
+
+  roomLevelValue =
+    Number(
+      data.room_level || 1
+    );
+
+  updateRoomXPUI();
+
+}
+
+
+/* =========================================================
+   MIC SYSTEM
+========================================================= */
+
+async function setupRoomMics(){
+
+  if(!currentRoomId)
+    return;
+
+  try{
+
+    await supabaseClient.rpc(
+      'setup_room_mics',
+      {
+        p_room_id:
+          currentRoomId
+      }
+    );
+
+  }catch(error){
+
+    console.log(
+      'Mic setup:',
+      error
+    );
+
+  }
+
+  await loadMicSeats();
+
+}
+
+
+async function loadMicSeats(){
+
+  if(!currentRoomId)
+    return;
+
+  const {data,error} =
+    await supabaseClient
+      .from('RoomMic')
+      .select(`
+        id,
+        room_id,
+        seat_number,
+        player_id,
+        is_muted,
+        is_active
+      `)
+      .eq(
+        'room_id',
+        currentRoomId
+      )
+      .order(
+        'seat_number'
+      );
+
+  if(error){
+
+    console.log(
+      'Mic seats:',
+      error
+    );
+
+    renderDefaultMicSeats();
+
+    return;
+
+  }
+
+  micSeats =
+    data || [];
+
+  renderMicSeats();
+
+}
+
+
+function renderDefaultMicSeats(){
+
+  micSeats =
+    Array.from(
+      {
+        length:8
+      },
+      (_,i) => ({
+        seat_number:i+1,
+        player_id:null,
+        is_active:false,
+        is_muted:false
       })
     );
 
-
-  const wrap=
-    $('gameCards');
-
-  wrap.className=
-    'game-cards '+
-    (
-      gameCardsState.length>1
-      ?'two'
-      :''
-    );
-
-
-  wrap.innerHTML=
-    gameCardsState
-      .map(
-        (state,ci)=>{
-
-          const c=
-            availableCards.find(
-              x=>
-                Number(x.id)===
-                Number(state.id)
-            );
-
-
-          if(!c)return '';
-
-
-          return `
-
-            <div
-              class="game-card"
-              id="gameCard-${ci}"
-            >
-
-              <div class="game-card-top">
-
-                <strong>
-                  CARD ${ci+1}
-                </strong>
-
-                <span
-                  class="card-win-tag hidden"
-                  id="cardWinTag-${ci}"
-                >
-                  WINNER
-                </span>
-
-              </div>
-
-
-              <div class="game-bingo-head">
-
-                <div>B</div>
-                <div>I</div>
-                <div>N</div>
-                <div>G</div>
-                <div>O</div>
-
-              </div>
-
-
-              <div class="game-board">
-
-                ${
-                  cardNumbers(c)
-                    .map(
-                      (v,i)=>`
-
-                        <button
-                          class="
-                            game-cell
-                            ${
-                              v==='FREE'
-                              ?'free marked'
-                              :''
-                            }
-                            ${colClass(i)}
-                          "
-                          data-card="${ci}"
-                          data-index="${i}"
-                          data-value="${escapeHtml(v)}"
-                          onclick="markGameCell(this)"
-                        >
-
-                          ${escapeHtml(v)}
-
-                        </button>
-
-                      `
-                    )
-                    .join('')
-                }
-
-              </div>
-
-            </div>
-
-          `;
-
-        }
-      ).join('');
+  renderMicSeats();
 
 }
 
 
-/* =========================
-   HISTORY
-========================= */
+function renderMicSeats(){
 
-function renderHistory(){
+  const box =
+    $('micSeats');
 
-  const h=
-    $('numberHistory');
+  box.innerHTML = '';
 
-  const last=
-    calledNumbers.slice(-6);
+  if(!micSeats.length){
 
-  h.innerHTML=
-    last.map(
-      n=>`
+    renderDefaultMicSeats();
 
-        <div class="history-pill">
-          ${n}
+    return;
+
+  }
+
+  micSeats.forEach(
+    seat => {
+
+      const active =
+        Boolean(
+          seat.is_active &&
+          seat.player_id
+        );
+
+      const username =
+        active
+          ? findPlayerName(
+              seat.player_id
+            )
+          : 'Open';
+
+      const div =
+        document.createElement('div');
+
+      div.className =
+        'mic-seat' +
+        (
+          active
+            ? ' active'
+            : ''
+        );
+
+      div.innerHTML = `
+
+        <div class="mic-seat-avatar">
+          ${
+            active
+              ? escapeHtml(
+                  username
+                    .charAt(0)
+                    .toUpperCase()
+                )
+              : '+'
+          }
         </div>
 
-      `
-    ).join('');
+        <div
+          style="
+            font-size:9px;
+            font-weight:800;
+            max-width:65px;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+          "
+        >
+          ${escapeHtml(username)}
+        </div>
 
-}
+        <div class="mic-seat-number">
+          Seat ${seat.seat_number}
+          ${
+            active && seat.is_muted
+              ? ' · muted'
+              : ''
+          }
+        </div>
 
+      `;
 
-/* =========================
-   PARTICIPANTS
-========================= */
-
-function renderParticipants(){
-
-  const list=
-    $('participantsList');
-
-  $('participantsCount')
-    .textContent=
-    participants.length;
-
-  list.innerHTML=
-    participants
-      .slice(0,12)
-      .map(p=>{
-
-        const name=
-          p.username||
-          p.name||
-          'Player';
-
-        return `
-
-          <div class="participant">
-
-            <div class="participant-avatar">
-              ${escapeHtml(
-                name
-                  .slice(0,1)
-                  .toUpperCase()
-              )}
-            </div>
-
-            <span class="participant-name">
-              ${escapeHtml(name)}
-            </span>
-
-          </div>
-
-        `;
-
-      }).join('');
-
-}
-
-
-/* =========================
-   MARK CARD
-========================= */
-
-function markGameCell(el){
-
-  const v=
-    el.dataset.value;
-
-  if(
-    v==='FREE'||
-    calledNumbers.includes(
-      Number(v)
-    )
-  ){
-
-    const ci=
-      Number(
-        el.dataset.card
-      );
-
-    const idx=
-      Number(
-        el.dataset.index
-      );
-
-    const state=
-      gameCardsState[ci];
-
-    if(
-      !state||
-      state.locked
-    )return;
-
-
-    el.classList.toggle(
-      'marked'
-    );
-
-
-    if(
-      el.classList.contains(
-        'marked'
-      )
-    ){
-
-      state.marked.add(idx);
-
-    }else{
-
-      state.marked.delete(idx);
+      box.appendChild(div);
 
     }
+  );
+
+}
+
+
+function findPlayerMic(playerId){
+
+  return micSeats.find(
+    seat =>
+      Number(seat.player_id) ===
+      Number(playerId) &&
+      seat.is_active
+  );
+
+}
+
+
+function toggleMic(){
+
+  if(!currentPlayerId){
+
+    showToast(
+      'Join the room first.'
+    );
+
+    return;
+
+  }
+
+  micJoined =
+    !micJoined;
+
+  $('micJoinBtn').textContent =
+    micJoined
+      ? 'Leave Mic'
+      : '🎙 Join Mic';
+
+  $('micJoinBtn')
+    .classList.toggle(
+      'active',
+      micJoined
+    );
+
+  if(micJoined){
+
+    occupyMicSeat();
+
+  }else{
+
+    leaveMicSeat();
 
   }
 
 }
 
 
-/* =========================
-   CALLER
-========================= */
+async function occupyMicSeat(){
 
-function startAutoCall(){
+  let seat =
+    micSeats.find(
+      item =>
+        !item.player_id ||
+        !item.is_active
+    );
+
+  if(!seat){
+
+    showToast(
+      'All mic seats are occupied.'
+    );
+
+    micJoined = false;
+
+    $('micJoinBtn').textContent =
+      '🎙 Join Mic';
+
+    $('micJoinBtn')
+      .classList.remove('active');
+
+    return;
+
+  }
+
+  try{
+
+    const {error} =
+      await supabaseClient
+        .from('RoomMic')
+        .update({
+          player_id:
+            currentPlayerId,
+
+          is_active:true,
+
+          is_muted:
+            micMuted,
+
+          updated_at:
+            new Date().toISOString()
+        })
+        .eq(
+          'id',
+          seat.id
+        );
+
+    if(error)
+      throw error;
+
+    await loadMicSeats();
+
+    broadcastMic(
+      'join'
+    );
+
+  }catch(error){
+
+    console.log(error);
+
+    showToast(
+      'Mic is currently unavailable.'
+    );
+
+  }
+
+}
+
+
+async function leaveMicSeat(){
+
+  try{
+
+    await supabaseClient
+      .from('RoomMic')
+      .update({
+        player_id:null,
+        is_active:false,
+        is_muted:false,
+        updated_at:
+          new Date().toISOString()
+      })
+      .eq(
+        'room_id',
+        currentRoomId
+      )
+      .eq(
+        'player_id',
+        currentPlayerId
+      );
+
+    await loadMicSeats();
+
+    broadcastMic(
+      'leave'
+    );
+
+  }catch(error){
+
+    console.log(error);
+
+  }
+
+}
+
+
+async function toggleMute(){
+
+  if(!micJoined){
+
+    showToast(
+      'Join a mic seat first.'
+    );
+
+    return;
+
+  }
+
+  micMuted =
+    !micMuted;
+
+  $('micMuteBtn').textContent =
+    micMuted
+      ? 'Mic Muted'
+      : 'Mic On';
+
+  $('micMuteBtn')
+    .classList.toggle(
+      'active',
+      !micMuted
+    );
+
+  try{
+
+    await supabaseClient
+      .from('RoomMic')
+      .update({
+        is_muted:
+          micMuted,
+
+        updated_at:
+          new Date().toISOString()
+      })
+      .eq(
+        'room_id',
+        currentRoomId
+      )
+      .eq(
+        'player_id',
+        currentPlayerId
+      );
+
+    await loadMicSeats();
+
+    broadcastMic(
+      'mute'
+    );
+
+  }catch(error){
+
+    console.log(error);
+
+  }
+
+}
+
+
+function broadcastMic(action){
+
+  if(!roomChannel)
+    return;
+
+  roomChannel.send({
+
+    type:'broadcast',
+
+    event:'mic',
+
+    payload:{
+      action,
+      player_id:
+        currentPlayerId
+    }
+
+  });
+
+}
+
+
+function handleMicBroadcast(){
+
+  loadMicSeats();
+
+}
+
+
+/* =========================================================
+   GAME
+========================================================= */
+
+async function startGame(){
 
   if(autoCallTimer){
 
@@ -1881,27 +4419,328 @@ function startAutoCall(){
       autoCallTimer
     );
 
+    autoCallTimer = null;
+
   }
 
-  autoCallTimer=
-    setInterval(
-      callNumber,
-      4000
+  showPage('gamePage');
+
+  gameFinished = false;
+
+  calledNumbers = [];
+
+  winners = [];
+
+  await loadRoomData();
+
+  renderGameCards();
+
+  renderHistory();
+
+  renderWinnerList();
+
+  renderParticipants();
+
+  const host =
+    getRoomHost();
+
+  if(
+    Number(host) ===
+    Number(currentPlayerId)
+  ){
+
+    setTimeout(
+      () => startAutoCall(),
+      1200
     );
 
-  setTimeout(
-    callNumber,
-    1000
+  }
+
+  await addPlayerGameXP();
+
+  await addRoomGameXP();
+
+}
+
+
+function getRoomHost(){
+
+  if(!participants.length)
+    return null;
+
+  const sorted =
+    [...participants]
+      .sort(
+        (a,b) =>
+          Number(
+            a.player_id ||
+            a.id ||
+            0
+          ) -
+          Number(
+            b.player_id ||
+            b.id ||
+            0
+          )
+      );
+
+  return Number(
+    sorted[0]?.player_id ||
+    sorted[0]?.id
   );
 
 }
 
 
-async function callNumber(){
+function renderGameCards(){
 
-  if(gameFinished)return;
+  const box =
+    $('gameCards');
 
-  const remaining=[];
+  box.innerHTML = '';
+
+  const myCards =
+    availableCards
+      .filter(
+        card =>
+          Number(card.player_id) ===
+          Number(currentPlayerId)
+      );
+
+  if(!myCards.length){
+
+    selectedCards.forEach(
+      card => {
+
+        renderOneGameCard(
+          card
+        );
+
+      }
+    );
+
+    return;
+
+  }
+
+  myCards.forEach(
+    card =>
+      renderOneGameCard(
+        card
+      )
+  );
+
+}
+
+
+function renderOneGameCard(card){
+
+  const numbers =
+    normalizeCardNumbers(
+      card.numbers
+    );
+
+  const wrapper =
+    document.createElement('div');
+
+  wrapper.className =
+    'game-card';
+
+  let cells = '';
+
+  for(let row=0;row<5;row++){
+
+    for(let col=0;col<5;col++){
+
+      const value =
+        numbers[row]?.[col] ??
+        '';
+
+      const free =
+        row === 2 &&
+        col === 2;
+
+      cells += `
+        <button
+          class="game-cell ${free ? 'free marked' : ''}"
+          data-value="${escapeHtml(value)}"
+          onclick="markGameCell(this)"
+        >
+          ${free ? 'FREE' : escapeHtml(value)}
+        </button>
+      `;
+
+    }
+
+  }
+
+  wrapper.innerHTML = `
+
+    <div class="game-bingo-head">
+
+      <div>B</div>
+      <div>I</div>
+      <div>N</div>
+      <div>G</div>
+      <div>O</div>
+
+    </div>
+
+    <div class="game-board">
+      ${cells}
+    </div>
+
+  `;
+
+  $('gameCards')
+    .appendChild(wrapper);
+
+}
+
+
+function renderHistory(){
+
+  const box =
+    $('history');
+
+  box.innerHTML = '';
+
+  calledNumbers
+    .slice(-12)
+    .reverse()
+    .forEach(
+      number => {
+
+        const span =
+          document.createElement('span');
+
+        span.textContent =
+          number;
+
+        box.appendChild(span);
+
+      }
+    );
+
+}
+
+
+function renderParticipants(){
+
+  const box =
+    $('gameParticipants');
+
+  box.innerHTML = '';
+
+  $('gameParticipantCount')
+    .textContent =
+      participants.length;
+
+  participants.forEach(
+    player => {
+
+      const username =
+        player.username ||
+        `Player ${player.player_id}`;
+
+      const row =
+        document.createElement('div');
+
+      row.className =
+        'winner-row';
+
+      row.innerHTML = `
+
+        <div class="rank">
+          •
+        </div>
+
+        <div style="flex:1">
+
+          <div
+            style="
+              font-size:11px;
+              font-weight:800;
+            "
+          >
+            ${escapeHtml(username)}
+          </div>
+
+          <div
+            style="
+              color:var(--muted);
+              font-size:8px;
+              margin-top:3px;
+            "
+          >
+            Level ${Number(player.level || 1)}
+          </div>
+
+        </div>
+
+      `;
+
+      box.appendChild(row);
+
+    }
+  );
+
+}
+
+
+function markGameCell(button){
+
+  button.classList.toggle(
+    'marked'
+  );
+
+}
+
+
+function startAutoCall(){
+
+  if(autoCallTimer)
+    clearInterval(autoCallTimer);
+
+  callNumber();
+
+  const speed =
+    selectedMode === 'fast'
+      ? 2200
+      : 4000;
+
+  autoCallTimer =
+    setInterval(
+      () => {
+
+        if(
+          gameFinished ||
+          winners.length >= 3
+        ){
+
+          clearInterval(
+            autoCallTimer
+          );
+
+          autoCallTimer = null;
+
+          return;
+
+        }
+
+        callNumber();
+
+      },
+      speed
+    );
+
+}
+
+
+function callNumber(){
+
+  const remaining =
+    [];
 
   for(
     let i=1;
@@ -1919,30 +4758,35 @@ async function callNumber(){
 
   }
 
-  if(!remaining.length)return;
+  if(!remaining.length)
+    return;
 
-  const n=
+  const number =
     remaining[
       Math.floor(
-        Math.random()*
+        Math.random() *
         remaining.length
       )
     ];
 
+  calledNumbers.push(
+    number
+  );
 
-  receiveNumber(n);
-
+  receiveNumber(
+    number
+  );
 
   if(roomChannel){
 
-    await roomChannel.send({
+    roomChannel.send({
 
       type:'broadcast',
 
       event:'number',
 
       payload:{
-        number:n
+        number
       }
 
     });
@@ -1952,284 +4796,339 @@ async function callNumber(){
 }
 
 
-function receiveNumber(n){
+function receiveNumber(number){
 
   if(
-    !calledNumbers.includes(n)
+    calledNumbers.includes(
+      number
+    ) === false
   ){
 
-    calledNumbers.push(n);
+    calledNumbers.push(
+      number
+    );
 
   }
 
-
-  const letter=
-    n<=15
-    ?'B'
-    :n<=30
-    ?'I'
-    :n<=45
-    ?'N'
-    :n<=60
-    ?'G'
-    :'O';
-
-
-  $('calledNumber')
-    .textContent=
-    letter+' '+n;
-
-
-  $('calledNumber')
-    .className=
-    'number col-'+
-    letter.toLowerCase();
-
-
-  $('callStatus')
-    .textContent=
-    'Number called — mark it on your card';
-
+  $('currentNumber').innerHTML =
+    `<span>${getBingoLetter(number)}</span>${number}`;
 
   renderHistory();
 
+  speakNumber(
+    number
+  );
 
   document
     .querySelectorAll(
       '.game-cell'
     )
-    .forEach(c=>{
+    .forEach(
+      cell => {
 
-      if(
-        Number(
-          c.dataset.value
-        )===n
-      ){
+        if(
+          Number(
+            cell.dataset.value
+          ) === number
+        ){
 
-        c.classList.add(
-          'called'
-        );
+          cell.classList.add(
+            'called'
+          );
+
+        }
 
       }
-
-    });
-
-
-  speakNumber(
-    letter,
-    n
-  );
+    );
 
 }
 
 
-function speakNumber(
-  letter,
-  n
-){
+function getBingoLetter(number){
+
+  if(number <= 15)
+    return 'B';
+
+  if(number <= 30)
+    return 'I';
+
+  if(number <= 45)
+    return 'N';
+
+  if(number <= 60)
+    return 'G';
+
+  return 'O';
+
+}
+
+
+function speakNumber(number){
+
+  if(
+    !('speechSynthesis' in window)
+  )
+    return;
 
   try{
 
-    if(
-      window.speechSynthesis
-    ){
+    window.speechSynthesis.cancel();
 
-      speechSynthesis.cancel();
+    const letter =
+      getBingoLetter(
+        number
+      );
 
-      const u=
-        new SpeechSynthesisUtterance(
-          letter+' '+n
-        );
+    const utterance =
+      new SpeechSynthesisUtterance(
+        `${letter} ${number}`
+      );
 
-      u.rate=.92;
-      u.pitch=1;
-      u.volume=.8;
+    utterance.rate =
+      0.9;
 
-      speechSynthesis.speak(u);
+    window.speechSynthesis.speak(
+      utterance
+    );
+
+  }catch{}
+
+}
+
+
+/* =========================================================
+   WINNER
+========================================================= */
+
+function isCardWin(cardElement){
+
+  const cells =
+    Array.from(
+      cardElement.querySelectorAll(
+        '.game-cell'
+      )
+    );
+
+  if(cells.length !== 25)
+    return false;
+
+  const marked =
+    cells.map(
+      cell =>
+        cell.classList.contains(
+          'marked'
+        )
+    );
+
+  for(let row=0;row<5;row++){
+
+    let complete = true;
+
+    for(let col=0;col<5;col++){
+
+      if(
+        !marked[row * 5 + col]
+      ){
+
+        complete = false;
+        break;
+
+      }
 
     }
 
-  }catch(e){}
+    if(complete)
+      return true;
+
+  }
+
+  for(let col=0;col<5;col++){
+
+    let complete = true;
+
+    for(let row=0;row<5;row++){
+
+      if(
+        !marked[row * 5 + col]
+      ){
+
+        complete = false;
+        break;
+
+      }
+
+    }
+
+    if(complete)
+      return true;
+
+  }
+
+  let diagonal = true;
+
+  for(let i=0;i<5;i++){
+
+    if(
+      !marked[i * 5 + i]
+    ){
+
+      diagonal = false;
+      break;
+
+    }
+
+  }
+
+  if(diagonal)
+    return true;
+
+  let reverseDiagonal = true;
+
+  for(let i=0;i<5;i++){
+
+    if(
+      !marked[
+        i * 5 + (4-i)
+      ]
+    ){
+
+      reverseDiagonal = false;
+      break;
+
+    }
+
+  }
+
+  return reverseDiagonal;
 
 }
 
 
-/* =========================
-   WIN CHECK
-========================= */
+function claimWinner(){
 
-function isCardWin(ci){
+  if(gameFinished)
+    return;
 
-  const state=
-    gameCardsState[ci];
-
-  if(!state)return false;
-
-  const m=
-    state.marked;
-
-  const lines=[];
-
-
-  for(
-    let r=0;
-    r<5;
-    r++
-  ){
-
-    lines.push(
-      [0,1,2,3,4]
-        .map(
-          c=>r*5+c
-        )
-    );
-
-  }
-
-
-  for(
-    let c=0;
-    c<5;
-    c++
-  ){
-
-    lines.push(
-      [0,1,2,3,4]
-        .map(
-          r=>r*5+c
-        )
-    );
-
-  }
-
-
-  lines.push(
-    [0,6,12,18,24],
-    [4,8,12,16,20],
-    [0,4,20,24],
-    [6,8,16,18]
-  );
-
-
-  return lines.some(
-    line=>
-      line.every(
-        i=>m.has(i)
+  const cards =
+    Array.from(
+      document.querySelectorAll(
+        '.game-card'
       )
-  );
-
-}
-
-
-/* =========================
-   WINNER
-========================= */
-
-async function claimWinner(){
-
-  if(gameFinished)return;
-
-
-  const ci=
-    gameCardsState.findIndex(
-      (_,i)=>
-        isCardWin(i)&&
-        !gameCardsState[i].locked
     );
 
+  let win = false;
 
-  if(ci<0){
+  cards.forEach(
+    card => {
+
+      if(
+        isCardWin(card)
+      ){
+
+        win = true;
+
+      }
+
+    }
+  );
+
+  if(!win){
 
     showToast(
-      'Not a Bingo yet. Complete a row, column, diagonal or corner pattern.'
+      'Your card is not Bingo yet.'
     );
 
     return;
 
   }
 
+  const already =
+    winners.some(
+      winner =>
+        Number(winner.player_id) ===
+        Number(currentPlayerId)
+    );
 
-  const position=
-    winners.length+1;
+  if(already)
+    return;
 
-
-  const payload={
+  const winner = {
 
     player_id:
       currentPlayerId,
 
-    name:
+    username:
       playerName,
 
-    position,
-
-    card_index:
-      ci
+    rank:
+      winners.length + 1
 
   };
 
-
-  winners.push(payload);
-
-  gameCardsState[ci]
-    .locked=true;
-
-
-  const card=
-    $('gameCard-'+ci);
-
-
-  if(card){
-
-    card.classList.add(
-      'locked'
-    );
-
-
-    const tag=
-      $('cardWinTag-'+ci);
-
-
-    if(tag){
-
-      tag.textContent=
-        position===1
-        ?'🥇 1ST'
-        :position===2
-        ?'🥈 2ND'
-        :'🥉 3RD';
-
-
-      tag.classList.remove(
-        'hidden'
-      );
-
-    }
-
-  }
-
+  winners.push(
+    winner
+  );
 
   renderWinnerList();
 
-
   if(roomChannel){
 
-    await roomChannel.send({
+    roomChannel.send({
 
       type:'broadcast',
 
       event:'winner',
 
-      payload
+      payload:{
+        winner
+      }
 
     });
 
   }
 
+  handleWinner(
+    winner
+  );
 
-  if(winners.length>=3){
+}
 
-    gameFinished=true;
+
+function handleWinner(winner){
+
+  const exists =
+    winners.some(
+      item =>
+        Number(item.player_id) ===
+        Number(winner.player_id)
+    );
+
+  if(!exists){
+
+    winners.push(
+      winner
+    );
+
+  }
+
+  renderWinnerList();
+
+  if(
+    Number(winner.player_id) ===
+    Number(currentPlayerId)
+  ){
+
+    showWinner(
+      winner
+    );
+
+  }
+
+  if(
+    winners.length >= 3
+  ){
+
+    gameFinished = true;
 
     if(autoCallTimer){
 
@@ -2237,219 +5136,115 @@ async function claimWinner(){
         autoCallTimer
       );
 
-      autoCallTimer=null;
+      autoCallTimer = null;
 
     }
 
-    $('gameStatus')
-      .textContent=
-      '3 winners found — match finished';
-
-
-    showToast(
-      '🏆 Match finished — 3 winners!'
-    );
-
-  }else{
-
-    $('gameStatus')
-      .textContent=
-      (
-        3-winners.length
-      )+
-      ' winner position'+
-      (
-        3-winners.length===1
-        ?''
-        :'s'
-      )+
-      ' remaining';
-
   }
 
 }
 
-
-/* =========================
-   WINNER LIST
-========================= */
 
 function renderWinnerList(){
 
-  const slots=[
-    null,
-    null,
-    null
-  ];
+  const box =
+    $('winnerList');
 
+  box.innerHTML = '';
 
-  winners
-    .slice(0,3)
-    .forEach(
-      (w,i)=>{
-        slots[i]=w;
-      }
-    );
+  if(!winners.length){
 
+    box.innerHTML = `
 
-  $('winnerCountText')
-    .textContent=
-    winners.length+
-    ' / 3';
+      <div
+        style="
+          color:var(--muted);
+          text-align:center;
+          padding:12px;
+          font-size:10px;
+        "
+      >
+        No winners yet
+      </div>
 
+    `;
 
-  $('winnerList').innerHTML=
-    slots.map(
-      (w,i)=>{
+    return;
 
-        if(!w){
+  }
 
-          return `
+  winners.forEach(
+    winner => {
 
-            <div class="winner-slot">
+      const row =
+        document.createElement(
+          'div'
+        );
 
-              <span class="winner-empty">
+      row.className =
+        'winner-row';
 
-                ${
-                  i===0
-                  ?'Waiting for 1st'
-                  :i===1
-                  ?'Waiting for 2nd'
-                  :'Waiting for 3rd'
-                }
+      row.innerHTML = `
 
-              </span>
+        <div class="rank">
+          ${winner.rank}
+        </div>
 
-            </div>
+        <div style="flex:1">
 
-          `;
-
-        }
-
-
-        const medal=
-          i===0
-          ?'🥇'
-          :i===1
-          ?'🥈'
-          :'🥉';
-
-
-        return `
-
-          <div class="winner-slot">
-
-            <span class="winner-medal">
-              ${medal}
-            </span>
-
-            <div class="winner-avatar">
-
-              ${
-                (w.name||'P')
-                  .slice(0,1)
-                  .toUpperCase()
-              }
-
-            </div>
-
-            <span class="winner-name">
-
-              ${escapeHtml(
-                w.name||
-                'Player'
-              )}
-
-            </span>
-
+          <div
+            style="
+              font-size:11px;
+              font-weight:900;
+            "
+          >
+            ${escapeHtml(
+              winner.username
+            )}
           </div>
 
-        `;
+          <div
+            style="
+              color:var(--muted);
+              font-size:8px;
+              margin-top:3px;
+            "
+          >
+            ${
+              winner.rank === 1
+                ? 'First Winner'
+                : winner.rank === 2
+                  ? 'Second Winner'
+                  : 'Third Winner'
+            }
+          </div>
 
-      }
-    ).join('');
+        </div>
 
-}
+      `;
 
+      box.appendChild(row);
 
-function handleWinner(payload){
-
-  if(!payload)return;
-
-
-  const exists=
-    winners.some(
-      w=>
-        Number(w.player_id)===
-        Number(payload.player_id)&&
-        Number(w.position)===
-        Number(payload.position)&&
-        Number(w.card_index)===
-        Number(payload.card_index)
-    );
-
-
-  if(!exists){
-
-    winners.push(payload);
-
-  }
-
-
-  renderWinnerList();
-
-
-  if(
-    Number(payload.player_id)!==
-    Number(currentPlayerId)
-  ){
-
-    showToast(
-      '🏆 '+
-      (
-        payload.name||
-        'A player'
-      )+
-      ' got Bingo!'
-    );
-
-  }
-
-
-  const ci=
-    Number(
-      payload.card_index
-    );
-
-
-  const card=
-    $('gameCard-'+ci);
-
-
-  if(
-    card&&
-    Number(payload.player_id)===
-    Number(currentPlayerId)
-  ){
-
-    card.classList.add(
-      'locked'
-    );
-
-  }
-
-}
-
-
-function showWinner(p){
-
-  showToast(
-    'BINGO! '+
-    (
-      p.name||
-      playerName
-    )
+    }
   );
+
+}
+
+
+function showWinner(winner){
+
+  $('winnerModalTitle')
+    .textContent =
+      `Winner #${winner.rank}`;
+
+  $('winnerModalText')
+    .textContent =
+      `Congratulations ${winner.username}!`;
+
+  $('winnerModal')
+    .classList.remove(
+      'hidden'
+    );
 
 }
 
@@ -2464,11 +5259,50 @@ function closeWinner(){
 }
 
 
-/* =========================
-   COPY ROOM
-========================= */
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function findPlayerName(playerId){
+
+  if(
+    Number(playerId) ===
+    Number(currentPlayerId)
+  ){
+
+    return playerName;
+
+  }
+
+  const player =
+    participants.find(
+      item =>
+        Number(
+          item.player_id ||
+          item.id
+        ) ===
+        Number(playerId)
+    );
+
+  return (
+    player?.username ||
+    `Player ${playerId}`
+  );
+
+}
+
 
 async function copyRoomCode(){
+
+  if(!roomCode){
+
+    showToast(
+      'Room code is not available.'
+    );
+
+    return;
+
+  }
 
   try{
 
@@ -2477,13 +5311,13 @@ async function copyRoomCode(){
     );
 
     showToast(
-      'Room code copied'
+      'Room code copied.'
     );
 
-  }catch(e){
+  }catch{
 
     showToast(
-      'Room code: '+roomCode
+      roomCode
     );
 
   }
@@ -2491,36 +5325,59 @@ async function copyRoomCode(){
 }
 
 
-/* =========================
+function giftComingSoon(){
+
+  showToast(
+    'Gift system will be added later.'
+  );
+
+}
+
+
+/* =========================================================
    CLEANUP
-========================= */
+========================================================= */
 
 window.addEventListener(
   'beforeunload',
-  ()=>{
+  async () => {
 
-    if(autoCallTimer){
+    if(
+      currentRoomId &&
+      currentPlayerId
+    ){
 
-      clearInterval(
-        autoCallTimer
-      );
+      try{
 
-    }
+        await supabaseClient
+          .from('RoomMic')
+          .update({
+            player_id:null,
+            is_active:false,
+            is_muted:false
+          })
+          .eq(
+            'room_id',
+            currentRoomId
+          )
+          .eq(
+            'player_id',
+            currentPlayerId
+          );
 
-    if(roomWaitingTimer){
-
-      clearInterval(
-        roomWaitingTimer
-      );
+      }catch{}
 
     }
 
     if(roomChannel){
 
-      supabaseClient
-        .removeChannel(
+      try{
+
+        supabaseClient.removeChannel(
           roomChannel
         );
+
+      }catch{}
 
     }
 
@@ -2528,12 +5385,38 @@ window.addEventListener(
 );
 
 
-/* =========================
-   START
-========================= */
+/* =========================================================
+   INIT
+========================================================= */
 
 renderFees();
 
+selectFee(
+  selectedEntryFee
+);
+
+selectMode(
+  selectedMode
+);
+
+selectCardCount(
+  selectedCardCount
+);
+
+updatePlayerXPUI();
+
+updateRoomXPUI();
+
+$('dailyXpDate').textContent =
+  new Date().toLocaleDateString(
+    [],
+    {
+      month:'short',
+      day:'numeric'
+    }
+  );
+
 </script>
+
 </body>
 </html>
