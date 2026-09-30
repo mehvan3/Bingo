@@ -1430,22 +1430,6 @@ async function confirmCardSelection(){
       ?data[0]
       :data;
 
-
-    /*
-      Prize Pool returned by the
-      secure server transaction.
-    */
-
-    if(result){
-
-      setPrizePool(
-        result.prize_pool||
-        0
-      );
-
-    }
-
-
     purchaseDone=true;
 
 
