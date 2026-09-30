@@ -2465,40 +2465,141 @@ button{
 <!-- =====================================================
      CARD SELECTION
 ===================================================== -->
-
 <section id="cardPage" class="page hidden">
 
   <div class="topbar">
 
-    <button class="back" onclick="showPage('roomPage')">
+    <button
+      class="back"
+      onclick="showPage('roomPage')"
+    >
       ‹
     </button>
 
     <div class="room-title">
       <strong>CHOOSE CARDS</strong>
-      <span>Select your Bingo cards</span>
+      <span>Select 1 or 2 cards</span>
     </div>
 
     <div style="width:40px"></div>
 
   </div>
 
+
   <div class="select-panel panel">
 
+    <!-- HEADER -->
+
     <div class="panel-head">
-      <strong>Your Cards</strong>
+
+      <div>
+        <strong>Your Cards</strong>
+
+        <div
+          style="
+            margin-top:4px;
+            font-size:10px;
+            color:var(--muted);
+          "
+        >
+          Choose from your 5 available cards
+        </div>
+      </div>
 
       <span>
         <span id="selectedCardsCount">0</span>
-        /
-        <span id="requiredCardsCount">1</span>
+        / 2
       </span>
+
     </div>
+
+
+    <!-- ENTRY INFO -->
+
+    <div
+      style="
+        margin:12px 0;
+        padding:12px;
+        border-radius:15px;
+        background:rgba(57,167,255,.07);
+        border:1px solid rgba(57,167,255,.12);
+      "
+    >
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          font-size:11px;
+        "
+      >
+
+        <span style="color:var(--muted)">
+          Entry Fee
+        </span>
+
+        <strong
+          id="cardEntryFee"
+          style="color:#fff"
+        >
+          0
+        </strong>
+
+      </div>
+
+
+      <div style="height:7px"></div>
+
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          font-size:11px;
+        "
+      >
+
+        <span style="color:var(--muted)">
+          Selected
+        </span>
+
+        <strong
+          id="cardSelectedAmount"
+          style="color:var(--blue)"
+        >
+          0 Coins
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- 5 AVAILABLE CARDS -->
 
     <div
       id="cardsList"
       class="cards-list"
     ></div>
+
+
+    <!-- INFO -->
+
+    <div
+      style="
+        margin-top:10px;
+        text-align:center;
+        font-size:10px;
+        color:var(--muted);
+      "
+    >
+      Select 1 or 2 cards to continue
+    </div>
+
+
+    <!-- CONFIRM -->
 
     <button
       id="confirmCardsBtn"
@@ -2512,8 +2613,6 @@ button{
   </div>
 
 </section>
-
-
 <!-- =====================================================
      GAME PAGE
 ===================================================== -->
