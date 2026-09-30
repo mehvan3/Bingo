@@ -4068,92 +4068,68 @@ function renderAvailableCards(){
 
 function toggleCard(cardId){
 
-  const existing =
+  const index =
     selectedCards.findIndex(
-      card => card.id === cardId
+      card => Number(card.id) === Number(cardId)
     );
 
+  // If already selected → unselect
+  if(index !== -1){
 
-  /* REMOVE */
+    selectedCards.splice(index, 1);
 
-  if(existing >= 0){
+  }else{
 
-    selectedCards.splice(
-      existing,
-      1
-    );
-
-  }
-
-
-  /* ADD */
-
-  else{
-
-    if(
-      selectedCards.length >= 2
-    ){
+    // Maximum 2 cards
+    if(selectedCards.length >= 2){
 
       showToast(
         'You can select maximum 2 cards.'
       );
 
       return;
-
     }
-
 
     const card =
       availableCards.find(
-        c => c.id === cardId
+        c => Number(c.id) === Number(cardId)
       );
 
+    if(!card){
 
-    if(card){
-
-      selectedCards.push(
-        card
+      showToast(
+        'Card not found.'
       );
 
+      return;
     }
 
+    selectedCards.push(card);
   }
 
-
-  /* COUNT */
+  // Update selected count
+  const count =
+    selectedCards.length;
 
   $('selectedCardsCount').textContent =
-    selectedCards.length;
+    count;
 
-
-  /* TOTAL PRICE */
-
+  // Calculate total payment
   const fee =
-    Number(
-      selectedEntryFee || 0
-    );
-
+    Number(selectedEntryFee || 0);
 
   const total =
-    fee *
-    selectedCards.length;
-
+    fee * count;
 
   $('cardSelectedAmount').textContent =
     `${money(total)} Coins`;
 
-
-  /* CONFIRM */
-
+  // Enable button for 1 or 2 cards
   $('confirmCardsBtn').disabled =
-    !(
-      selectedCards.length === 1 ||
-      selectedCards.length === 2
-    );
+    !(count === 1 || count === 2);
 
-
+  // Re-render cards
   renderAvailableCards();
-
 }
 
 /* =========================================================
