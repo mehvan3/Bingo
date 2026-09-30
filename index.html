@@ -74,50 +74,1741 @@
 const SUPABASE_URL='https://szmqbywztfgtyoemzgiq.supabase.co';
 const SUPABASE_KEY='sb_publishable_UcmJ964uYcedY4lp8iYxRA_PF3TSNNY';
 const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let roomCode='',currentRoomId=null,currentPlayerId=null,playerName='Mehvan',selectedEntryFee=100,selectedMode='solo',selectedCardCount=1,availableCards=[],selectedCards=[],calledNumbers=[],autoCallTimer=null,roomWaitingTimer=null,roomChannel=null,gameFinished=false,winners=[];
+
+/* =========================
+   GAME SETTINGS
+========================= */
+const OWNER_PERCENT=0.20;
+const PRIZE_PERCENT=0.80;
+
 const fees=[100,500,1000,5000,10000,25000,100000];
+
+let roomCode='';
+let currentRoomId=null;
+let currentPlayerId=null;
+let playerName='Mehvan';
+
+let selectedEntryFee=100;
+let selectedMode='solo';
+let selectedCardCount=1;
+
+let availableCards=[];
+let selectedCards=[];
+let calledNumbers=[];
+let autoCallTimer=null;
+let roomWaitingTimer=null;
+let roomChannel=null;
+let gameFinished=false;
+let winners=[];
+let participants=[];
+
+/* =========================
+   HELPERS
+========================= */
 const $=id=>document.getElementById(id);
-function money(n){return Number(n||0).toLocaleString()}
-function showPage(id){['homePage','roomPage','cardPage','gamePage'].forEach(x=>$(x).classList.toggle('hidden',x!==id));$('bottomNav').classList.toggle('hidden',id!=='homePage');window.scrollTo({top:0,behavior:'smooth'})}
-function navHome(btn){document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));btn.classList.add('active');showPage('homePage')}
-function backHome(){if(autoCallTimer){clearInterval(autoCallTimer);autoCallTimer=null}if(roomWaitingTimer){clearInterval(roomWaitingTimer);roomWaitingTimer=null}showPage('homePage')}
-function showToast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove('show'),2600)}
-function selectFee(f){selectedEntryFee=f;document.querySelectorAll('.fee-choice').forEach(b=>b.classList.toggle('active',Number(b.dataset.fee)===f));$('potText').textContent=money(f)+' COINS'}
-function selectMode(m){selectedMode=m;document.querySelectorAll('.mode-card').forEach(b=>b.classList.toggle('active',b.dataset.mode===m))}
-function selectCardCount(n){selectedCardCount=n;document.querySelectorAll('.cards-choice .choice').forEach(b=>b.classList.toggle('active',Number(b.dataset.count)===n))}
-function renderFees(){const g=$('feeGrid');g.innerHTML=fees.map(f=>`<button class="choice fee-choice ${f===selectedEntryFee?'active':''}" data-fee="${f}" onclick="selectFee(${f})">${f>=1000?(f/1000)+'K':f}<span class="unit">COINS</span></button>`).join('')}
-async function loadProfile(){if(!currentPlayerId)return;try{const {data,error}=await supabaseClient.rpc('get_player_profile',{p_player_id:currentPlayerId});if(error)throw error;const p=Array.isArray(data)?data[0]:data;if(!p)return;if(p.name)playerName=p.name;$('homePlayerName').textContent=playerName;$('homeAvatar').textContent=(playerName||'M').slice(0,1).toUpperCase();if(p.coin!=null)$('homeCoins').textContent=money(p.coin);if(p.level!=null)$('homeLevel').textContent='Level '+p.level}catch(e){console.warn('profile',e.message)}}
-async function playGame(){try{playerName=($('homePlayerName').textContent||'Mehvan').trim()||'Mehvan';showToast('Finding a game room...');const {data,error}=await supabaseClient.rpc('find_or_create_bingo_room',{p_entry_fee:selectedEntryFee});if(error)throw error;const room=Array.isArray(data)?data[0]:data;if(!room)throw new Error('Game Room could not be created.');currentRoomId=room.id;roomCode=room.room_code||'';$('roomText').textContent=roomCode;$('roomCodeBig').textContent=roomCode;$('roomFeeText').textContent=money(selectedEntryFee)+' COINS';$('roomPrizeText').textContent=money(selectedEntryFee)+' COINS';await createPlayer(currentRoomId);showPage('roomPage');loadRoomPlayers();setupRoomChannel();waitForRoomStart()}catch(error){console.error(error);showToast(error.message||'Could not start the game.')}}
-async function waitForRoomStart(){if(roomWaitingTimer)clearInterval(roomWaitingTimer);const checkRoom=async()=>{if(!currentRoomId)return;const {data,error}=await supabaseClient.from('Room').select('id,status,player_count,max_player').eq('id',currentRoomId).single();if(error){console.warn('room status',error.message);return}const count=Number(data.player_count||0),max=Number(data.max_player||25);$('playerCountText').textContent=count+' / '+max+' players';$('roomPrizeText').textContent=money(count*selectedEntryFee)+' COINS';const state=document.querySelector('.room-state');if(state)state.innerHTML=data.status==='playing'?'<i></i>STARTING':'<i></i>WAITING';const b=document.querySelector('.room-start');if(b){const ready=data.status==='playing'||count>=max;b.disabled=!ready;b.style.opacity=ready?'1':'.55';b.style.pointerEvents=ready?'auto':'none';b.innerHTML=ready?'CHOOSE BINGO CARD <svg class="icon sm" style="display:inline-block;vertical-align:middle;margin-left:5px" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>':'WAITING FOR PLAYERS...'}if(data.status==='playing'||count>=max){clearInterval(roomWaitingTimer);roomWaitingTimer=null;await loadRoomPlayers();showToast('Room is full. Choose your Bingo card.')}};await checkRoom();roomWaitingTimer=setInterval(checkRoom,2000)}
-async function createPlayer(roomId){const {data,error}=await supabaseClient.rpc('use_owner_player',{p_room_id:roomId});if(error)throw error;const p=Array.isArray(data)?data[0]:data;if(!p)throw new Error('Player could not be created.');currentPlayerId=p.id||p.player_id||null;await loadProfile()}
-async function loadRoomPlayers(){if(!currentRoomId)return;try{const {data,error}=await supabaseClient.rpc('get_room_players',{p_room_id:currentRoomId});if(error)throw error;const arr=Array.isArray(data)?data:[];participants=arr;$('playerCountText').textContent=arr.length+' / 25 players';$('roomPrizeText').textContent=money(arr.length*selectedEntryFee)+' COINS';$('playersList').innerHTML=arr.map((p,i)=>{const name=p.username||p.name||p.player_name||'Player '+(i+1);return `<div class="player-row"><div class="player-avatar">${name.slice(0,1).toUpperCase()}</div><div class="player-info"><strong>${escapeHtml(name)}</strong><small>${Number(p.player_id||p.id)===Number(currentPlayerId)?'You':'Ready to play'}</small></div><span class="ready">READY</span></div>`}).join('')||'<div style="padding:15px;text-align:center;color:#6f7898;font-size:10px">Waiting for players...</div>'}catch(e){console.warn(e.message)}}
-function escapeHtml(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
-function setupRoomChannel(){if(!currentRoomId||roomChannel)return;roomChannel=supabaseClient.channel('bingo-room-'+currentRoomId).on('broadcast',{event:'number'},({payload})=>{if(payload?.number)receiveNumber(payload.number)}).on('broadcast',{event:'winner'},({payload})=>{if(payload)handleWinner(payload)}).subscribe()}
-function openCardSelection(){showPage('cardPage');generateCards()}
-function generateNumbers(){const nums=[];const used=new Set();while(nums.length<24){const n=Math.floor(Math.random()*75)+1;if(!used.has(n)){used.add(n);nums.push(n)}}return nums}
-function generateCards(){availableCards=[1,2,3,4].map(id=>({id,numbers:generateNumbers()}));selectedCards=[];$('selectedCountLabel').textContent='0 selected';$('cardsList').innerHTML=availableCards.map(c=>`<button class="card-option" id="card-${c.id}" onclick="toggleCard(${c.id})"><div class="card-mini">${[...c.numbers.slice(0,12),0,...c.numbers.slice(12)].map((n,i)=>`<span class="${i===12?'h':''}">${i===12?'FREE':n}</span>`).join('')}</div><div class="card-name">CARD ${c.id}</div></button>`).join('')}
-function toggleCard(id){if(selectedCards.includes(id))selectedCards=selectedCards.filter(x=>x!==id);else if(selectedCards.length<selectedCardCount)selectedCards.push(id);else selectedCards=[...selectedCards.slice(1),id];document.querySelectorAll('.card-option').forEach(x=>x.classList.toggle('selected',selectedCards.includes(Number(x.id.replace('card-','')))));$('selectedCountLabel').textContent=selectedCards.length+' selected'}
-async function confirmCardSelection(){if(selectedCards.length<selectedCardCount){showToast('Select '+selectedCardCount+' card'+(selectedCardCount>1?'s':'')+' first.');return}try{for(const id of selectedCards){const c=availableCards.find(x=>x.id===id);try{await supabaseClient.rpc('save_bingo_card',{p_player_id:currentPlayerId,p_room_id:currentRoomId,p_numbers:c.numbers})}catch(e){console.warn('save_bingo_card',e.message)}}startGame()}catch(e){console.error(e);showToast(e.message||'Could not start card.')}}
-function cardNumbers(c){return [...c.numbers.slice(0,12),'FREE',...c.numbers.slice(12)]}
-function colClass(i){return ['col-b','col-i','col-n','col-g','col-o'][Math.floor(i/5)]}
-function startGame(){showPage('gamePage');$('gameRoomCode').textContent=roomCode;$('potText').textContent=money(selectedEntryFee)+' COINS';calledNumbers=[];gameFinished=false;winners=[];renderGameCards();renderWinnerList();renderHistory();renderParticipants();$('gameStatus').textContent='Mark called numbers on your card';const ids=participants.map(p=>Number(p.player_id||p.id)).filter(Boolean);const host=Math.min(...ids);if(currentPlayerId&&Number(currentPlayerId)===host)startAutoCall()}
-let gameCardsState=[],participants=[];
-function renderGameCards(){gameCardsState=selectedCards.map(id=>({id,locked:false,marked:new Set([12])}));const wrap=$('gameCards');wrap.className='game-cards '+(gameCardsState.length>1?'two':'');wrap.innerHTML=gameCardsState.map((state,ci)=>{const c=availableCards.find(x=>x.id===state.id);return `<div class="game-card" id="gameCard-${ci}"><div class="game-card-top"><strong>CARD ${ci+1}</strong><span class="card-win-tag hidden" id="cardWinTag-${ci}">WINNER</span></div><div class="game-bingo-head"><div>B</div><div>I</div><div>N</div><div>G</div><div>O</div></div><div class="game-board">${cardNumbers(c).map((v,i)=>`<button class="game-cell ${v==='FREE'?'free marked':''} ${colClass(i)}" data-card="${ci}" data-index="${i}" data-value="${v}" onclick="markGameCell(this)">${v}</button>`).join('')}</div></div>`}).join('')}
-function renderHistory(){const h=$('numberHistory');const last=calledNumbers.slice(-6);h.innerHTML=last.map(n=>`<div class="history-pill">${n}</div>`).join('')}
-function renderParticipants(){const list=$('participantsList');$('participantsCount').textContent=participants.length;list.innerHTML=participants.slice(0,12).map(p=>{const name=p.username||p.name||'Player';return `<div class="participant"><div class="participant-avatar">${name.slice(0,1).toUpperCase()}</div><span class="participant-name">${escapeHtml(name)}</span></div>`}).join('')}
-function markGameCell(el){const v=el.dataset.value;if(v==='FREE'||calledNumbers.includes(Number(v))){const ci=Number(el.dataset.card),idx=Number(el.dataset.index),state=gameCardsState[ci];if(!state||state.locked)return;el.classList.toggle('marked');if(el.classList.contains('marked'))state.marked.add(idx);else state.marked.delete(idx)}}
-function startAutoCall(){if(autoCallTimer)clearInterval(autoCallTimer);autoCallTimer=setInterval(callNumber,4000);setTimeout(callNumber,1000)}
-async function callNumber(){if(gameFinished)return;const remaining=[];for(let i=1;i<=75;i++)if(!calledNumbers.includes(i))remaining.push(i);if(!remaining.length)return;const n=remaining[Math.floor(Math.random()*remaining.length)];receiveNumber(n);if(roomChannel)await roomChannel.send({type:'broadcast',event:'number',payload:{number:n}})}
-function receiveNumber(n){if(!calledNumbers.includes(n))calledNumbers.push(n);const letter=n<=15?'B':n<=30?'I':n<=45?'N':n<=60?'G':'O';$('calledNumber').textContent=letter+' '+n;$('calledNumber').className='number col-'+letter.toLowerCase();$('callStatus').textContent='Number called — mark it on your card';renderHistory();document.querySelectorAll('.game-cell').forEach(c=>{if(Number(c.dataset.value)===n)c.classList.add('called')});speakNumber(letter,n)}
-function speakNumber(letter,n){try{if(window.speechSynthesis){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(letter+' '+n);u.rate=.92;u.pitch=1;u.volume=.8;speechSynthesis.speak(u)}}catch(e){}}
-function isCardWin(ci){const state=gameCardsState[ci];if(!state)return false;const m=state.marked;const lines=[];for(let r=0;r<5;r++)lines.push([0,1,2,3,4].map(c=>r*5+c));for(let c=0;c<5;c++)lines.push([0,1,2,3,4].map(r=>r*5+c));lines.push([0,6,12,18,24],[4,8,12,16,20],[0,4,20,24],[6,8,16,18]);return lines.some(line=>line.every(i=>m.has(i)))}
-async function claimWinner(){if(gameFinished)return;const ci=gameCardsState.findIndex((_,i)=>isCardWin(i)&&!gameCardsState[i].locked);if(ci<0){showToast('Not a Bingo yet. Complete a row, column, diagonal or corner pattern.');return}const position=winners.length+1;const payload={player_id:currentPlayerId,name:playerName,position,card_index:ci};winners.push(payload);gameCardsState[ci].locked=true;const card=$('gameCard-'+ci);if(card){card.classList.add('locked');const tag=$('cardWinTag-'+ci);if(tag){tag.textContent=position===1?'🥇 1ST':position===2?'🥈 2ND':'🥉 3RD';tag.classList.remove('hidden')}}renderWinnerList();if(position===1||position===2||position===3)showToast(position===1?'🥇 You are King!':position===2?'🥈 You are King!':'🥉 You are King!');if(roomChannel)await roomChannel.send({type:'broadcast',event:'winner',payload});if(winners.length>=3){gameFinished=true;if(autoCallTimer){clearInterval(autoCallTimer);autoCallTimer=null}$('gameStatus').textContent='3 winners found — match finished';showToast('🏆 Match finished — 3 winners!')}else{$('gameStatus').textContent=(3-winners.length)+' winner position'+(3-winners.length===1?'':'s')+' remaining'}}
-function renderWinnerList(){const slots=[null,null,null];winners.slice(0,3).forEach((w,i)=>slots[i]=w);$('winnerCountText').textContent=winners.length+' / 3';$('winnerList').innerHTML=slots.map((w,i)=>{if(!w)return `<div class="winner-slot"><span class="winner-empty">${i===0?'Waiting for 1st':i===1?'Waiting for 2nd':'Waiting for 3rd'}</span></div>`;const medal=i===0?'🥇':i===1?'🥈':'🥉';return `<div class="winner-slot"><span class="winner-medal">${medal}</span><div class="winner-avatar">${(w.name||'P').slice(0,1).toUpperCase()}</div><span class="winner-name">${escapeHtml(w.name||'Player')}</span></div>`}).join('')}
-function handleWinner(payload){if(!payload||winners.some(w=>w.player_id===payload.player_id&&w.position===payload.position&&w.card_index===payload.card_index))winners.push(payload);renderWinnerList();if(payload.player_id!==currentPlayerId)showToast('🏆 '+(payload.name||'A player')+' got Bingo!');const ci=Number(payload.card_index);const card=$('gameCard-'+ci);if(card&&payload.player_id===currentPlayerId){card.classList.add('locked')}}
-function showWinner(p){showToast('BINGO! '+(p.name||playerName))}
-function closeWinner(){$('winnerModal').classList.add('hidden')}
-window.addEventListener('beforeunload',()=>{if(autoCallTimer)clearInterval(autoCallTimer);if(roomWaitingTimer)clearInterval(roomWaitingTimer);if(roomChannel)supabaseClient.removeChannel(roomChannel)});
+
+function money(n){
+  return Number(n||0).toLocaleString();
+}
+
+/*
+  TOTAL:
+  number of real purchased cards × entry fee
+
+  OWNER:
+  20% of total
+
+  PRIZE:
+  80% of total
+*/
+function calculatePrizePool(totalCards,entryFee=selectedEntryFee){
+  const cards=Math.max(0,Number(totalCards||0));
+  const fee=Math.max(0,Number(entryFee||0));
+
+  const total=cards*fee;
+  const owner=Math.floor(total*OWNER_PERCENT);
+  const prizePool=total-owner;
+
+  return {
+    cards,
+    fee,
+    total,
+    owner,
+    prizePool
+  };
+}
+
+/*
+  Only Prize Pool is shown to players.
+  Owner amount is NEVER displayed.
+*/
+function updatePrizePool(totalCards){
+  const result=calculatePrizePool(totalCards,selectedEntryFee);
+
+  if($('roomPrizeText')){
+    $('roomPrizeText').textContent=money(result.prizePool)+' COINS';
+  }
+
+  if($('potText')){
+    $('potText').textContent=money(result.prizePool)+' COINS';
+  }
+
+  return result;
+}
+
+/*
+  Local room card counter.
+
+  This is used for UI calculation until the secure
+  Supabase payment RPC is connected.
+*/
+function getLocalRoomCardCount(){
+  let total=0;
+
+  participants.forEach(p=>{
+    const n=Number(
+      p.card_count ??
+      p.cards_count ??
+      p.selected_cards ??
+      p.cardCount ??
+      1
+    );
+
+    total+=Math.max(1,n);
+  });
+
+  if(total<=0 && currentPlayerId){
+    total=selectedCardCount;
+  }
+
+  return total;
+}
+
+function showPage(id){
+  ['homePage','roomPage','cardPage','gamePage']
+    .forEach(x=>$(x).classList.toggle('hidden',x!==id));
+
+  $('bottomNav').classList.toggle('hidden',id!=='homePage');
+
+  window.scrollTo({
+    top:0,
+    behavior:'smooth'
+  });
+}
+
+function navHome(btn){
+  document.querySelectorAll('.nav')
+    .forEach(x=>x.classList.remove('active'));
+
+  btn.classList.add('active');
+  showPage('homePage');
+}
+
+function backHome(){
+  if(autoCallTimer){
+    clearInterval(autoCallTimer);
+    autoCallTimer=null;
+  }
+
+  if(roomWaitingTimer){
+    clearInterval(roomWaitingTimer);
+    roomWaitingTimer=null;
+  }
+
+  showPage('homePage');
+}
+
+function showToast(msg){
+  const t=$('toast');
+
+  t.textContent=msg;
+  t.classList.add('show');
+
+  clearTimeout(window.__toast);
+
+  window.__toast=setTimeout(()=>{
+    t.classList.remove('show');
+  },2600);
+}
+
+/* =========================
+   HOME SETTINGS
+========================= */
+function selectFee(f){
+  selectedEntryFee=Number(f);
+
+  document.querySelectorAll('.fee-choice')
+    .forEach(b=>{
+      b.classList.toggle(
+        'active',
+        Number(b.dataset.fee)===selectedEntryFee
+      );
+    });
+
+  /*
+    Do NOT show the entry fee as Prize Pool.
+    Pool becomes 0 until real cards enter the room.
+  */
+  if($('potText')){
+    $('potText').textContent='0 COINS';
+  }
+
+  if($('roomPrizeText')){
+    $('roomPrizeText').textContent='0 COINS';
+  }
+}
+
+function selectMode(m){
+  selectedMode=m;
+
+  document.querySelectorAll('.mode-card')
+    .forEach(b=>{
+      b.classList.toggle(
+        'active',
+        b.dataset.mode===m
+      );
+    });
+}
+
+function selectCardCount(n){
+  selectedCardCount=Number(n);
+
+  document.querySelectorAll('.cards-choice .choice')
+    .forEach(b=>{
+      b.classList.toggle(
+        'active',
+        Number(b.dataset.count)===selectedCardCount
+      );
+    });
+}
+
+function renderFees(){
+  const g=$('feeGrid');
+
+  g.innerHTML=fees.map(f=>`
+    <button
+      class="choice fee-choice ${f===selectedEntryFee?'active':''}"
+      data-fee="${f}"
+      onclick="selectFee(${f})"
+    >
+      ${f>=1000?(f/1000)+'K':f}
+      <span class="unit">COINS</span>
+    </button>
+  `).join('');
+}
+
+/* =========================
+   PROFILE
+========================= */
+async function loadProfile(){
+  if(!currentPlayerId)return;
+
+  try{
+    const {
+      data,
+      error
+    }=await supabaseClient.rpc(
+      'get_player_profile',
+      {
+        p_player_id:currentPlayerId
+      }
+    );
+
+    if(error)throw error;
+
+    const p=Array.isArray(data)?data[0]:data;
+
+    if(!p)return;
+
+    if(p.name){
+      playerName=p.name;
+    }
+
+    $('homePlayerName').textContent=playerName;
+
+    $('homeAvatar').textContent=
+      (playerName||'M')
+      .slice(0,1)
+      .toUpperCase();
+
+    if(p.coin!=null){
+      $('homeCoins').textContent=money(p.coin);
+    }
+
+    if(p.level!=null){
+      $('homeLevel').textContent='Level '+p.level;
+    }
+
+  }catch(e){
+    console.warn('profile',e.message);
+  }
+}
+
+/* =========================
+   CREATE / FIND ROOM
+========================= */
+async function playGame(){
+
+  try{
+
+    playerName=
+      ($('homePlayerName').textContent||'Mehvan')
+      .trim()||'Mehvan';
+
+    showToast('Finding a game room...');
+
+    const {
+      data,
+      error
+    }=await supabaseClient.rpc(
+      'find_or_create_bingo_room',
+      {
+        p_entry_fee:selectedEntryFee
+      }
+    );
+
+    if(error)throw error;
+
+    const room=Array.isArray(data)?data[0]:data;
+
+    if(!room){
+      throw new Error(
+        'Game Room could not be created.'
+      );
+    }
+
+    currentRoomId=room.id;
+    roomCode=room.room_code||'';
+
+    $('roomText').textContent=roomCode;
+    $('roomCodeBig').textContent=roomCode;
+
+    $('roomFeeText').textContent=
+      money(selectedEntryFee)+' COINS';
+
+    /*
+      IMPORTANT:
+      New room starts with zero Prize Pool.
+    */
+    $('roomPrizeText').textContent='0 COINS';
+
+    await createPlayer(currentRoomId);
+
+    showPage('roomPage');
+
+    await loadRoomPlayers();
+
+    setupRoomChannel();
+
+    waitForRoomStart();
+
+  }catch(error){
+
+    console.error(error);
+
+    showToast(
+      error.message||
+      'Could not start the game.'
+    );
+  }
+}
+
+/* =========================
+   WAIT FOR ROOM
+========================= */
+async function waitForRoomStart(){
+
+  if(roomWaitingTimer){
+    clearInterval(roomWaitingTimer);
+  }
+
+  const checkRoom=async()=>{
+
+    if(!currentRoomId)return;
+
+    const {
+      data,
+      error
+    }=await supabaseClient
+      .from('Room')
+      .select(
+        'id,status,player_count,max_player'
+      )
+      .eq('id',currentRoomId)
+      .single();
+
+    if(error){
+      console.warn(
+        'room status',
+        error.message
+      );
+      return;
+    }
+
+    const count=
+      Number(data.player_count||0);
+
+    const max=
+      Number(data.max_player||25);
+
+    $('playerCountText').textContent=
+      count+' / '+max+' players';
+
+    /*
+      Prize Pool is NOT based on player count.
+
+      It will be updated when actual cards
+      are entered into the room.
+    */
+    const totalCards=getLocalRoomCardCount();
+
+    if(totalCards>0){
+      updatePrizePool(totalCards);
+    }
+
+    const state=
+      document.querySelector('.room-state');
+
+    if(state){
+      state.innerHTML=
+        data.status==='playing'
+        ?'<i></i>STARTING'
+        :'<i></i>WAITING';
+    }
+
+    const b=
+      document.querySelector('.room-start');
+
+    if(b){
+
+      const ready=
+        data.status==='playing'||
+        count>=max;
+
+      b.disabled=!ready;
+
+      b.style.opacity=
+        ready?'1':'.55';
+
+      b.style.pointerEvents=
+        ready?'auto':'none';
+
+      b.innerHTML=
+        ready
+        ?'CHOOSE BINGO CARD <svg class="icon sm" style="display:inline-block;vertical-align:middle;margin-left:5px" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>'
+        :'WAITING FOR PLAYERS...';
+    }
+
+    if(
+      data.status==='playing'||
+      count>=max
+    ){
+
+      clearInterval(roomWaitingTimer);
+      roomWaitingTimer=null;
+
+      await loadRoomPlayers();
+
+      showToast(
+        'Room is full. Choose your Bingo card.'
+      );
+    }
+
+  };
+
+  await checkRoom();
+
+  roomWaitingTimer=
+    setInterval(checkRoom,2000);
+}
+
+/* =========================
+   CREATE PLAYER
+========================= */
+async function createPlayer(roomId){
+
+  const {
+    data,
+    error
+  }=await supabaseClient.rpc(
+    'use_owner_player',
+    {
+      p_room_id:roomId
+    }
+  );
+
+  if(error)throw error;
+
+  const p=
+    Array.isArray(data)
+    ?data[0]
+    :data;
+
+  if(!p){
+    throw new Error(
+      'Player could not be created.'
+    );
+  }
+
+  currentPlayerId=
+    p.id||
+    p.player_id||
+    null;
+
+  await loadProfile();
+}
+
+/* =========================
+   ROOM PLAYERS
+========================= */
+async function loadRoomPlayers(){
+
+  if(!currentRoomId)return;
+
+  try{
+
+    const {
+      data,
+      error
+    }=await supabaseClient.rpc(
+      'get_room_players',
+      {
+        p_room_id:currentRoomId
+      }
+    );
+
+    if(error)throw error;
+
+    const arr=
+      Array.isArray(data)
+      ?data
+      :[];
+
+    participants=arr;
+
+    $('playerCountText').textContent=
+      arr.length+' / 25 players';
+
+    /*
+      IMPORTANT:
+      Do NOT use arr.length × entry fee.
+
+      Prize Pool is based on actual number
+      of cards entered.
+    */
+    const totalCards=getLocalRoomCardCount();
+
+    if(totalCards>0){
+      updatePrizePool(totalCards);
+    }else{
+      $('roomPrizeText').textContent=
+        '0 COINS';
+    }
+
+    $('playersList').innerHTML=
+      arr.map((p,i)=>{
+
+        const name=
+          p.username||
+          p.name||
+          p.player_name||
+          'Player '+(i+1);
+
+        return `
+          <div class="player-row">
+            <div class="player-avatar">
+              ${name.slice(0,1).toUpperCase()}
+            </div>
+
+            <div class="player-info">
+              <strong>
+                ${escapeHtml(name)}
+              </strong>
+
+              <small>
+                ${
+                  Number(
+                    p.player_id||p.id
+                  )===Number(currentPlayerId)
+                  ?'You'
+                  :'Ready to play'
+                }
+              </small>
+            </div>
+
+            <span class="ready">
+              READY
+            </span>
+          </div>
+        `;
+
+      }).join('')||
+
+      `<div style="padding:15px;text-align:center;color:#6f7898;font-size:10px">
+        Waiting for players...
+      </div>`;
+
+  }catch(e){
+
+    console.warn(e.message);
+
+  }
+}
+
+function escapeHtml(s){
+
+  return String(s).replace(
+    /[&<>'"]/g,
+    c=>({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      "'":'&#39;',
+      '"':'&quot;'
+    }[c])
+  );
+
+}
+
+/* =========================
+   REALTIME ROOM
+========================= */
+function setupRoomChannel(){
+
+  if(!currentRoomId||roomChannel)return;
+
+  roomChannel=
+    supabaseClient
+      .channel(
+        'bingo-room-'+currentRoomId
+      )
+
+      .on(
+        'broadcast',
+        {event:'number'},
+        ({payload})=>{
+          if(payload?.number){
+            receiveNumber(
+              payload.number
+            );
+          }
+        }
+      )
+
+      .on(
+        'broadcast',
+        {event:'winner'},
+        ({payload})=>{
+          if(payload){
+            handleWinner(payload);
+          }
+        }
+      )
+
+      .on(
+        'broadcast',
+        {event:'card-entry'},
+        ({payload})=>{
+          if(payload){
+            handleCardEntry(payload);
+          }
+        }
+      )
+
+      .subscribe();
+}
+
+/* =========================
+   CARD SELECTION
+========================= */
+function openCardSelection(){
+
+  showPage('cardPage');
+
+  generateCards();
+}
+
+function generateNumbers(){
+
+  const nums=[];
+  const used=new Set();
+
+  while(nums.length<24){
+
+    const n=
+      Math.floor(
+        Math.random()*75
+      )+1;
+
+    if(!used.has(n)){
+
+      used.add(n);
+      nums.push(n);
+
+    }
+  }
+
+  return nums;
+}
+
+function generateCards(){
+
+  /*
+    Keep 4 available cards for now.
+    Later we can connect the 125 DB cards.
+  */
+  availableCards=[
+    1,2,3,4
+  ].map(id=>({
+    id,
+    numbers:generateNumbers()
+  }));
+
+  selectedCards=[];
+
+  $('selectedCountLabel').textContent=
+    '0 selected';
+
+  $('cardsList').innerHTML=
+    availableCards.map(c=>`
+
+      <button
+        class="card-option"
+        id="card-${c.id}"
+        onclick="toggleCard(${c.id})"
+      >
+
+        <div class="card-mini">
+
+          ${
+            [
+              ...c.numbers.slice(0,12),
+              0,
+              ...c.numbers.slice(12)
+            ]
+            .map((n,i)=>`
+
+              <span
+                class="${i===12?'h':''}"
+              >
+                ${i===12?'FREE':n}
+              </span>
+
+            `)
+            .join('')
+          }
+
+        </div>
+
+        <div class="card-name">
+          CARD ${c.id}
+        </div>
+
+      </button>
+
+    `).join('');
+}
+
+function toggleCard(id){
+
+  if(selectedCards.includes(id)){
+
+    selectedCards=
+      selectedCards.filter(
+        x=>x!==id
+      );
+
+  }else if(
+    selectedCards.length<
+    selectedCardCount
+  ){
+
+    selectedCards.push(id);
+
+  }else{
+
+    selectedCards=[
+      ...selectedCards.slice(1),
+      id
+    ];
+
+  }
+
+  document
+    .querySelectorAll('.card-option')
+    .forEach(x=>{
+
+      x.classList.toggle(
+        'selected',
+        selectedCards.includes(
+          Number(
+            x.id.replace('card-','')
+          )
+        )
+      );
+
+    });
+
+  $('selectedCountLabel').textContent=
+    selectedCards.length+
+    ' selected';
+}
+
+/* =========================
+   CARD ENTRY
+========================= */
+async function confirmCardSelection(){
+
+  if(
+    selectedCards.length<
+    selectedCardCount
+  ){
+
+    showToast(
+      'Select '+
+      selectedCardCount+
+      ' card'+
+      (selectedCardCount>1?'s':'')+
+      ' first.'
+    );
+
+    return;
+  }
+
+  try{
+
+    /*
+      Save selected cards.
+    */
+    for(const id of selectedCards){
+
+      const c=
+        availableCards.find(
+          x=>x.id===id
+        );
+
+      if(!c)continue;
+
+      try{
+
+        await supabaseClient.rpc(
+          'save_bingo_card',
+          {
+            p_player_id:currentPlayerId,
+            p_room_id:currentRoomId,
+            p_numbers:c.numbers
+          }
+        );
+
+      }catch(e){
+
+        console.warn(
+          'save_bingo_card',
+          e.message
+        );
+
+      }
+    }
+
+    /*
+      Update local player card count.
+    */
+    const me=
+      participants.find(
+        p=>Number(
+          p.player_id||p.id
+        )===Number(currentPlayerId)
+      );
+
+    if(me){
+      me.card_count=
+        selectedCardCount;
+    }else{
+
+      participants.push({
+        player_id:currentPlayerId,
+        username:playerName,
+        card_count:selectedCardCount
+      });
+
+    }
+
+    /*
+      Broadcast card entry so other players
+      can update the displayed Prize Pool.
+    */
+    if(roomChannel){
+
+      await roomChannel.send({
+        type:'broadcast',
+        event:'card-entry',
+        payload:{
+          player_id:currentPlayerId,
+          card_count:selectedCardCount
+        }
+      });
+
+    }
+
+    /*
+      Calculate Prize Pool:
+      cards × entry fee × 80%
+    */
+    const totalCards=
+      getLocalRoomCardCount();
+
+    updatePrizePool(totalCards);
+
+    startGame();
+
+  }catch(e){
+
+    console.error(e);
+
+    showToast(
+      e.message||
+      'Could not start card.'
+    );
+
+  }
+}
+
+function handleCardEntry(payload){
+
+  if(!payload)return;
+
+  const playerId=
+    Number(payload.player_id);
+
+  const cardCount=
+    Math.max(
+      1,
+      Number(payload.card_count||1)
+    );
+
+  const existing=
+    participants.find(
+      p=>Number(
+        p.player_id||p.id
+      )===playerId
+    );
+
+  if(existing){
+
+    existing.card_count=
+      cardCount;
+
+  }else{
+
+    participants.push({
+      player_id:playerId,
+      card_count:cardCount,
+      username:
+        playerId===Number(currentPlayerId)
+        ?playerName
+        :'Player'
+    });
+
+  }
+
+  const totalCards=
+    getLocalRoomCardCount();
+
+  updatePrizePool(totalCards);
+}
+
+/* =========================
+   GAME
+========================= */
+function cardNumbers(c){
+
+  return [
+    ...c.numbers.slice(0,12),
+    'FREE',
+    ...c.numbers.slice(12)
+  ];
+
+}
+
+function colClass(i){
+
+  return [
+    'col-b',
+    'col-i',
+    'col-n',
+    'col-g',
+    'col-o'
+  ][Math.floor(i/5)];
+
+}
+
+function startGame(){
+
+  showPage('gamePage');
+
+  $('gameRoomCode').textContent=
+    roomCode;
+
+  /*
+    NEVER show Entry Fee as the pot.
+  */
+  const totalCards=
+    getLocalRoomCardCount();
+
+  updatePrizePool(totalCards);
+
+  calledNumbers=[];
+
+  gameFinished=false;
+
+  winners=[];
+
+  renderGameCards();
+
+  renderWinnerList();
+
+  renderHistory();
+
+  renderParticipants();
+
+  $('gameStatus').textContent=
+    'Mark called numbers on your card';
+
+  const ids=
+    participants
+      .map(
+        p=>Number(
+          p.player_id||p.id
+        )
+      )
+      .filter(Boolean);
+
+  if(ids.length){
+
+    const host=
+      Math.min(...ids);
+
+    if(
+      currentPlayerId&&
+      Number(currentPlayerId)===host
+    ){
+      startAutoCall();
+    }
+
+  }
+
+}
+
+/* =========================
+   GAME CARDS
+========================= */
+let gameCardsState=[];
+
+function renderGameCards(){
+
+  gameCardsState=
+    selectedCards.map(id=>({
+      id,
+      locked:false,
+      marked:new Set([12])
+    }));
+
+  const wrap=
+    $('gameCards');
+
+  wrap.className=
+    'game-cards '+
+    (
+      gameCardsState.length>1
+      ?'two'
+      :''
+    );
+
+  wrap.innerHTML=
+    gameCardsState.map(
+      (state,ci)=>{
+
+        const c=
+          availableCards.find(
+            x=>x.id===state.id
+          );
+
+        return `
+
+          <div
+            class="game-card"
+            id="gameCard-${ci}"
+          >
+
+            <div class="game-card-top">
+
+              <strong>
+                CARD ${ci+1}
+              </strong>
+
+              <span
+                class="card-win-tag hidden"
+                id="cardWinTag-${ci}"
+              >
+                WINNER
+              </span>
+
+            </div>
+
+            <div class="game-bingo-head">
+              <div>B</div>
+              <div>I</div>
+              <div>N</div>
+              <div>G</div>
+              <div>O</div>
+            </div>
+
+            <div class="game-board">
+
+              ${
+                cardNumbers(c)
+                .map(
+                  (v,i)=>`
+
+                    <button
+                      class="
+                        game-cell
+                        ${v==='FREE'?'free marked':''}
+                        ${colClass(i)}
+                      "
+                      data-card="${ci}"
+                      data-index="${i}"
+                      data-value="${v}"
+                      onclick="markGameCell(this)"
+                    >
+                      ${v}
+                    </button>
+
+                  `
+                )
+                .join('')
+              }
+
+            </div>
+
+          </div>
+
+        `;
+
+      }
+    ).join('');
+}
+
+/* =========================
+   GAME HISTORY
+========================= */
+function renderHistory(){
+
+  const h=
+    $('numberHistory');
+
+  const last=
+    calledNumbers.slice(-6);
+
+  h.innerHTML=
+    last.map(
+      n=>`
+        <div class="history-pill">
+          ${n}
+        </div>
+      `
+    ).join('');
+}
+
+function renderParticipants(){
+
+  const list=
+    $('participantsList');
+
+  $('participantsCount').textContent=
+    participants.length;
+
+  list.innerHTML=
+    participants
+      .slice(0,12)
+      .map(p=>{
+
+        const name=
+          p.username||
+          p.name||
+          'Player';
+
+        return `
+          <div class="participant">
+
+            <div class="participant-avatar">
+              ${name.slice(0,1).toUpperCase()}
+            </div>
+
+            <span class="participant-name">
+              ${escapeHtml(name)}
+            </span>
+
+          </div>
+        `;
+
+      }).join('');
+}
+
+/* =========================
+   MARK CARD
+========================= */
+function markGameCell(el){
+
+  const v=
+    el.dataset.value;
+
+  if(
+    v==='FREE'||
+    calledNumbers.includes(
+      Number(v)
+    )
+  ){
+
+    const ci=
+      Number(el.dataset.card);
+
+    const idx=
+      Number(el.dataset.index);
+
+    const state=
+      gameCardsState[ci];
+
+    if(!state||state.locked)return;
+
+    el.classList.toggle('marked');
+
+    if(el.classList.contains('marked')){
+
+      state.marked.add(idx);
+
+    }else{
+
+      state.marked.delete(idx);
+
+    }
+
+  }
+
+}
+
+/* =========================
+   CALLER
+========================= */
+function startAutoCall(){
+
+  if(autoCallTimer){
+    clearInterval(autoCallTimer);
+  }
+
+  autoCallTimer=
+    setInterval(
+      callNumber,
+      4000
+    );
+
+  setTimeout(
+    callNumber,
+    1000
+  );
+}
+
+async function callNumber(){
+
+  if(gameFinished)return;
+
+  const remaining=[];
+
+  for(let i=1;i<=75;i++){
+
+    if(!calledNumbers.includes(i)){
+      remaining.push(i);
+    }
+
+  }
+
+  if(!remaining.length)return;
+
+  const n=
+    remaining[
+      Math.floor(
+        Math.random()*
+        remaining.length
+      )
+    ];
+
+  receiveNumber(n);
+
+  if(roomChannel){
+
+    await roomChannel.send({
+      type:'broadcast',
+      event:'number',
+      payload:{
+        number:n
+      }
+    });
+
+  }
+
+}
+
+function receiveNumber(n){
+
+  if(!calledNumbers.includes(n)){
+    calledNumbers.push(n);
+  }
+
+  const letter=
+    n<=15
+    ?'B'
+    :n<=30
+    ?'I'
+    :n<=45
+    ?'N'
+    :n<=60
+    ?'G'
+    :'O';
+
+  $('calledNumber').textContent=
+    letter+' '+n;
+
+  $('calledNumber').className=
+    'number col-'+
+    letter.toLowerCase();
+
+  $('callStatus').textContent=
+    'Number called — mark it on your card';
+
+  renderHistory();
+
+  document
+    .querySelectorAll('.game-cell')
+    .forEach(c=>{
+
+      if(
+        Number(c.dataset.value)===n
+      ){
+        c.classList.add('called');
+      }
+
+    });
+
+  speakNumber(
+    letter,
+    n
+  );
+
+}
+
+function speakNumber(letter,n){
+
+  try{
+
+    if(window.speechSynthesis){
+
+      speechSynthesis.cancel();
+
+      const u=
+        new SpeechSynthesisUtterance(
+          letter+' '+n
+        );
+
+      u.rate=.92;
+      u.pitch=1;
+      u.volume=.8;
+
+      speechSynthesis.speak(u);
+
+    }
+
+  }catch(e){}
+
+}
+
+/* =========================
+   WIN CHECK
+========================= */
+function isCardWin(ci){
+
+  const state=
+    gameCardsState[ci];
+
+  if(!state)return false;
+
+  const m=
+    state.marked;
+
+  const lines=[];
+
+  for(let r=0;r<5;r++){
+
+    lines.push(
+      [0,1,2,3,4]
+        .map(c=>r*5+c)
+    );
+
+  }
+
+  for(let c=0;c<5;c++){
+
+    lines.push(
+      [0,1,2,3,4]
+        .map(r=>r*5+c)
+    );
+
+  }
+
+  lines.push(
+    [0,6,12,18,24],
+    [4,8,12,16,20],
+    [0,4,20,24],
+    [6,8,16,18]
+  );
+
+  return lines.some(
+    line=>line.every(
+      i=>m.has(i)
+    )
+  );
+
+}
+
+/* =========================
+   WINNER
+========================= */
+async function claimWinner(){
+
+  if(gameFinished)return;
+
+  const ci=
+    gameCardsState.findIndex(
+      (_,i)=>
+        isCardWin(i)&&
+        !gameCardsState[i].locked
+    );
+
+  if(ci<0){
+
+    showToast(
+      'Not a Bingo yet. Complete a row, column, diagonal or corner pattern.'
+    );
+
+    return;
+  }
+
+  const position=
+    winners.length+1;
+
+  const payload={
+    player_id:currentPlayerId,
+    name:playerName,
+    position,
+    card_index:ci
+  };
+
+  winners.push(payload);
+
+  gameCardsState[ci].locked=true;
+
+  const card=
+    $('gameCard-'+ci);
+
+  if(card){
+
+    card.classList.add('locked');
+
+    const tag=
+      $('cardWinTag-'+ci);
+
+    if(tag){
+
+      tag.textContent=
+        position===1
+        ?'🥇 1ST'
+        :position===2
+        ?'🥈 2ND'
+        :'🥉 3RD';
+
+      tag.classList.remove(
+        'hidden'
+      );
+
+    }
+
+  }
+
+  renderWinnerList();
+
+  if(position===1||
+     position===2||
+     position===3){
+
+    showToast(
+      position===1
+      ?'🥇 You are King!'
+      :position===2
+      ?'🥈 You are King!'
+      :'🥉 You are King!'
+    );
+
+  }
+
+  if(roomChannel){
+
+    await roomChannel.send({
+      type:'broadcast',
+      event:'winner',
+      payload
+    });
+
+  }
+
+  if(winners.length>=3){
+
+    gameFinished=true;
+
+    if(autoCallTimer){
+
+      clearInterval(
+        autoCallTimer
+      );
+
+      autoCallTimer=null;
+    }
+
+    $('gameStatus').textContent=
+      '3 winners found — match finished';
+
+    showToast(
+      '🏆 Match finished — 3 winners!'
+    );
+
+  }else{
+
+    $('gameStatus').textContent=
+      (
+        3-winners.length
+      )+
+      ' winner position'+
+      (
+        3-winners.length===1
+        ?''
+        :'s'
+      )+
+      ' remaining';
+
+  }
+
+}
+
+/* =========================
+   WINNER LIST
+========================= */
+function renderWinnerList(){
+
+  const slots=[
+    null,
+    null,
+    null
+  ];
+
+  winners
+    .slice(0,3)
+    .forEach(
+      (w,i)=>slots[i]=w
+    );
+
+  $('winnerCountText').textContent=
+    winners.length+' / 3';
+
+  $('winnerList').innerHTML=
+    slots.map(
+      (w,i)=>{
+
+        if(!w){
+
+          return `
+            <div class="winner-slot">
+              <span class="winner-empty">
+                ${
+                  i===0
+                  ?'Waiting for 1st'
+                  :i===1
+                  ?'Waiting for 2nd'
+                  :'Waiting for 3rd'
+                }
+              </span>
+            </div>
+          `;
+
+        }
+
+        const medal=
+          i===0
+          ?'🥇'
+          :i===1
+          ?'🥈'
+          :'🥉';
+
+        return `
+          <div class="winner-slot">
+
+            <span class="winner-medal">
+              ${medal}
+            </span>
+
+            <div class="winner-avatar">
+              ${(w.name||'P')
+                .slice(0,1)
+                .toUpperCase()}
+            </div>
+
+            <span class="winner-name">
+              ${escapeHtml(
+                w.name||'Player'
+              )}
+            </span>
+
+          </div>
+        `;
+
+      }
+    ).join('');
+}
+
+function handleWinner(payload){
+
+  if(!payload)return;
+
+  const exists=
+    winners.some(
+      w=>
+        w.player_id===
+        payload.player_id&&
+        w.position===
+        payload.position&&
+        w.card_index===
+        payload.card_index
+    );
+
+  if(!exists){
+    winners.push(payload);
+  }
+
+  renderWinnerList();
+
+  if(
+    payload.player_id!==
+    currentPlayerId
+  ){
+
+    showToast(
+      '🏆 '+
+      (
+        payload.name||
+        'A player'
+      )+
+      ' got Bingo!'
+    );
+
+  }
+
+  const ci=
+    Number(payload.card_index);
+
+  const card=
+    $('gameCard-'+ci);
+
+  if(
+    card&&
+    payload.player_id===
+    currentPlayerId
+  ){
+
+    card.classList.add(
+      'locked'
+    );
+
+  }
+
+}
+
+function showWinner(p){
+
+  showToast(
+    'BINGO! '+
+    (p.name||playerName)
+  );
+
+}
+
+function closeWinner(){
+
+  $('winnerModal')
+    .classList.add('hidden');
+
+}
+
+/* =========================
+   COPY ROOM CODE
+========================= */
+async function copyRoomCode(){
+
+  try{
+
+    await navigator.clipboard.writeText(
+      roomCode
+    );
+
+    showToast(
+      'Room code copied'
+    );
+
+  }catch(e){
+
+    showToast(
+      'Room code: '+roomCode
+    );
+
+  }
+
+}
+
+/* =========================
+   CLEANUP
+========================= */
+window.addEventListener(
+  'beforeunload',
+  ()=>{
+    
+    if(autoCallTimer){
+      clearInterval(autoCallTimer);
+    }
+
+    if(roomWaitingTimer){
+      clearInterval(roomWaitingTimer);
+    }
+
+    if(roomChannel){
+      supabaseClient.removeChannel(
+        roomChannel
+      );
+    }
+
+  }
+);
+
+/* =========================
+   START
+========================= */
 renderFees();
+
 </script>
 </body>
 </html>
