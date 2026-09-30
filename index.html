@@ -3189,7 +3189,11 @@ async function playGame(){
     setupRoomChannel();
 
     waitForRoomStart();
+    
+    await loadRoomSocialData();
 
+    await loadRoomChat();
+    
   }catch(error){
 
     console.error(error);
