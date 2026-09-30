@@ -3031,25 +3031,113 @@ function selectMode(mode){
 }
 
 
-function selectCardCount(count){
+function toggleCard(cardId){
 
-  selectedCardCount =
-    Number(count);
-
-  $('cards1')
-    .classList.toggle(
-      'active',
-      count === 1
+  const existing =
+    selectedCards.findIndex(
+      card => card.id === cardId
     );
 
-  $('cards2')
-    .classList.toggle(
-      'active',
-      count === 2
+
+  /* =========================================
+     REMOVE CARD
+     ========================================= */
+
+  if(existing >= 0){
+
+    selectedCards.splice(
+      existing,
+      1
     );
+
+  }
+
+
+  /* =========================================
+     ADD CARD
+     ========================================= */
+
+  else{
+
+    /* Maximum is always 2 cards */
+
+    if(
+      selectedCards.length >= 2
+    ){
+
+      showToast(
+        'You can select maximum 2 cards.'
+      );
+
+      return;
+    }
+
+
+    const card =
+      availableCards.find(
+        c => c.id === cardId
+      );
+
+
+    if(card){
+
+      selectedCards.push(card);
+
+    }
+
+  }
+
+
+  /* =========================================
+     UPDATE COUNT
+     ========================================= */
+
+  $('selectedCardsCount').textContent =
+    selectedCards.length;
+
+
+  /* =========================================
+     CALCULATE TOTAL
+     ========================================= */
+
+  const fee =
+    Number(selectedEntryFee || 0);
+
+  const total =
+    fee *
+    selectedCards.length;
+
+
+  const amountEl =
+    $('cardSelectedAmount');
+
+
+  if(amountEl){
+
+    amountEl.textContent =
+      `${money(total)} Coins`;
+
+  }
+
+
+  /* =========================================
+     CONFIRM BUTTON
+     ========================================= */
+
+  $('confirmCardsBtn').disabled =
+    !(
+      selectedCards.length === 1 ||
+      selectedCards.length === 2
+    );
+
+
+  /* =========================================
+     REFRESH CARD UI
+     ========================================= */
+
+  renderAvailableCards();
 
 }
-
 
 /* =========================================================
    PROFILE
