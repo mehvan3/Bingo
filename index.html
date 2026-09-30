@@ -4159,21 +4159,47 @@ function toggleCard(cardId){
 /* =========================================================
    PURCHASE
 ========================================================= */
-
 async function confirmCardSelection(){
 
+  /* =========================================
+     VALIDATE 1 OR 2 CARDS
+  ========================================= */
+
   if(
-    selectedCards.length !==
-    selectedCardCount
+    selectedCards.length !== 1 &&
+    selectedCards.length !== 2
   ){
 
     showToast(
-      'Please select your cards.'
+      'Please select 1 or 2 cards.'
     );
 
     return;
 
   }
+
+
+  /* =========================================
+     CHECK ROOM / PLAYER
+  ========================================= */
+
+  if(
+    !currentRoomId ||
+    !currentPlayerId
+  ){
+
+    showToast(
+      'Room or player information is missing.'
+    );
+
+    return;
+
+  }
+
+
+  /* =========================================
+     BUILD PURCHASE PAYLOAD
+  ========================================= */
 
   const cardsPayload =
     selectedCards.map(
@@ -4193,6 +4219,7 @@ async function confirmCardSelection(){
       })
     );
 
+
   try{
 
     $('confirmCardsBtn').disabled =
@@ -4201,10 +4228,16 @@ async function confirmCardSelection(){
     $('confirmCardsBtn').textContent =
       'Processing...';
 
+
+    /* =========================================
+       SECURE PURCHASE
+    ========================================= */
+
     const {data,error} =
       await supabaseClient.rpc(
         'purchase_bingo_cards',
         {
+
           p_room_id:
             currentRoomId,
 
@@ -4213,41 +4246,87 @@ async function confirmCardSelection(){
 
           p_cards:
             cardsPayload
+
         }
       );
+
 
     if(error)
       throw error;
 
-    purchaseDone = true;
+
+    /* =========================================
+       PURCHASE SUCCESS
+    ========================================= */
+
+    purchaseDone =
+      true;
+
+
+    /* -----------------------------------------
+       Refresh Player Profile / Coins
+    ----------------------------------------- */
 
     await loadProfile();
 
+
+    /* -----------------------------------------
+       Refresh Players
+    ----------------------------------------- */
+
     await loadRoomPlayers();
 
+
+    /* -----------------------------------------
+       Refresh Room / Prize Pool
+    ----------------------------------------- */
+
     await loadRoomData();
+
+
+    /* -----------------------------------------
+       Refresh Daily XP
+    ----------------------------------------- */
 
     await loadPlayerDailyXP();
 
     await loadRoomDailyXP();
 
+
+    /* =========================================
+       SUCCESS MESSAGE
+    ========================================= */
+
     showToast(
-      'Cards purchased successfully!'
+      selectedCards.length === 1
+        ? '1 Bingo card purchased successfully!'
+        : '2 Bingo cards purchased successfully!'
     );
+
+
+    /* =========================================
+       START GAME
+    ========================================= */
 
     setTimeout(
       () => startGame(),
       600
     );
 
+
   }catch(error){
 
-    console.error(error);
+    console.error(
+      'Purchase error:',
+      error
+    );
+
 
     showToast(
       error.message ||
       'Purchase failed.'
     );
+
 
     $('confirmCardsBtn').disabled =
       false;
@@ -4258,8 +4337,6 @@ async function confirmCardSelection(){
   }
 
 }
-
-
 /* =========================================================
    CHAT
 ========================================================= */
