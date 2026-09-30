@@ -6035,7 +6035,588 @@ $('dailyXpDate').textContent =
       day:'numeric'
     }
   );
+/* =========================================================
+   ROOM SOCIAL SYSTEM
+   ========================================================= */
 
+let roomChatMessages = [];
+let localMicEnabled = false;
+
+async function loadRoomSocialData(){
+
+  if(!currentRoomId) return;
+
+  try{
+
+    const { data: room, error: roomError } =
+      await supabaseClient
+        .from('Room')
+        .select(`
+          room_level,
+          room_xp,
+          daily_xp,
+          daily_xp_date
+        `)
+        .eq('id', currentRoomId)
+        .single();
+
+    if(roomError){
+      console.error(roomError);
+    }else{
+
+      const roomLevel = Number(room?.room_level || 1);
+      const roomXp = Number(room?.room_xp || 0);
+      const roomDaily = Number(room?.daily_xp || 0);
+
+      setText('roomLevelValue', roomLevel);
+      setText('roomXpText', `${roomXp} / 5000 XP`);
+      setWidth(
+        'roomXpFill',
+        Math.min((roomXp / 5000) * 100,100)
+      );
+
+      setText(
+        'roomDailyXpValue',
+        `${roomDaily} XP`
+      );
+    }
+
+    if(currentPlayerId){
+
+      const { data: profile, error: profileError } =
+        await supabaseClient
+          .from('PlayerProfile')
+          .select(`
+            level,
+            xp,
+            daily_xp,
+            daily_xp_date,
+            mic_enabled,
+            username
+          `)
+          .eq('player_id', currentPlayerId)
+          .single();
+
+      if(profileError){
+        console.error(profileError);
+      }else{
+
+        const playerLevel =
+          Number(profile?.level || 1);
+
+        const playerXp =
+          Number(profile?.xp || 0);
+
+        const playerDaily =
+          Number(profile?.daily_xp || 0);
+
+        setText(
+          'playerLevelValue',
+          playerLevel
+        );
+
+        setText(
+          'playerXpText',
+          `${playerXp} / 1000 XP`
+        );
+
+        setWidth(
+          'playerXpFill',
+          Math.min((playerXp / 1000) * 100,100)
+        );
+
+        setText(
+          'playerDailyXpValue',
+          `${playerDaily} XP`
+        );
+
+        localMicEnabled =
+          profile?.mic_enabled === true;
+
+        renderMicButton();
+      }
+    }
+
+  }catch(error){
+
+    console.error(
+      'loadRoomSocialData error:',
+      error
+    );
+
+  }
+}
+
+
+function setText(id,value){
+
+  const el =
+    document.getElementById(id);
+
+  if(el){
+    el.textContent = value;
+  }
+
+}
+
+
+function setWidth(id,value){
+
+  const el =
+    document.getElementById(id);
+
+  if(el){
+    el.style.width = `${value}%`;
+  }
+
+}
+
+
+async function loadRoomChat(){
+
+  if(!currentRoomId) return;
+
+  const { data, error } =
+    await supabaseClient.rpc(
+      'get_room_chat',
+      {
+        p_room_id: currentRoomId
+      }
+    );
+
+  if(error){
+
+    console.error(
+      'Chat load error:',
+      error
+    );
+
+    return;
+  }
+
+  roomChatMessages =
+    data || [];
+
+  renderRoomChat();
+}
+
+
+function renderRoomChat(){
+
+  const box =
+    document.getElementById(
+      'roomChatMessages'
+    );
+
+  if(!box) return;
+
+  if(!roomChatMessages.length){
+
+    box.innerHTML = `
+      <div class="chat-empty">
+        No messages yet
+      </div>
+    `;
+
+    return;
+  }
+
+  box.innerHTML =
+    roomChatMessages.map(msg => {
+
+      const username =
+        escapeHtml(
+          msg.username || 'Player'
+        );
+
+      const message =
+        escapeHtml(
+          msg.message || ''
+        );
+
+      const time =
+        msg.created_at
+          ? new Date(
+              msg.created_at
+            ).toLocaleTimeString(
+              [],
+              {
+                hour:'2-digit',
+                minute:'2-digit'
+              }
+            )
+          : '';
+
+      const firstLetter =
+        username
+          .charAt(0)
+          .toUpperCase();
+
+      return `
+        <div class="chat-message">
+
+          <div class="chat-avatar">
+            ${firstLetter}
+          </div>
+
+          <div class="chat-content">
+
+            <div class="chat-user">
+              ${username}
+            </div>
+
+            <div class="chat-text">
+              ${message}
+            </div>
+
+            <div class="chat-time">
+              ${time}
+            </div>
+
+          </div>
+
+        </div>
+      `;
+
+    }).join('');
+
+  box.scrollTop =
+    box.scrollHeight;
+}
+
+
+async function sendRoomChat(){
+
+  if(
+    !currentRoomId ||
+    !currentPlayerId
+  ){
+    return;
+  }
+
+  const input =
+    document.getElementById(
+      'roomChatInput'
+    );
+
+  if(!input) return;
+
+  const message =
+    input.value.trim();
+
+  if(!message) return;
+
+  input.disabled = true;
+
+  try{
+
+    const { data, error } =
+      await supabaseClient.rpc(
+        'send_room_chat',
+        {
+          p_room_id: currentRoomId,
+          p_player_id: currentPlayerId,
+          p_message: message
+        }
+      );
+
+    if(error){
+
+      console.error(error);
+
+      showToast(
+        error.message ||
+        'Chat error'
+      );
+
+      return;
+    }
+
+    input.value = '';
+
+    if(data){
+
+      roomChatMessages.push(data);
+
+      renderRoomChat();
+
+      broadcastRoomChat(data);
+    }
+
+  }finally{
+
+    input.disabled = false;
+    input.focus();
+
+  }
+}
+
+
+function broadcastRoomChat(message){
+
+  if(!roomChannel) return;
+
+  roomChannel.send({
+    type:'broadcast',
+    event:'chat',
+    payload:message
+  });
+
+}
+
+
+function receiveRoomChat(message){
+
+  if(!message) return;
+
+  if(
+    roomChatMessages.some(
+      x => x.id === message.id
+    )
+  ){
+    return;
+  }
+
+  roomChatMessages.push(message);
+
+  renderRoomChat();
+}
+
+
+function renderMicButton(){
+
+  const btn =
+    document.getElementById(
+      'micToggle'
+    );
+
+  const status =
+    document.getElementById(
+      'micStatus'
+    );
+
+  if(!btn || !status) return;
+
+  if(localMicEnabled){
+
+    btn.classList.add('on');
+
+    btn.textContent =
+      '🎙️ Turn Mic Off';
+
+    status.textContent =
+      'Mic On';
+
+  }else{
+
+    btn.classList.remove('on');
+
+    btn.textContent =
+      '🎙️ Turn Mic On';
+
+    status.textContent =
+      'Mic Off';
+  }
+
+}
+
+
+async function toggleRoomMic(){
+
+  if(!currentPlayerId) return;
+
+  const nextState =
+    !localMicEnabled;
+
+  try{
+
+    if(nextState){
+
+      if(
+        navigator.mediaDevices &&
+        navigator.mediaDevices.getUserMedia
+      ){
+
+        const stream =
+          await navigator.mediaDevices
+            .getUserMedia({
+              audio:true
+            });
+
+        stream
+          .getTracks()
+          .forEach(
+            track => track.stop()
+          );
+      }
+    }
+
+    const { error } =
+      await supabaseClient.rpc(
+        'set_player_mic',
+        {
+          p_player_id:
+            currentPlayerId,
+
+          p_enabled:
+            nextState
+        }
+      );
+
+    if(error){
+
+      console.error(error);
+
+      showToast(
+        error.message ||
+        'Mic error'
+      );
+
+      return;
+    }
+
+    localMicEnabled =
+      nextState;
+
+    renderMicButton();
+
+    if(roomChannel){
+
+      roomChannel.send({
+        type:'broadcast',
+        event:'mic',
+        payload:{
+          player_id:
+            currentPlayerId,
+
+          enabled:
+            localMicEnabled
+        }
+      });
+
+    }
+
+  }catch(error){
+
+    console.error(error);
+
+    showToast(
+      'Microphone permission was not granted.'
+    );
+  }
+
+}
+
+
+function receiveMicStatus(data){
+
+  if(!data) return;
+
+  if(
+    Number(data.player_id) ===
+    Number(currentPlayerId)
+  ){
+
+    localMicEnabled =
+      data.enabled === true;
+
+    renderMicButton();
+  }
+
+}
+
+
+function setupRoomSocialRealtime(){
+
+  if(!roomChannel) return;
+
+  roomChannel.on(
+    'broadcast',
+    {
+      event:'chat'
+    },
+    payload => {
+
+      receiveRoomChat(
+        payload.payload
+      );
+
+    }
+  );
+
+  roomChannel.on(
+    'broadcast',
+    {
+      event:'mic'
+    },
+    payload => {
+
+      receiveMicStatus(
+        payload.payload
+      );
+
+    }
+  );
+
+}
+
+
+async function startRoomSocial(){
+
+  if(!currentRoomId) return;
+
+  await loadRoomSocialData();
+
+  await loadRoomChat();
+
+  setupRoomSocialRealtime();
+}
+
+
+document.addEventListener(
+  'click',
+  event => {
+
+    if(
+      event.target &&
+      event.target.id ===
+      'roomChatSend'
+    ){
+
+      sendRoomChat();
+    }
+
+    if(
+      event.target &&
+      event.target.id ===
+      'micToggle'
+    ){
+
+      toggleRoomMic();
+    }
+
+  }
+);
+
+
+document.addEventListener(
+  'keydown',
+  event => {
+
+    if(
+      event.target &&
+      event.target.id ===
+      'roomChatInput' &&
+      event.key === 'Enter'
+    ){
+
+      event.preventDefault();
+
+      sendRoomChat();
+    }
+
+  }
+);
 </script>
 
 </body>
