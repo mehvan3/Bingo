@@ -2132,7 +2132,297 @@ button{
 
   </div>
 
+<!-- =====================================================
+     ROOM SOCIAL
+     ===================================================== -->
 
+<section class="social-panel">
+
+  <div class="social-head">
+
+    <div>
+      <div class="social-title">
+        Room Social
+      </div>
+
+      <div class="social-subtitle">
+        Chat · XP · Level · Mic
+      </div>
+    </div>
+
+    <div class="room-state" id="socialRoomStatus">
+      ONLINE
+    </div>
+
+  </div>
+
+
+  <!-- ROOM + PLAYER LEVEL -->
+
+  <div class="level-box">
+
+    <div class="level-card">
+
+      <div class="level-top">
+        <div class="level-name">
+          ROOM LEVEL
+        </div>
+
+        <div
+          class="level-number"
+          id="roomLevelValue"
+        >
+          1
+        </div>
+      </div>
+
+      <div class="xp-bar">
+        <div
+          class="xp-fill"
+          id="roomXpFill"
+        ></div>
+      </div>
+
+      <div
+        class="xp-text"
+        id="roomXpText"
+      >
+        0 / 5000 XP
+      </div>
+
+    </div>
+
+
+    <div class="level-card">
+
+      <div class="level-top">
+        <div class="level-name">
+          MY LEVEL
+        </div>
+
+        <div
+          class="level-number"
+          id="playerLevelValue"
+        >
+          1
+        </div>
+      </div>
+
+      <div class="xp-bar">
+        <div
+          class="xp-fill"
+          id="playerXpFill"
+        ></div>
+      </div>
+
+      <div
+        class="xp-text"
+        id="playerXpText"
+      >
+        0 / 1000 XP
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- DAILY XP -->
+
+  <div class="daily-xp">
+
+    <div class="daily-row">
+
+      <div class="daily-label">
+        DAILY PLAYER XP
+      </div>
+
+      <div
+        class="daily-value"
+        id="playerDailyXpValue"
+      >
+        0 XP
+      </div>
+
+    </div>
+
+    <div style="height:8px"></div>
+
+    <div class="daily-row">
+
+      <div class="daily-label">
+        DAILY ROOM XP
+      </div>
+
+      <div
+        class="daily-value"
+        id="roomDailyXpValue"
+      >
+        0 XP
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ROOM CHAT -->
+
+  <div class="chat-wrap">
+
+    <div
+      class="chat-messages"
+      id="roomChatMessages"
+    >
+
+      <div class="chat-empty">
+        No messages yet
+      </div>
+
+    </div>
+
+
+    <div class="chat-input-row">
+
+      <input
+        id="roomChatInput"
+        class="chat-input"
+        type="text"
+        maxlength="250"
+        placeholder="Write a message..."
+        autocomplete="off"
+      />
+
+      <button
+        class="chat-send"
+        id="roomChatSend"
+        type="button"
+      >
+        ➤
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- ROOM MIC -->
+
+  <div class="mic-section">
+
+    <div class="mic-title-row">
+
+      <div class="mic-title">
+        ROOM MIC
+      </div>
+
+      <div
+        class="mic-status"
+        id="micStatus"
+      >
+        Mic Off
+      </div>
+
+    </div>
+
+
+    <div
+      class="mic-seats"
+      id="micSeats"
+    >
+
+      <div class="mic-seat active">
+
+        <div class="mic-icon">
+          🎙️
+        </div>
+
+        <div class="mic-name">
+          My Mic
+        </div>
+
+      </div>
+
+
+      <div class="mic-seat">
+
+        <div class="mic-icon">
+          🎙️
+        </div>
+
+        <div class="mic-name">
+          Seat 2
+        </div>
+
+      </div>
+
+
+      <div class="mic-seat">
+
+        <div class="mic-icon">
+          🎙️
+        </div>
+
+        <div class="mic-name">
+          Seat 3
+        </div>
+
+      </div>
+
+
+      <div class="mic-seat">
+
+        <div class="mic-icon">
+          🎙️
+        </div>
+
+        <div class="mic-name">
+          Seat 4
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <button
+      id="micToggle"
+      class="mic-control"
+      type="button"
+    >
+      🎙️ Turn Mic On
+    </button>
+
+  </div>
+
+
+  <!-- GIFT PLACEHOLDER -->
+
+  <div class="gift-placeholder">
+
+    <div class="gift-box">
+
+      <div class="gift-title">
+        Gift
+      </div>
+
+      <div class="gift-text">
+        Gifts will be available soon.
+      </div>
+
+      <button
+        class="gift-disabled"
+        type="button"
+        disabled
+      >
+        Coming Soon
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
   <!-- ROOM TIP -->
 
   <div class="room-tip panel">
