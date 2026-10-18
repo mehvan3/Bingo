@@ -4017,7 +4017,64 @@ function toggleCard(cardId){
 /* =========================================================
    PURCHASE
 ========================================================= */
+
 async function confirmCardSelection(){
+
+  if(
+    selectedCards.length !== 1 &&
+    selectedCards.length !== 2
+  ){
+    showToast('Please select 1 or 2 cards.');
+    return;
+  }
+
+  if(!currentRoomId || !currentPlayerId){
+    showToast('Room or player information is missing.');
+    return;
+  }
+
+  const cardsPayload = selectedCards.map((card,index) => ({
+    card_id: Number(card.id),
+    card_slot: index + 1,
+    numbers: normalizeCardNumbers(card.numbers)
+  }));
+
+  const button = $('confirmCardsBtn');
+
+  try{
+    button.disabled = true;
+    button.textContent = 'Processing...';
+
+    const {data,error} = await supabaseClient.rpc(
+      'purchase_bingo_cards',
+      {
+        p_room_id: currentRoomId,
+        p_player_id: currentPlayerId,
+        p_cards: cardsPayload
+      }
+    );
+
+    if(error) throw error;
+
+    purchaseDone = true;
+
+    await loadProfile();
+    await loadRoomPlayers();
+    await loadRoomData();
+
+    showToast('Bingo cards purchased successfully!');
+
+    setTimeout(() => startGame(), 600);
+
+  }catch(error){
+    console.error('Purchase error:', error);
+    showToast(error.message || 'Purchase failed.');
+
+    button.disabled = false;
+    button.textContent = 'Confirm & Pay';
+  }
+}
+
 
   /* =========================================
      VALIDATE 1 OR 2 CARDS
