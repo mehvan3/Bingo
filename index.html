@@ -3031,12 +3031,58 @@ function selectMode(mode){
 }
 
 
+
 function toggleCard(cardId){
 
   const existing =
     selectedCards.findIndex(
-      card => card.id === cardId
+      card => Number(card.id) === Number(cardId)
     );
+
+  if(existing !== -1){
+
+    selectedCards.splice(existing, 1);
+
+  }else{
+
+    if(selectedCards.length >= 2){
+
+      showToast(
+        'You can select maximum 2 cards.'
+      );
+
+      return;
+    }
+
+    const card =
+      availableCards.find(
+        c => Number(c.id) === Number(cardId)
+      );
+
+    if(!card){
+
+      showToast('Card not found.');
+
+      return;
+    }
+
+    selectedCards.push(card);
+  }
+
+  const count = selectedCards.length;
+
+  $('selectedCardsCount').textContent = count;
+
+  const fee = Number(selectedEntryFee || 0);
+
+  $('cardSelectedAmount').textContent =
+    `${money(fee * count)} Coins`;
+
+  $('confirmCardsBtn').disabled =
+    !(count === 1 || count === 2);
+
+  renderAvailableCards();
+}
 
 
   /* =========================================
