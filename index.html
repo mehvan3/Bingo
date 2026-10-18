@@ -3879,131 +3879,68 @@ function normalizeCardNumbers(numbers){
    RENDER 5 CARDS
 ========================================================= */
 
+
 function renderAvailableCards(){
 
-  const list =
-    $('cardsList');
+  const list = $('cardsList');
 
-  if(!list)
-    return;
-
+  if(!list) return;
 
   list.innerHTML = '';
 
+  availableCards.forEach((card,index) => {
 
-  availableCards.forEach(
-    (card,index) => {
+    const numbers = normalizeCardNumbers(card.numbers);
 
-      const numbers =
-        normalizeCardNumbers(
-          card.numbers
-        );
+    const option = document.createElement('div');
 
+    option.className = 'card-option';
+    option.dataset.id = card.id;
 
-      const option =
-        document.createElement('div');
+    const isSelected = selectedCards.some(
+      c => Number(c.id) === Number(card.id)
+    );
 
-
-      option.className =
-        'card-option';
-
-
-      option.dataset.id =
-        card.id;
-
-
-      if(
-        selectedCards.some(
-          c => c.id === card.id
-        )
-      ){
-
-        option.classList.add(
-          'selected'
-        );
-
-      }
-
-
-      let cells = '';
-
-
-      for(let row=0;row<5;row++){
-
-        for(let col=0;col<5;col++){
-
-          const value =
-            numbers[row]?.[col] ??
-            '';
-
-
-          const free =
-            row === 2 &&
-            col === 2;
-
-
-          cells += `
-            <div
-              class="card-mini-cell ${free ? 'free' : ''}"
-            >
-              ${free ? 'FREE' : escapeHtml(value)}
-            </div>
-          `;
-
-        }
-
-      }
-
-
-      option.innerHTML = `
-
-        <div class="card-mini">
-
-          <div class="card-mini-head">
-
-            <div>B</div>
-            <div>I</div>
-            <div>N</div>
-            <div>G</div>
-            <div>O</div>
-
-          </div>
-
-          ${cells}
-
-        </div>
-
-
-        <div class="card-option-label">
-
-          <span>
-            Card ${index + 1}
-          </span>
-
-          <span>
-            ${
-              selectedCards.some(
-                c => c.id === card.id
-              )
-              ? 'SELECTED'
-              : 'SELECT'
-            }
-          </span>
-
-        </div>
-
-      `;
-
-
-      option.onclick =
-        () => toggleCard(card.id);
-
-
-      list.appendChild(option);
-
+    if(isSelected){
+      option.classList.add('selected');
     }
-  );
 
+    let cells = '';
+
+    for(let row=0; row<5; row++){
+      for(let col=0; col<5; col++){
+
+        const value = numbers[row]?.[col] ?? '';
+        const free = row === 2 && col === 2;
+
+        cells += `
+          <div class="card-mini-cell ${free ? 'free' : ''}">
+            ${free ? 'FREE' : escapeHtml(value)}
+          </div>
+        `;
+      }
+    }
+
+    option.innerHTML = `
+      <div class="card-mini">
+        <div class="card-mini-head">
+          <div>B</div><div>I</div><div>N</div>
+          <div>G</div><div>O</div>
+        </div>
+        ${cells}
+      </div>
+      <div class="card-option-label">
+        <span>Card ${index + 1}</span>
+        <span>${isSelected ? 'SELECTED' : 'SELECT'}</span>
+      </div>
+    `;
+
+    option.addEventListener('click', () => {
+      toggleCard(card.id);
+    });
+
+    list.appendChild(option);
+  });
 }
 
 
